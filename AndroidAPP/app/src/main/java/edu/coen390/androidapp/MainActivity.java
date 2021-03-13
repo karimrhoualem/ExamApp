@@ -1,33 +1,38 @@
 package edu.coen390.androidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.webkit.WebSettings;
+import android.view.View;
 import android.webkit.WebView;
-
+import android.widget.Button;
 import com.example.examapp.R;
 
 
 public class MainActivity<RequestQueue> extends AppCompatActivity {
-
-
     WebView myWebView;
+    Button biometricRecognition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        myWebView = (WebView) findViewById(R.id.webview);
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        myWebView = new WebView(MainActivity.this);
-        setContentView(myWebView);
-
-        myWebView.loadUrl("https://www.google.com");
+        setupUI();
     }
 
+    private void setupUI (){
+        biometricRecognition = (Button) findViewById(R.id.BiometricRecognition);
+        biometricRecognition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFaceRecognitionActivity();
+            }
+        });
+    }
 
+    private void openFaceRecognitionActivity() {
+        Intent intent = new Intent (this, FaceRecognition.class);
+        startActivity(intent);
+    }
 }
 

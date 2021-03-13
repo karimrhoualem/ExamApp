@@ -9,12 +9,42 @@
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp">
 
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
 
+    <Button
+        android:id="@+id/BiometricRecognition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/University"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="300dp"
+        android:text="Biometric Recognition"
+        app:iconTint="#FFFFFF" />
 
+    <TextView
+        android:id="@+id/University"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Concordia University"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#020202"
+        android:textSize="60sp"
+        android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/AppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/University"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="ExamApp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#E65100"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 </RelativeLayout>
