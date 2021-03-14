@@ -3,6 +3,7 @@ from imutils.video import VideoStream
 from flask import Response
 from flask import Flask
 from flask import render_template
+from flask import jsonify
 import threading
 import argparse
 import face_recognition
@@ -17,7 +18,6 @@ PORT = 5000
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 
-
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
 #   1. Process each video frame at 1/4 resolution (though still display it at full resolution)
@@ -31,13 +31,16 @@ FACE_INFO_CONFIG = "face_info.json"
 # exchanges of the output frames (useful for multiple browsers/tabs
 # are viewing the stream)
 outputFrame = None
+info = None
+json_face_info = {}
+recognized_person = {}
 lock = threading.Lock()
 
 # initialize a flask object
 app = Flask(__name__)
 
 # Get a reference to webcam #0 (the default one)
-vs = VideoStream(src=0,resolution=(1920,1440)).start()
+vs = VideoStream(src=0, resolution=(1920, 1440)).start()
 # video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
@@ -58,6 +61,7 @@ known_face_names = []
 def load_face_info():
     # face_info = []
     # get the relations between image file and people
+    global json_face_info
     index_file_path = os.path.join(FACE_INFO_FOLDER, FACE_INFO_CONFIG)
     with open(index_file_path, 'r') as indexfile:
         json_info = json.load(indexfile)
@@ -72,6 +76,9 @@ def load_face_info():
             known_face_encodings.append(person_face_encoding)
             known_face_names.append(person['name'])
 
+        for person in json_info['people']:
+            json_face_info[person['name']] = person['ID']
+
 
 load_face_info()
 
@@ -81,6 +88,12 @@ def index():
     # return the rendered template
     return render_template("index.html")
 
+    # Initialize some variables
+    face_locations = []
+    face_encodings = []
+    face_names = []
+    process_this_frame = True
+
 
 def recognize_face(frameCount):
     # Initialize some variables
@@ -88,6 +101,8 @@ def recognize_face(frameCount):
     face_encodings = []
     face_names = []
     process_this_frame = True
+
+    global info, recognized_person
 
     global vs, outputFrame, lock
 
@@ -127,6 +142,11 @@ def recognize_face(frameCount):
 
                 face_names.append(name)
 
+                if name == "Unknown":
+                    recognized_person = {"name": "Unknown", "ID": ""}
+                else:
+                    recognized_person = {"name": name, "ID": json_face_info[name]}
+
         process_this_frame = not process_this_frame
 
         if total > frameCount:
@@ -156,7 +176,7 @@ def recognize_face(frameCount):
             outputFrame = frame.copy()
 
 
-def generate():
+def generate_stream():
     # grab global references to the output frame and lock variables
     global outputFrame, lock, encodedImage
 
@@ -181,6 +201,11 @@ def generate():
                bytearray(encodedImage) + b'\r\n')
 
 
+@app.route("/person_info")
+def info_stream():
+    return jsonify(recognized_person)
+
+
 # @app.route("/get_image")
 # def get_image():
 # return send_file("<link to jpeg>", mimetype="image/jpeg")
@@ -190,7 +215,7 @@ def generate():
 def video_feed():
     # return the response generated along with the specific media
     # type (mime type)
-    return Response(generate(),
+    return Response(generate_stream(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
