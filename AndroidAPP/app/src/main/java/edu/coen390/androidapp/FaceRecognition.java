@@ -2,6 +2,7 @@ package edu.coen390.androidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,16 +17,19 @@ public class FaceRecognition extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_recognition);
-        Webview();
+        webView();
     }
 
-    private void Webview (){
+    @SuppressLint("SetJavaScriptEnabled")
+    private void webView(){
         myWebView = (WebView) findViewById(R.id.webView);
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
         myWebView = new WebView(FaceRecognition.this);
         setContentView(myWebView);
-        myWebView.loadUrl("https://www.google.com");
+        WebSettings webSettings = myWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+        myWebView.loadUrl("http://192.168.2.135:5000/");
 
     }
 }
