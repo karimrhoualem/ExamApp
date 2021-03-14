@@ -11,12 +11,14 @@ import cv2
 import numpy as np
 import json
 import os
+import timeit
 
 # CONFIG
 IP_ADDRESS = "192.168.2.135"
 PORT = 5000
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
+RUN_ON_PI = (os.uname().machine == 'armv7l')  # detect if we are running on raspberry pi by CPU architecture
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -40,7 +42,11 @@ lock = threading.Lock()
 app = Flask(__name__)
 
 # Get a reference to webcam #0 (the default one)
-vs = VideoStream(src=0, resolution=(1920, 1440)).start()
+print("Acquiring VideoStream")
+if RUN_ON_PI:
+    vs = VideoStream(src=0, usePiCamera=True, resolution=(480, 640)).start()
+else:
+    vs = VideoStream(src=0).start()
 # video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
@@ -61,6 +67,8 @@ known_face_names = []
 def load_face_info():
     # face_info = []
     # get the relations between image file and people
+    start_time = timeit.default_timer()
+    print("Creating face encodings")
     global json_face_info
     index_file_path = os.path.join(FACE_INFO_FOLDER, FACE_INFO_CONFIG)
     with open(index_file_path, 'r') as indexfile:
@@ -78,6 +86,9 @@ def load_face_info():
 
         for person in json_info['people']:
             json_face_info[person['name']] = person['ID']
+
+        stop_time = timeit.default_timer()
+        print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
 
 
 load_face_info()
