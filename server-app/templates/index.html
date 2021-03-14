@@ -1,9 +1,24 @@
+<!DOCTYPE html>
 <html>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
   <head>
     <title>Exam App: Video Surveillance</title>
   </head>
   <body>
-    <h1>Exam App: Video Surveillance</h1>
-    <img src="{{ url_for('video_feed') }}">
+
+  <div class ="container-fluid" style="display: flex; justify-content: center">
+      <div class ="child" style="margin: 0 auto">
+          <img src="{{ url_for('video_feed') }}" class="img-fluid">
+      </div>
+  </div>
+
   </body>
 </html>
