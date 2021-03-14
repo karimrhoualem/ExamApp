@@ -1,0 +1,8 @@
+{
+	"people": 
+	[
+		{"name": "Barack Obama", "ID": "45454545", "folder": "obama"},
+		{"name": "Mark Hamill", "ID": "00000000", "folder": "hamill"},
+		{"name": "Joe Biden", "ID": "00000000", "folder": "biden"}
+	]
+}

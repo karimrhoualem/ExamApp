@@ -1,6 +1,12 @@
 # USAGE
 # python webstreaming.py --ip 0.0.0.0 --port 8000
 
+# CONFIG
+IP_ADDRESS = "0.0.0.0"
+PORT = 5000
+FACE_INFO_FOLDER = "faces" #relative to face_rec.py
+FACE_INFO_CONFIG = "face_info.json"
+
 # import the necessary packages
 from imutils.video import VideoStream
 from flask import Response
@@ -12,6 +18,8 @@ import argparse
 import face_recognition
 import cv2
 import numpy as np
+import json
+import os
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -36,14 +44,15 @@ vs = VideoStream(src=0).start()
 # video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
-obama_image = face_recognition.load_image_file("Obama.jpg")
-obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
+#obama_image = face_recognition.load_image_file("Obama.jpg")
+#obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
 
 # Load a second sample picture and learn how to recognize it.
 #ahmed_image = face_recognition.load_image_file("Ahmed2.jpeg")
 #ahmed_face_encoding = face_recognition.face_encodings(ahmed_image)[0]
 
 # Create arrays of known face encodings and their names
+'''
 known_face_encodings = [
     obama_face_encoding
     #ahmed_face_encoding
@@ -51,7 +60,29 @@ known_face_encodings = [
 known_face_names = [
     "Barack Obama"
     #"Ahmed Ali"
-]
+]'''
+known_face_encodings = []
+known_face_names = []
+
+# load the face info
+def load_face_info():
+    #face_info = []
+    # get the relations between image file and people
+    index_file_path = os.path.join(FACE_INFO_FOLDER, FACE_INFO_CONFIG)
+    with open(index_file_path, 'r') as indexfile:
+        json_info = json.load(indexfile)
+        
+        for person in json_info['people']:
+            print("Load face info for {name}".format(name=person['name']))
+            # assume images for now to be in, eg, faces/obama/obama.jpg
+            face_file_path = os.path.join(FACE_INFO_FOLDER, person['folder'], person['folder']+'.jpg')
+            person_image = face_recognition.load_image_file(face_file_path)
+            person_face_encoding = face_recognition.face_encodings(person_image)[0]
+                  
+            known_face_encodings.append(person_face_encoding)
+            known_face_names.append(person['name'])
+
+load_face_info()
 
 
 @app.route("/")
@@ -161,8 +192,8 @@ def generate():
                bytearray(encodedImage) + b'\r\n')
 
 
-@app.route("/get_image")
-def get_image():
+#@app.route("/get_image")
+#def get_image():
     #return send_file("<link to jpeg>", mimetype="image/jpeg")
 
 
@@ -189,7 +220,7 @@ if __name__ == '__main__':
     t.start()
 
     # start the flask app
-    app.run(host="<enter IP address>", port="5000", debug=True,
+    app.run(host=IP_ADDRESS, port=PORT, debug=True,
             threaded=True, use_reloader=False)
 
 # Release handle to the webcam
