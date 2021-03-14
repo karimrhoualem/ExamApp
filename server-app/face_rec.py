@@ -13,6 +13,7 @@ import json
 import os
 import timeit
 
+
 # CONFIG
 IP_ADDRESS = "192.168.2.135"
 PORT = 5000
