@@ -3,6 +3,18 @@ name: Android CI
 on: [ push ]
 
 jobs:
+  instrumentation-tests:
+    name: Run Instrumentation Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: run tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        script: ./gradlew connectedCheck
+
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
