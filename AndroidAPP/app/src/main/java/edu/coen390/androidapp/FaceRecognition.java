@@ -1,15 +1,23 @@
 package edu.coen390.androidapp;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.example.examapp.R;
 
 public class FaceRecognition extends AppCompatActivity {
+
+    public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
+
+    @VisibleForTesting
+    protected static final String WEB_FORM_URL = "http://www.google.com";
 
     WebView myWebView;
 
@@ -17,19 +25,23 @@ public class FaceRecognition extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_recognition);
-        webView();
+        launchWebView();
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private void webView(){
+    private void launchWebView(){
         myWebView = (WebView) findViewById(R.id.webView);
-        myWebView = new WebView(FaceRecognition.this);
-        setContentView(myWebView);
+
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
-        myWebView.loadUrl("http://192.168.2.135:5000/");
 
+        myWebView.loadUrl(WEB_FORM_URL);
+        myWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return false;
+            }
+        });
     }
 }
