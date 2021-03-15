@@ -14,7 +14,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Unit tests
-        run: AndroidApp/gradlew test
+        run: AndroidAPP/gradlew test
 
   build:
     name: Build ExamApp
@@ -27,4 +27,4 @@ jobs:
         with:
           java-version: 1.8
       - name: Build with Gradle
-        run: bash AndroidApp/gradlew build
+        run: bash AndroidAPP/gradlew build
