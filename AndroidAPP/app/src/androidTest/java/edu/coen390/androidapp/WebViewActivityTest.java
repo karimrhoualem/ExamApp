@@ -62,14 +62,14 @@ public class WebViewActivityTest {
             .check(webMatches(getCurrentUrl(), containsString("google")));
     }
 
-      // TODO: uncomment this when testing with the actual server. Add ID to <img> element.
-//    @Test
-//    public void webView_verifyImageReceivedFromWebServer_Test() {
-//        mActivityRule.launchActivity(withWebFormIntent());
-//
-//        onWebView()
-//            .withElement(findElement(Locator.ID, "facial_recognition"));
-//    }
+    // TODO: uncomment this when testing with the actual server. Add ID to <img> element.
+    @Test
+    public void webView_verifyImageReceivedFromWebServer_Test() {
+        mActivityRule.launchActivity(withWebFormIntent());
+
+        onWebView()
+            .withElement(findElement(Locator.ID, "facial_recognition"));
+    }
 
     private static Intent withWebFormIntent() {
         Intent basicFormIntent = new Intent();
