@@ -3,9 +3,41 @@ name: Android CI
 on: [push, pull_request]
 
 jobs:
-  test:
+  build:
+    name: Build ExamApp
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./AndroidAPP
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
+  
+  instrumentation-test:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          FABRIC_API_KEY: ${{ secrets.FABRIC_API_KEY }}
+          FABRIC_API_SECRET: ${{ secrets.FABRIC_API_SECRET }}
+        with:
+          api-level: 29
+          arch: x86
+          disable-animations: true
+          script: ./gradlew connectedAndroidTest --stacktrace
+  
+  unit-test:
     name: Run Tests
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./AndroidAPP
@@ -26,20 +58,3 @@ jobs:
         # You may pin to the exact commit or the version.
         # uses: vgaidarji/android-github-actions-emulator@30c50f42518922e01004c2152911bb458d33ff3b
         uses: vgaidarji/android-github-actions-emulator@v1.0.1
-
-  build:
-    name: Build ExamApp
-    runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: ./AndroidAPP
-    steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
