@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51eafb1a-d791-474d-8cda-84565d264a5c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/androidTest/java/edu/coen390/androidapp/WebViewActivityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/androidTest/java/edu/coen390/androidapp/WebViewActivityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/android.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/android.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
