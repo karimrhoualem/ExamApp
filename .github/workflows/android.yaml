@@ -22,10 +22,7 @@ jobs:
   
   instrumentation-test:
     name: ExamAPP - Android Instrumentation Tests
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./AndroidAPP
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
       - name: Grant execute permission for gradlew
@@ -39,7 +36,7 @@ jobs:
           api-level: 29
           arch: x86
           disable-animations: true
-          script: ./gradlew connectedAndroidTest --stacktrace
+          script: ./AndroidAPP/gradlew connectedAndroidTest --stacktrace
   
   unit-test:
     name: ExamAPP - Android Unit Tests
