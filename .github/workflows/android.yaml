@@ -22,7 +22,7 @@ jobs:
   
   instrumentation-test:
     name: ExamAPP - Android Instrumentation Tests
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./AndroidAPP
