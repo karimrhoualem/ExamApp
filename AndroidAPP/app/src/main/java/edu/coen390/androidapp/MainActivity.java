@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.example.examapp.R;
 
 
-public class MainActivity<RequestQueue> extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     WebView myWebView;
     Button biometricRecognition;
 
@@ -22,12 +22,7 @@ public class MainActivity<RequestQueue> extends AppCompatActivity {
 
     private void setupUI (){
         biometricRecognition = (Button) findViewById(R.id.BiometricRecognition);
-        biometricRecognition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFaceRecognitionActivity();
-            }
-        });
+        biometricRecognition.setOnClickListener(v -> openFaceRecognitionActivity());
     }
 
     private void openFaceRecognitionActivity() {
