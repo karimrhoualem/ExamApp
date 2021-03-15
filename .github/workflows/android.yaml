@@ -39,7 +39,7 @@ jobs:
           api-level: 29
           arch: x86
           disable-animations: true
-          script: ./gradlew connectedAndroidTest
+          script: ./gradlew.bat connectedAndroidTest
   
   unit-test:
     name: Android Unit Tests
