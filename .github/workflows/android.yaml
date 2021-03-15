@@ -16,7 +16,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x AndroidAPP/gradlew
       - name: Unit tests
-        run: AndroidAPP/gradlew AndroidAPP/test
+        run: AndroidAPP/gradlew test
 
   build:
     name: Build ExamApp
