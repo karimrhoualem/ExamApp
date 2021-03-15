@@ -22,7 +22,7 @@ jobs:
   
   instrumentation-test:
     name: Android Instrumentation Tests
-    runs-on: macOS-latest
+    runs-on: macos-latest
     defaults:
       run:
         working-directory: ./AndroidAPP
