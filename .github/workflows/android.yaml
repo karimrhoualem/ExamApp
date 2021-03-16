@@ -35,6 +35,7 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedCheck
+          working-directory: ./AndroidAPP
   
   unit-test:
     name: Android Unit Tests
