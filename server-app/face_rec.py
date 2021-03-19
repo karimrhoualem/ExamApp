@@ -124,7 +124,7 @@ def recognize_face(frameCount):
     global vs, outputFrame, lock
 
     total = 0
-    FRAME_SCALE_FACTOR = 6 # frame divided in size by this number
+    FRAME_SCALE_FACTOR = 4 # frame divided in size by this number
     while True:
         # Grab a single frame of video
         frame = vs.read()
