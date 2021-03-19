@@ -40,7 +40,7 @@ def load_face_info():
         for person in json_info['people']:
             print("Load face info for {name}".format(name=person['name']))
             # assume images for now to be in, eg, faces/obama/obama.jpg
-            face_file_path = os.path.join(FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
+            face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
             person_image = face_recognition.load_image_file(face_file_path)
             person_face_encoding = face_recognition.face_encodings(person_image)[0]
 

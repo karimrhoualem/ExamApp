@@ -48,16 +48,19 @@ lock = threading.Lock() # lock for outputFrame so that it is not read while bein
 # initialize a flask object
 app = Flask(__name__)
 
+
 # Get a reference to webcam #0 (the default one)
 print("Acquiring VideoStream")
 if(RUN_ON_PI):
     print("Pi environment detected")
     vs = VideoStream(src=0, usePiCamera=True,resolution=(480,640)).start()
+    time.sleep(2.0) # the camera needs time to start, if loading encodings directly it can be too fast
 else:
     print("Non-Pi environment")
     # TODO doesn't work on windows? webcam turns on, but no video in video_feed
     from imutils.video import WebcamVideoStream
     vs = WebcamVideoStream(src=0).start()
+    time.sleep(2.0)
 
 # video_capture = cv2.VideoCapture(0)
 
@@ -95,10 +98,12 @@ known_face_names = []
 def load_face_info():
     start_time = timeit.default_timer()
     print("Creating face encodings")
+    global known_face_names, known_face_encodings
 
     # TODO: check for pickle file existance and call generation script if it doesn't exist?
     dirname = os.path.dirname(__file__)
     pickle_file_path = os.path.join(dirname, FACE_INFO_FOLDER, PICKLE_INPUT_FILE)
+    print("Pickle file: {fname}".format(fname=pickle_file_path))
     with open(pickle_file_path, 'rb') as picklefile:
         face_info = pickle.load(picklefile)
 
@@ -111,7 +116,33 @@ def load_face_info():
     stop_time = timeit.default_timer()
     print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
 
+
+# def load_face_info_orig():
+#     start_time = timeit.default_timer()
+#     print("Creating face encodings")
+#     # face_info = []
+#     # get the relations between image file and people
+#     dirname = os.path.dirname(__file__)
+#     index_file_path = os.path.join(dirname, FACE_INFO_FOLDER, FACE_INFO_CONFIG)
+#     with open(index_file_path, 'r') as indexfile:
+#         json_info = json.load(indexfile)
+#
+#         for person in json_info['people']:
+#             print("Load face info for {name}".format(name=person['name']))
+#             # assume images for now to be in, eg, faces/obama/obama.jpg
+#             face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
+#             person_image = face_recognition.load_image_file(face_file_path)
+#             person_face_encoding = face_recognition.face_encodings(person_image)[0]
+#
+#             known_face_encodings.append(person_face_encoding)
+#             known_face_names.append(person['name'])
+#
+#     stop_time = timeit.default_timer()
+#
+#     print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
+
 load_face_info()
+print(known_face_names)
 
 
 def recognize_face(frameCount):
