@@ -20,7 +20,11 @@ IP_ADDRESS = "0.0.0.0"
 PORT = 5000
 FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
-RUN_ON_PI = (os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
+RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
+if(RUN_ON_PI):
+    print("Pi environment detected")
+else:
+    print("Non-Pi environment")
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -58,14 +62,15 @@ def load_face_info():
     print("Creating face encodings")
     #face_info = []
     # get the relations between image file and people
-    index_file_path = os.path.join(FACE_INFO_FOLDER, FACE_INFO_CONFIG)
+    dirname = os.path.dirname(__file__)
+    index_file_path = os.path.join(dirname, FACE_INFO_FOLDER, FACE_INFO_CONFIG)
     with open(index_file_path, 'r') as indexfile:
         json_info = json.load(indexfile)
         
         for person in json_info['people']:
             print("Load face info for {name}".format(name=person['name']))
             # assume images for now to be in, eg, faces/obama/obama.jpg
-            face_file_path = os.path.join(FACE_INFO_FOLDER, person['folder'], person['folder']+'.jpg')
+            face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder']+'.jpg')
             person_image = face_recognition.load_image_file(face_file_path)
             person_face_encoding = face_recognition.face_encodings(person_image)[0]
                   
@@ -148,13 +153,13 @@ def recognize_face(frameCount):
 
         # Display the resulting image
 
-
         # acquire the lock, set the output frame, and release the
         # lock
         with lock:
             outputFrame = frame.copy()
 
 
+# Generator that allows the video stream to be returned frame by frame
 def generate():
     # grab global references to the output frame and lock variables
     global outputFrame, lock, encodedImage
@@ -171,6 +176,10 @@ def generate():
             # encode the frame in JPEG format
             (flag, encodedImage) = cv2.imencode(".jpeg", outputFrame)
 
+            # set the outputFrame to None so that we do not loop on the same frame
+            # It *seems* to reduce Pi 4 CPU usage by about 10% on the main core
+            # TODO: does this make any real difference in practice?
+            outputFrame = None
 
             # ensure the frame was successfully encoded
             if not flag:
