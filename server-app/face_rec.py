@@ -2,7 +2,7 @@
 # python webstreaming.py --ip 0.0.0.0 --port 8000
 # import the necessary packages
 from imutils.video import VideoStream
-from flask import Response
+from flask import Response, jsonify
 from flask import Flask
 from flask import render_template
 from flask import send_file
@@ -121,7 +121,7 @@ def recognize_face(frameCount):
     face_names = []
     process_this_frame = True
 
-    global vs, outputFrame, lock
+    global vs, outputFrame, lock, info, recognized_person
 
     total = 0
     FRAME_SCALE_FACTOR = 4 # frame divided in size by this number
@@ -195,7 +195,7 @@ def recognize_face(frameCount):
 
 
 # Generator that allows the video stream to be returned frame by frame
-def generate():
+def generate_stream():
     # grab global references to the output frame and lock variables
     global outputFrame, lock, encodedImage
 
@@ -225,7 +225,9 @@ def generate():
                bytearray(encodedImage) + b'\r\n')
 
 
-
+@app.route("/person_info")
+def info_stream():
+    return jsonify(recognized_person)
         
 @app.route("/")
 def index():
@@ -237,7 +239,7 @@ def index():
 def video_feed():
     # return the response generated along with the specific media
     # type (mime type)
-    return Response(generate(),
+    return Response(generate_stream(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
