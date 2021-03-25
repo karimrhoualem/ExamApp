@@ -14,8 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp">
-        <activity android:name="edu.coen390.androidapp.FaceRecognition"></activity>
-        <activity android:name="edu.coen390.androidapp.MainActivity">
+        <activity android:name="edu.coen390.androidapp.View.CourseActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.LiveFeedActivity" />
+        <activity android:name="edu.coen390.androidapp.View.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

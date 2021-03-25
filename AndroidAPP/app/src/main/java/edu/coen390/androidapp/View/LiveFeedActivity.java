@@ -1,9 +1,8 @@
-package edu.coen390.androidapp;
+package edu.coen390.androidapp.View;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -12,7 +11,7 @@ import android.webkit.WebViewClient;
 
 import com.example.examapp.R;
 
-public class FaceRecognition extends AppCompatActivity {
+public class LiveFeedActivity extends AppCompatActivity {
 
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
 
@@ -24,7 +23,7 @@ public class FaceRecognition extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_face_recognition);
+        setContentView(R.layout.activity_live_feed);
         launchWebView();
     }
 
