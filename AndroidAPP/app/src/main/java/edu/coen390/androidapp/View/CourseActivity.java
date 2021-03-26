@@ -18,6 +18,7 @@ import java.util.List;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.CourseAdapter;
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.User;
 
 public class CourseActivity extends AppCompatActivity {
 
@@ -44,18 +45,24 @@ public class CourseActivity extends AppCompatActivity {
         courseListView = findViewById(R.id.courseListView);
         userNameTextView = findViewById(R.id.userNameTextView);
 
-        Intent intent = getIntent();
 
+/*
         //this will be replaced with the code below
         invigilator_id = intent.getIntExtra("invigilator_id",0);
         Log.d(TAG,"after getLongEXTRa " + invigilator_id);
         userNameTextView.setText("User name"); //this will be replaced with username of invigilator that is logged in
+  */
 
-        loadListView(invigilator_id);
 
+
+
+        Intent intent = getIntent();
         // TODO: Get object from LoginActivity. Set username to text view
-        //Invigilator invigilator = (Invigilator) intent.getSerializableExtra("invigilatorObject");
-        //userNameTextView.setText(invigilator.getUserName());
+        User invigilator = (User) intent.getSerializableExtra("invigilatorObject");
+        userNameTextView.setText(invigilator.getUserName());
+
+        loadListView(invigilator.getId());
+
 
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,7 +80,6 @@ public class CourseActivity extends AppCompatActivity {
     private void loadListView(long invigilatorID) {
 
          courses = dbHelper.getCourses(invigilatorID);
-
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this,courses);
         courseListView.setAdapter(adapter);
 

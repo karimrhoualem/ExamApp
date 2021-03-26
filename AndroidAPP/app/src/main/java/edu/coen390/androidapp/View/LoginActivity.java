@@ -97,8 +97,10 @@ public class LoginActivity extends AppCompatActivity {
     private void openCourseActivity() {
         int id = 1;
         Intent intent = new Intent (this, CourseActivity.class);
-        intent.putExtra("invigilator_id",id);
-        Log.d(TAG,"after putExtra" + id);
+        //intent.putExtra("invigilator_id",id);
+        //Log.d(TAG,"after putExtra" + id);
+        User user = dbHelper.getInvigilator(1);
+        intent.putExtra("invigilatorObject", user);
         startActivity(intent);
     }
 }
