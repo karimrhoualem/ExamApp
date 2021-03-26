@@ -62,10 +62,10 @@ def load_face_extra_dataset():
 
     # Will use first 100 people
     # TODO: Choose randomly instead?
-    print("First 100 people:")
-    print(dataset_folders[0:100])
+    #print("First 100 people:")
+    #print(dataset_folders[0:100])
 
-    for person in dataset_folders[0:100]:
+    for person in dataset_folders:
         print("Load face info for {name}".format(name=person))
         face_file_folder = os.path.join(dataset_folder_path, person)
 
@@ -73,12 +73,18 @@ def load_face_extra_dataset():
         face_file_path = os.path.join(face_file_folder, os.listdir(face_file_folder)[0])
         #print(face_file_path)
 
-        person_image = face_recognition.load_image_file(face_file_path)
-        person_face_encoding = face_recognition.face_encodings(person_image)[0]
+        try:
+            person_image = face_recognition.load_image_file(face_file_path)
+            person_face_encoding = face_recognition.face_encodings(person_image)[0]
 
-        face_info['encodings'].append(person_face_encoding)
-        face_info['names'].append(person)
-        face_info['ids'].append("0000")
+            face_info['encodings'].append(person_face_encoding)
+            face_info['names'].append(person)
+            face_info['ids'].append("0000")
+        # ignore exceptions
+        except Exception as e:
+            print("Exception for {name}".format(name=person))
+            print(e)
+            continue
 
 # face info for our images
 load_face_info()
