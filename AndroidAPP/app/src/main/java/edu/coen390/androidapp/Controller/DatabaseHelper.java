@@ -3,21 +3,20 @@ package edu.coen390.androidapp.Controller;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.example.examapp.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Student;
 
@@ -169,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String[] coursesArray = convertStringToArray(courses);
 
                     for (String c : coursesArray) {
-                        if (c.equals(course.getCourseCode())) {
+                        if (c.equals(course.getCode())) {
                             return true;
                         }
                     }
@@ -220,5 +219,186 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] arr = str.split(strSeparator);
         return arr;
     }
+
+
+
+    //get all courses assigned to an invigilator based on the invigilator primary key id
+    public List<Course> getCourses(long invigilatorID){
+
+        Log.i(TAG,"getCourses was accessed");
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        String selectQuery = "SELECT  * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_INVIGILATOR_ID + " = " + invigilatorID;
+        Log.d(TAG, selectQuery);
+
+        Cursor cursor = null;
+        try{
+            cursor = db.rawQuery(selectQuery, null);
+            //cursor = db.query(Config.COURSE_TABLE_NAME, null, Config.COURSE_INVIGILATOR_ID + "= ?", new String[]{String.valueOf(invigilatorID)}, null,null,null);
+            if(cursor!=null){
+                if(cursor.moveToFirst()){
+
+                    List<Course> courseList = new ArrayList<>();
+
+                    do{
+                        //getting info from cursor, creating a new Course object with info, adding this course obj to courseList
+                        //this is for one row
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COURSE_ID));
+                        invigilatorID = cursor.getInt(cursor.getColumnIndex(Config.COURSE_INVIGILATOR_ID));
+                        String title = cursor.getString(cursor.getColumnIndex(Config.COURSE_TITLE));
+                        String code = cursor.getString(cursor.getColumnIndex(Config.COURSE_CODE));
+
+                        courseList.add(new Course(id,invigilatorID,title,code));
+
+                    }while(cursor.moveToNext()); //go to next row of db
+
+                    return courseList;
+                }
+            }
+        }catch(Exception e){
+            Log.d(TAG, "Exception: " + e.getMessage());
+        }finally{
+            if(cursor!=null)
+                cursor.close();
+
+            db.close();
+        }
+        return Collections.emptyList();
+
+    }
+
+    public long insertCourse(Course course){
+
+        long id = -1;
+
+        //we want to write to database so we choose getWritableDatabase()
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
+        contentValues.put(Config.COURSE_TITLE, course.getTitle());
+        contentValues.put(Config.COURSE_CODE, course.getCode());
+
+        try {
+            id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
+        }catch(SQLException e){
+            Log.d(TAG,"Exception: " +e.getMessage());
+            Toast.makeText(context,"Operation Failed: " +e.getMessage(), Toast.LENGTH_LONG).show();
+
+        } finally{
+            db.close();
+        }
+        return id;
+    }
+
+
+
+
+
+    /**
+     * Add Invigilator to Data Base
+     * @param user The invigilator to be added
+     */
+    public void addInvigilator(User user){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Create content values that hold information
+        long userId = -1;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.INVIGILATOR_FIRST_NAME, user.getFirstName());
+        contentValues.put(Config.INVIGILATOR_LAST_NAME, user.getLastName());
+        contentValues.put(Config.INVIGILATOR_USERNAME, user.getUserName());
+        contentValues.put(Config.INVIGILATOR_PASSWORD, user.getPassword());
+
+        // Insert row - Throws Exception
+        try{
+             userId = db.insertOrThrow(Config.INVIGILATOR_TABLE_NAME, null, contentValues);
+
+        }catch (SQLException e ){
+            Log.d(TAG, "Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            db.close();
+        }
+    }
+
+    /**
+     * Verify if User (Invigilator) is in the Data Base.
+     * @param UserName The username string to be verified.
+     * @param Password The password string to be verified.
+     * @return True if the invigilator is in the data base or false if he/she is not
+     */
+    public boolean verifyInvigilator(String UserName, String Password){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Array of columns to fetch
+        String[] columnInvigilatorTable = {
+                Config.INVIGILATOR_ID
+        };
+
+        // Selecting the desired criteria
+        String selection = Config.INVIGILATOR_USERNAME + " = ?" + " AND " + Config.INVIGILATOR_PASSWORD + " = ?";
+
+        // Selection arguments
+        String[] selectionArg = {UserName, Password};
+
+        // Query user table
+        Cursor cursor = db.query(Config.INVIGILATOR_TABLE_NAME,
+                columnInvigilatorTable,
+                selection,
+                selectionArg,
+                null,
+                null,
+                null);
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        if (cursorCount > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get a particular invigilator from the data base.
+     * @param userID The id of the invigilator to be recovered
+     * @return The invigilator that was recovered from the data base
+     */
+    public User getInvigilator(long userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Selecting desired criteria
+        String selectQuery = "SELECT * " + " FROM " + Config.INVIGILATOR_TABLE_NAME + " WHERE " + Config.INVIGILATOR_ID + " = " + userID;
+
+        try {
+             cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.INVIGILATOR_ID));
+                    String firstName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_LAST_NAME));
+                    String userName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_USERNAME));
+                    String password = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_PASSWORD));
+
+                    return new User(id, firstName, lastName, userName, password);
+                }
+             }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    return new User();
+    }
+
+
 }
 
