@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.examapp.R;
 
@@ -24,42 +26,44 @@ public class CourseActivity extends AppCompatActivity {
     protected ListView courseListView;
     protected DatabaseHelper dbHelper;
     protected List<Course> courses;
-    Long course_id;
-    Long invigilator_id;
-
+    protected int invigilator_id;
+    private TextView userNameTextView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+
         setupUI();
     }
 
     private void setupUI () {
 
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        dbHelper.insertCourse(new Course(-1, 1,"ENGR", "391"));
-        dbHelper.insertCourse(new Course(-1, 2,"ELEC", "331"));
-        dbHelper.insertCourse(new Course(-1, 1,"COEN", "313"));
-
-
-
+        dbHelper = new DatabaseHelper(this);
         courseListView = findViewById(R.id.courseListView);
+        userNameTextView = findViewById(R.id.userNameTextView);
 
-        Bundle bundle = getIntent().getExtras();
-        invigilator_id = bundle.getLong("invigilator_id");
+        Intent intent = getIntent();
+
+        //this will be replaced with the code below
+        invigilator_id = intent.getIntExtra("invigilator_id",0);
+        Log.d(TAG,"after getLongEXTRa " + invigilator_id);
+        userNameTextView.setText("User name"); //this will be replaced with username of invigilator that is logged in
 
         loadListView(invigilator_id);
+
+        // TODO: Get object from LoginActivity. Set username to text view
+        //Invigilator invigilator = (Invigilator) intent.getSerializableExtra("invigilatorObject");
+        //userNameTextView.setText(invigilator.getUserName());
 
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(view.getContext(), LiveFeedActivity.class);
-                Long course_id = courses.get(position).getId();
-                intent.putExtra("course_id", course_id);
-                intent.putExtra("invigilator_id", invigilator_id);
+                Course currentCourse = new Course(courses.get(position).getId(),courses.get(position).getInvigilator_id(),courses.get(position).getTitle(),courses.get(position).getCode());
+                intent.putExtra("selected_course", currentCourse);
                 startActivity(intent);
             }
         });
@@ -69,9 +73,6 @@ public class CourseActivity extends AppCompatActivity {
     private void loadListView(long invigilatorID) {
 
          courses = dbHelper.getCourses(invigilatorID);
-
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, courses);
-         //courseListView.setAdapter(adapter);
 
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this,courses);
         courseListView.setAdapter(adapter);

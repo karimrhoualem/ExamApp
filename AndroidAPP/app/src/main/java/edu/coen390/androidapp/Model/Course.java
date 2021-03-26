@@ -1,8 +1,9 @@
 package edu.coen390.androidapp.Model;
 
 
+import java.io.Serializable;
 
-public class Course {
+public class Course implements Serializable {
 
 //class of Course objects
 
@@ -24,6 +25,12 @@ public class Course {
 
         }
 
+        public Course(long invigilator_id, String title, String code){
+            this.invigilator_id = invigilator_id;
+            this.title = title;
+            this.code = code;
+        }
+
         public Course(String title, String code) {
             this.title = title;
             this.code = code;
@@ -36,7 +43,7 @@ public class Course {
         public String toString() {
 
 
-            return title + " " + code ;
+            return title + " " + code;
 
 
         }

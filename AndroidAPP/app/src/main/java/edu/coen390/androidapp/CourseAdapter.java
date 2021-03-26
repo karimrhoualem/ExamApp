@@ -51,8 +51,9 @@ public class CourseAdapter extends BaseAdapter {
 
         courseTextView = listItem.findViewById(R.id.courseTextView);
 
-        //String coursesString = "";
-        courseTextView.setText(course.toString());
+        String coursesString = course.getTitle() + "\n" + course.getCode();
+        courseTextView.setText(coursesString);
+
 
         return listItem;
     }

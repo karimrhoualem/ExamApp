@@ -159,12 +159,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
+
         String selectQuery = "SELECT  * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_INVIGILATOR_ID + " = " + invigilatorID;
+        Log.d(TAG, selectQuery);
 
         Cursor cursor = null;
         try{
             cursor = db.rawQuery(selectQuery, null);
-
+            //cursor = db.query(Config.COURSE_TABLE_NAME, null, Config.COURSE_INVIGILATOR_ID + "= ?", new String[]{String.valueOf(invigilatorID)}, null,null,null);
             if(cursor!=null){
                 if(cursor.moveToFirst()){
 
@@ -205,6 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
+        contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
         contentValues.put(Config.COURSE_TITLE, course.getTitle());
         contentValues.put(Config.COURSE_CODE, course.getCode());
 
