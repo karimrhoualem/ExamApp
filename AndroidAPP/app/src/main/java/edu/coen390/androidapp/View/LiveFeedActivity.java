@@ -72,9 +72,9 @@ public class LiveFeedActivity extends AppCompatActivity {
         // Receive Course object when CourseActivity intent begins LiveFeedActivity
         // For now, just using a manually created Course object
         // https://stackoverflow.com/a/7827593/12044281
-        // course = new Course(1, "Mini-Capstone", "COEN 390");
         Intent intent = getIntent();
-        course = (Course)intent.getSerializableExtra("selected_course");
+        course = (Course)intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
+
         Log.d(TAG,"after getIntent "+ course.toString());
 
         dbHelper = new DatabaseHelper(this);

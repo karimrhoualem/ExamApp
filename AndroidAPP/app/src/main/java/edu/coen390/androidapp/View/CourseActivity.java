@@ -68,9 +68,9 @@ public class CourseActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(view.getContext(), LiveFeedActivity.class);
+                Intent intent = new Intent(view.getContext(), VerificationModeActivity.class);
                 Course currentCourse = new Course(courses.get(position).getId(),courses.get(position).getInvigilator_id(),courses.get(position).getTitle(),courses.get(position).getCode());
-                intent.putExtra("selected_course", currentCourse);
+                intent.putExtra(VerificationModeActivity.COURSE_INTENT, currentCourse);
                 startActivity(intent);
             }
         });
@@ -79,7 +79,7 @@ public class CourseActivity extends AppCompatActivity {
 
     private void loadListView(long invigilatorID) {
 
-         courses = dbHelper.getCourses(invigilatorID);
+        courses = dbHelper.getCourses(invigilatorID);
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this,courses);
         courseListView.setAdapter(adapter);
 
