@@ -7,6 +7,7 @@ import json
 import os
 import timeit
 import pickle
+import random
 
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
@@ -60,12 +61,11 @@ def load_face_extra_dataset():
 
     dataset_folders = os.listdir(dataset_folder_path)
 
-    # Will use first 100 people
-    # TODO: Choose randomly instead?
+    # Use 100 people to simulate a classroom size
     print("First 100 people:")
-    print(dataset_folders[0:100])
+    subset_folders = random.sample(dataset_folders, 100)
 
-    for person in dataset_folders[0:100]:
+    for person in subset_folders:
         print("Load face info for {name}".format(name=person))
         face_file_folder = os.path.join(dataset_folder_path, person)
 
