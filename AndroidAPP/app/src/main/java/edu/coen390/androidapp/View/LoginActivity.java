@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void openFaceRecognitionActivity() {
         Intent intent = new Intent (this, LiveFeedActivity.class);
+        intent.putExtra("invigilator_id",1);
         startActivity(intent);
     }
 }

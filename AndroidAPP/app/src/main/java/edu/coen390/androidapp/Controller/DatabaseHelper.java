@@ -3,6 +3,7 @@ package edu.coen390.androidapp.Controller;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import edu.coen390.androidapp.Model.Course;
 
 /**
  * Database helper class serves as the controller and main API through which
@@ -147,5 +150,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] arr = str.split(strSeparator);
         return arr;
     }
+
+
+    //get all courses assigned to an invigilator based on the invigilator primary key id
+    public List<Course> getCourses(long invigilatorID){
+
+        Log.i(TAG,"getCourses was accessed");
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_INVIGILATOR_ID + " = " + invigilatorID;
+
+        Cursor cursor = null;
+        try{
+            cursor = db.rawQuery(selectQuery, null);
+
+            if(cursor!=null){
+                if(cursor.moveToFirst()){
+
+                    List<Course> courseList = new ArrayList<>();
+
+                    do{
+                        //getting info from cursor, creating a new Course object with info, adding this course obj to courseList
+                        //this is for one row
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COURSE_ID));
+                        invigilatorID = cursor.getInt(cursor.getColumnIndex(Config.COURSE_INVIGILATOR_ID));
+                        String title = cursor.getString(cursor.getColumnIndex(Config.COURSE_TITLE));
+                        String code = cursor.getString(cursor.getColumnIndex(Config.COURSE_CODE));
+
+                        courseList.add(new Course(id,invigilatorID,title,code));
+
+                    }while(cursor.moveToNext()); //go to next row of db
+
+                    return courseList;
+                }
+            }
+        }catch(Exception e){
+            Log.d(TAG, "Exception: " + e.getMessage());
+        }finally{
+            if(cursor!=null)
+                cursor.close();
+
+            db.close();
+        }
+        return Collections.emptyList();
+
+    }
+
+    public long insertCourse(Course course){
+
+        long id = -1;
+
+        //we want to write to database so we choose getWritableDatabase()
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Config.COURSE_TITLE, course.getTitle());
+        contentValues.put(Config.COURSE_CODE, course.getCode());
+
+        try {
+            id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
+        }catch(SQLException e){
+            Log.d(TAG,"Exception: " +e.getMessage());
+            Toast.makeText(context,"Operation Failed: " +e.getMessage(), Toast.LENGTH_LONG).show();
+
+        } finally{
+            db.close();
+        }
+        return id;
+    }
+
+
+
+
 }
 

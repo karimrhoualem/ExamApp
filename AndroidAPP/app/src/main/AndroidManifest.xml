@@ -31,11 +31,16 @@
             android:value="true" />
 
         <activity
-            android:name="edu.coen390.androidapp.CourseActivity"
+            android:name="edu.coen390.androidapp.View.CourseActivity"
             android:label="@string/title_activity_course">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="edu.coen390.androidapp.View.LoginActivity" />
+
+            >
         </activity>
-        <activity android:name="edu.coen390.androidapp.FaceRecognition" />
-        <activity android:name="edu.coen390.androidapp.MainActivity">
+        <activity android:name="edu.coen390.androidapp.View.LiveFeedActivity" />
+        <activity android:name="edu.coen390.androidapp.View.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

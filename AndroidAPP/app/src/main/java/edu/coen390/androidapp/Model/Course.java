@@ -10,12 +10,15 @@ public class Course {
 
 
         private long id;
+        private long invigilator_id;
         private String title;
         private String code;
 
 
-        public Course(long id, String title, String code) {
+
+        public Course(long id, long invigilator_id, String title, String code) {
             this.id = id;
+            this.invigilator_id = invigilator_id;
             this.title = title;
             this.code = code;
 
@@ -44,6 +47,14 @@ public class Course {
 
         public void setId(long id) {
             this.id = id;
+        }
+
+        public long getInvigilator_id() {
+            return invigilator_id;
+        }
+
+        public void setInvigilator_id(long invigilator_id) {
+            this.invigilator_id = invigilator_id;
         }
 
         public String getTitle() {
