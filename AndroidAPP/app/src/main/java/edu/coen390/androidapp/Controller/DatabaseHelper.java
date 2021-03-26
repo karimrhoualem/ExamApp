@@ -3,15 +3,16 @@ package edu.coen390.androidapp.Controller;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import edu.coen390.androidapp.Model.User;
 
 /**
  * Database helper class serves as the controller and main API through which
@@ -147,5 +148,108 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] arr = str.split(strSeparator);
         return arr;
     }
+
+    /**
+     * Add Invigilator to Data Base
+     * @param user The invigilator to be added
+     */
+    public void addInvigilator(User user){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Create content values that hold information
+        long userId = -1;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.INVIGILATOR_FIRST_NAME, user.getFirstName());
+        contentValues.put(Config.INVIGILATOR_LAST_NAME, user.getLastName());
+        contentValues.put(Config.INVIGILATOR_USERNAME, user.getUserName());
+        contentValues.put(Config.INVIGILATOR_PASSWORD, user.getPassword());
+
+        // Insert row - Throws Exception
+        try{
+             userId = db.insertOrThrow(Config.INVIGILATOR_TABLE_NAME, null, contentValues);
+
+        }catch (SQLException e ){
+            Log.d(TAG, "Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            db.close();
+        }
+    }
+
+    /**
+     * Verify if User (Invigilator) is in the Data Base.
+     * @param UserName The username string to be verified.
+     * @param Password The password string to be verified.
+     * @return True if the invigilator is in the data base or false if he/she is not
+     */
+    public boolean verifyInvigilator(String UserName, String Password){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Array of columns to fetch
+        String[] columnInvigilatorTable = {
+                Config.INVIGILATOR_ID
+        };
+
+        // Selecting the desired criteria
+        String selection = Config.INVIGILATOR_USERNAME + " = ?" + " AND " + Config.INVIGILATOR_PASSWORD + " = ?";
+
+        // Selection arguments
+        String[] selectionArg = {UserName, Password};
+
+        // Query user table
+        Cursor cursor = db.query(Config.INVIGILATOR_TABLE_NAME,
+                columnInvigilatorTable,
+                selection,
+                selectionArg,
+                null,
+                null,
+                null);
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        if (cursorCount > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get a particular invigilator from the data base.
+     * @param userID The id of the invigilator to be recovered
+     * @return The invigilator that was recovered from the data base
+     */
+    public User getInvigilator(long userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Selecting desired criteria
+        String selectQuery = "SELECT * " + " FROM " + Config.INVIGILATOR_TABLE_NAME + " WHERE " + Config.INVIGILATOR_ID + " = " + userID;
+
+        try {
+             cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.INVIGILATOR_ID));
+                    String firstName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_LAST_NAME));
+                    String userName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_USERNAME));
+                    String password = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_PASSWORD));
+
+                    return new User(id, firstName, lastName, userName, password);
+                }
+             }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    return new User();
+    }
+
 }
 
