@@ -1,27 +1,22 @@
 package edu.coen390.androidapp.Model;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Random;
+import java.util.Objects;
 
 public class Seat {
-    int totalSeats;
-    int seatNumber;
-    List<Integer> randomNumbers;
+    int totalSeatsNumber;
+    List<Integer> seats;
     Map<Integer,OCCUPANCY> seatState;
 
-    public Seat(int totalSeats) {
-        this.totalSeats = totalSeats;
-        randomNumbers = new LinkedList<>();
+    public Seat(int totalSeatsNumber) {
+        this.totalSeatsNumber = totalSeatsNumber;
+        seats = new LinkedList<>();
         seatState = new Hashtable<>();
+        generateSeatNumbers();
     }
 
     enum OCCUPANCY {
@@ -32,25 +27,58 @@ public class Seat {
     public void generateSeatNumbers() {
        fillRandomNumbers();
        shuffle();
-       setSeatState();
+       initializeSeats();
     }
 
     public void fillRandomNumbers(){
-        for(int i = 0; i < totalSeats; i++){
-            randomNumbers.add(i+1);
+        for(int i = 0; i < totalSeatsNumber; i++){
+            seats.add(i+1);
         }
     }
 
     public void shuffle(){
-        Collections.shuffle(Collections.singletonList(randomNumbers));
+        Collections.shuffle(seats);
     }
 
-    public void setSeatState(){
-        for(int num: randomNumbers){
+    public void initializeSeats(){
+        for(int num: seats){
             seatState.put(num,OCCUPANCY.EMPTY);
         }
     }
 
+    public void setSeatOccupied(int seatNumber){
+        seatState.replace(seatNumber, OCCUPANCY.OCCUPIED);
+    }
+
+    public void setSeatEmpty(int seatNumber){
+        seatState.replace(seatNumber, OCCUPANCY.OCCUPIED);
+    }
+
+    public int getNextSeat(){
+       if(!isFull()){
+           for(int seat: seats){
+               if(!isOccupied(seat)){
+                   setSeatOccupied(seat);
+                   return seat;
+               }
+           }
+       }
+       return -1;
+    }
+
+    public boolean isOccupied(int seatNumber){
+       if(!seatState.isEmpty())
+           return !Objects.equals(seatState.get(seatNumber), OCCUPANCY.EMPTY);
+        return true;
+    }
+
+    public boolean isFull(){
+        int totalOccupied = 0;
+        for(int seat: seats)
+            if (seatState.get(seat) == OCCUPANCY.OCCUPIED)
+                totalOccupied++;
+        return totalOccupied == totalSeatsNumber;
+    }
 
 
 }
