@@ -3,14 +3,18 @@ package edu.coen390.androidapp.View;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -54,9 +58,10 @@ public class LiveFeedActivity extends AppCompatActivity {
     private Course course;
     private TextView studentName;
     private TextView studentID;
-    private TextView successMessage;
     private TextView seatNumber;
     private ImageView imageView;
+    private Button backButton;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +70,12 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         studentName = findViewById(R.id.studentNameTextView);
         studentID = findViewById(R.id.studentIDTextView);
-        successMessage = findViewById(R.id.succesMessageTextView);
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
+        backButton = findViewById(R.id.backButton);
+        saveButton = findViewById(R.id.saveButton);
+
+        setButtonListeners();
 
         // Receive Course object when CourseActivity intent begins LiveFeedActivity
         // For now, just using a manually created Course object
@@ -78,6 +86,25 @@ public class LiveFeedActivity extends AppCompatActivity {
         Log.d(TAG,"after getIntent "+ course.toString());
 
         dbHelper = new DatabaseHelper(this);
+    }
+
+    private void setButtonListeners() {
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                LiveFeedActivity.this.finish();
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TODO: Save student information and seat number in a new DB table for the current course.
+
+                // TODO: Display a toast that shows successful save.
+
+                // TODO: Return to previous activity.
+                //LiveFeedActivity.this.finish();
+            }
+        });
     }
 
     @Override
@@ -130,11 +157,15 @@ public class LiveFeedActivity extends AppCompatActivity {
                 studentID.setText(Integer.toString(student.getID()));
                 Drawable drawable = ContextCompat.getDrawable(this, R.drawable.success);
                 imageView.setImageDrawable(drawable);
+                saveButton.setEnabled(true);
+                saveButton.setClickable(true);
             } else {
                 studentName.setText("N/A");
                 studentID.setText("N/A");
                 Drawable drawable = ContextCompat.getDrawable(this, R.drawable.failure);
                 imageView.setImageDrawable(drawable);
+                saveButton.setEnabled(false);
+                saveButton.setClickable(false);
             }
 
         } catch (Exception e) {

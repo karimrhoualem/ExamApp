@@ -9,12 +9,10 @@
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="416dp"
-        android:layout_height="303dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="411dp"
+        android:layout_height="327dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toTopOf="@+id/studentName_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,38 +21,10 @@
     </WebView>
 
     <LinearLayout
-        android:id="@+id/confirmation_linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="12dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seatNumber_linearLayout">
-
-        <ImageView
-            android:id="@+id/successMessageImageView"
-            android:layout_width="match_parent"
-            android:layout_height="79dp" />
-
-        <TextView
-            android:id="@+id/succesMessageTextView"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:gravity="center" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/studentName_linearLayout"
-        android:layout_width="418dp"
+        android:layout_width="410dp"
         android:layout_height="79dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="2dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/studentID_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,8 +37,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="Student Name:"
-            tools:layout_editor_absoluteX="4dp"
-            tools:layout_editor_absoluteY="326dp" />
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="305dp" />
 
         <TextView
             android:id="@+id/studentNameTextView"
@@ -80,10 +50,9 @@
 
     <LinearLayout
         android:id="@+id/studentID_linearLayout"
-        android:layout_width="418dp"
+        android:layout_width="409dp"
         android:layout_height="74dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="1dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/seatNumber_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,8 +65,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="Student ID:"
-            tools:layout_editor_absoluteX="3dp"
-            tools:layout_editor_absoluteY="410dp" />
+            tools:layout_editor_absoluteX="-4dp"
+            tools:layout_editor_absoluteY="386dp" />
 
         <TextView
             android:id="@+id/studentIDTextView"
@@ -109,13 +78,10 @@
 
     <LinearLayout
         android:id="@+id/seatNumber_linearLayout"
-        android:layout_width="418dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="6dp"
+        android:layout_width="410dp"
+        android:layout_height="70dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/confirmation_linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/confirmationLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/studentID_linearLayout">
@@ -125,13 +91,55 @@
             android:layout_width="191dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Seat Number:" />
+            android:text="Seat Number:"
+            tools:layout_editor_absoluteX="-2dp"
+            tools:layout_editor_absoluteY="461dp" />
 
         <TextView
             android:id="@+id/seatNumberTextView"
-            android:layout_width="220dp"
-            android:layout_height="80dp"
+            android:layout_width="219dp"
+            android:layout_height="match_parent"
             android:gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/confirmationLinearLayout"
+        android:layout_width="393dp"
+        android:layout_height="99dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seatNumber_linearLayout">
+
+        <ImageView
+            android:id="@+id/successMessageImageView"
+            android:layout_width="390dp"
+            android:layout_height="60dp" />
+
+        <LinearLayout
+            android:id="@+id/cancelSaveLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BACK" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="187dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="save" />
+        </LinearLayout>
     </LinearLayout>
 
 
