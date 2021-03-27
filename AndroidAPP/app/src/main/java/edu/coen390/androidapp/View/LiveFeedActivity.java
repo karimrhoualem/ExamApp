@@ -20,9 +20,9 @@ public class LiveFeedActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     private static final String TAG = "LiveFeedActivity";
 
-
+    
     @VisibleForTesting
-    protected static final String WEB_FORM_URL = "http://www.google.com";
+    protected static final String WEB_FORM_URL = "http://google.com";
 
     WebView myWebView;
 
