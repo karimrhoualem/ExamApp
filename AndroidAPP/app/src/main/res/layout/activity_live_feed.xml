@@ -9,14 +9,138 @@
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="406dp"
-        android:layout_height="351dp"
+        android:layout_width="411dp"
+        android:layout_height="327dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/studentName_linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </WebView>
+
+    <LinearLayout
+        android:id="@+id/studentName_linearLayout"
+        android:layout_width="410dp"
+        android:layout_height="79dp"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/studentID_linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/webView">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="187dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Student Name:"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="305dp" />
+
+        <TextView
+            android:id="@+id/studentNameTextView"
+            android:layout_width="226dp"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/studentID_linearLayout"
+        android:layout_width="409dp"
+        android:layout_height="74dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/seatNumber_linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentName_linearLayout">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="188dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Student ID:"
+            tools:layout_editor_absoluteX="-4dp"
+            tools:layout_editor_absoluteY="386dp" />
+
+        <TextView
+            android:id="@+id/studentIDTextView"
+            android:layout_width="225dp"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seatNumber_linearLayout"
+        android:layout_width="410dp"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/confirmationLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentID_linearLayout">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="191dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Seat Number:"
+            tools:layout_editor_absoluteX="-2dp"
+            tools:layout_editor_absoluteY="461dp" />
+
+        <TextView
+            android:id="@+id/seatNumberTextView"
+            android:layout_width="219dp"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/confirmationLinearLayout"
+        android:layout_width="393dp"
+        android:layout_height="99dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.002" />
+        app:layout_constraintTop_toBottomOf="@+id/seatNumber_linearLayout">
+
+        <ImageView
+            android:id="@+id/successMessageImageView"
+            android:layout_width="390dp"
+            android:layout_height="60dp" />
+
+        <LinearLayout
+            android:id="@+id/cancelSaveLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BACK" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="187dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="save" />
+        </LinearLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

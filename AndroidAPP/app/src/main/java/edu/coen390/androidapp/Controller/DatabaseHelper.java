@@ -5,15 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
+import com.example.examapp.R;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.User;
-
+import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.Student;
 
 /**
  * Database helper class serves as the controller and main API through which
@@ -116,6 +121,71 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //To be handled in the event that the database version ever needs to be updated.
+    }
+
+    public long insertStudent(Student student) {
+        long id = -1;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.STUDENT_ID, student.getID());
+        contentValues.put(Config.STUDENT_COURSE_ID, convertArrayToString(student.getCourses()));
+        contentValues.put(Config.STUDENT_FIRST_NAME, student.getFirstName());
+        contentValues.put(Config.STUDENT_LAST_NAME, student.getLastName());
+
+        try {
+            id = db.insertOrThrow(Config.STUDENTS_TABLE_NAME, null, contentValues);
+        }
+        catch(SQLiteException e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation Failed: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        finally {
+            db.close();
+        }
+
+        return id;
+    }
+
+    public boolean isStudentRegisteredInCourse(Student student, Course course) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String selectQuery = "SELECT * " + " FROM " + Config.STUDENTS_TABLE_NAME
+                + " WHERE " + Config.STUDENT_ID
+                + " = " + student.getID();
+        Log.d(TAG, selectQuery);
+
+        try {
+            cursor = db.rawQuery(selectQuery, null);
+
+            if(cursor != null)
+            {
+                if(cursor.moveToFirst())
+                {
+                    String courses = cursor.getString(cursor.getColumnIndex(Config.STUDENT_COURSE_ID));
+                    String[] coursesArray = convertStringToArray(courses);
+
+                    for (String c : coursesArray) {
+                        if (c.equals(course.getCode())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        catch(Exception e){
+            Log.d(TAG, "Exception: " + e.getMessage());
+        }
+        finally {
+            if(cursor != null)
+                cursor.close();
+
+            db.close();
+        }
+
+        return false;
     }
 
     public void testMethod() {

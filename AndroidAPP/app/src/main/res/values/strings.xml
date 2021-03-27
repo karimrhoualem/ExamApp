@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ExamApp</string>
+    <string name="JSON_student_ID">ID</string>
+    <string name="JSON_student_name">Name</string>
     <string name="title_activity_course">CourseActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in
