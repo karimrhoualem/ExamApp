@@ -35,9 +35,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "DB helper object created.");
 
-        dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391"));
-        dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331"));
-        dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313"));
+        dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391", 100));
+        dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331", 50));
+        dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313", 40));
 
 
         newInvigilator();
@@ -47,22 +47,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupUI (){
 
-        loginUserName = (EditText) findViewById(R.id.UserName);
-        loginPassword = (EditText) findViewById(R.id.Password);
-        login = (Button) findViewById(R.id.Login);
+        loginUserName = findViewById(R.id.UserName);
+        loginPassword = findViewById(R.id.Password);
+        login = findViewById(R.id.Login);
     }
 
     private void loginUser(){
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString() , loginPassword.getText().toString());
-                if (verification){
-                    openCourseActivity();
-                }
-                else{
-                    Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
-                }
+        login.setOnClickListener(v -> {
+            boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString() , loginPassword.getText().toString());
+            if (verification){
+                openCourseActivity();
+            }
+            else{
+                Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
             }
         });
     }

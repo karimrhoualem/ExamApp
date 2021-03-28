@@ -1,5 +1,7 @@
 package edu.coen390.androidapp.Model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 public class Course implements Serializable {
@@ -7,6 +9,17 @@ public class Course implements Serializable {
     private long invigilator_id;
     private String title;
     private String code;
+    private int numOfStudents;
+    private Seat seats;
+
+    public Course(long id, long invigilator_id, String title, String code, int numOfStudents) {
+        this.id = id;
+        this.invigilator_id = invigilator_id;
+        this.title = title;
+        this.code = code;
+        this.numOfStudents = numOfStudents;
+        seats = new Seat(numOfStudents);
+    }
 
     public Course(long id, long invigilator_id, String title, String code) {
         this.id = id;
@@ -27,6 +40,7 @@ public class Course implements Serializable {
     }
 
     //check this
+    @NotNull
     @Override
     public String toString() {
         return title + " " + code;
@@ -62,5 +76,21 @@ public class Course implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Seat getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Seat seats) {
+        this.seats = seats;
+    }
+
+    public int getNumOfStudents() {
+        return numOfStudents;
+    }
+
+    public void setNumOfStudents(int numOfStudents) {
+        this.numOfStudents = numOfStudents;
     }
 }

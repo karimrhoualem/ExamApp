@@ -64,18 +64,16 @@ public class CourseActivity extends AppCompatActivity {
         loadListView(invigilator.getId());
 
 
-        courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        courseListView.setOnItemClickListener((parent, view, position, id) -> {
 
-                Intent intent = new Intent(view.getContext(), VerificationModeActivity.class);
-                Course currentCourse = new Course(courses.get(position).getId(),
-                        courses.get(position).getInvigilator_id(),
-                        courses.get(position).getTitle(),
-                        courses.get(position).getCode());
-                intent.putExtra(VerificationModeActivity.COURSE_INTENT, currentCourse);
-                startActivity(intent);
-            }
+            Intent intent1 = new Intent(view.getContext(), VerificationModeActivity.class);
+            Course currentCourse = new Course(courses.get(position).getId(),
+                    courses.get(position).getInvigilator_id(),
+                    courses.get(position).getTitle(),
+                    courses.get(position).getCode(),
+                    courses.get(position).getNumOfStudents());
+            intent1.putExtra(VerificationModeActivity.COURSE_INTENT, currentCourse);
+            startActivity(intent1);
         });
 
     }

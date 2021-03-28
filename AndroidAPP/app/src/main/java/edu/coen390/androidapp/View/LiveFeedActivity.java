@@ -89,21 +89,15 @@ public class LiveFeedActivity extends AppCompatActivity {
     }
 
     private void setButtonListeners() {
-        backButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                LiveFeedActivity.this.finish();
-            }
-        });
+        backButton.setOnClickListener(v -> LiveFeedActivity.this.finish());
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // TODO: Save student information and seat number in a new DB table for the current course.
+        saveButton.setOnClickListener(v -> {
+            // TODO: Save student information and seat number in a new DB table for the current course.
 
-                // TODO: Display a toast that shows successful save.
+            // TODO: Display a toast that shows successful save.
 
-                // TODO: Return to previous activity.
-                //LiveFeedActivity.this.finish();
-            }
+            // TODO: Return to previous activity.
+            //LiveFeedActivity.this.finish();
         });
     }
 
@@ -127,15 +121,11 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         try {
             // Get student information via an asynchronous JSON http request
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try  {
-                        studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            Thread thread = new Thread(() -> {
+                try  {
+                    studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
             thread.start();
@@ -145,11 +135,25 @@ public class LiveFeedActivity extends AppCompatActivity {
 
             // Search for the student in the Students DB table and verify whether they are enrolled in this course.
             boolean isStudentConfirmed;
+
             if (student != null) {
                 isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
             } else {
                 isStudentConfirmed = false;
             }
+
+            boolean isStudentSeated;
+            String studentSeat = "Not Assigned";
+           if(isStudentConfirmed){
+                dbHelper.insertStudentSeat(student,course);
+                isStudentSeated = dbHelper.isStudentSeated(student,course);
+                if(isStudentSeated){
+                    studentSeat = Integer.toString(dbHelper.getStudentSeat(student,course));
+                }
+            }else{
+                isStudentSeated = false;
+            }
+
 
             // Display student information and confirmation status
             if (isStudentConfirmed) {
@@ -157,8 +161,6 @@ public class LiveFeedActivity extends AppCompatActivity {
                 studentID.setText(Integer.toString(student.getID()));
                 Drawable drawable = ContextCompat.getDrawable(this, R.drawable.success);
                 imageView.setImageDrawable(drawable);
-                saveButton.setEnabled(true);
-                saveButton.setClickable(true);
             } else {
                 studentName.setText("N/A");
                 studentID.setText("N/A");
@@ -168,13 +170,19 @@ public class LiveFeedActivity extends AppCompatActivity {
                 saveButton.setClickable(false);
             }
 
+            if(isStudentSeated){
+                seatNumber.setText(studentSeat);
+                saveButton.setEnabled(true);
+                saveButton.setClickable(true);
+            }
+
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
     }
 
     private void launchWebView(){
-        myWebView = (WebView) findViewById(R.id.webView);
+        myWebView = findViewById(R.id.webView);
 
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
