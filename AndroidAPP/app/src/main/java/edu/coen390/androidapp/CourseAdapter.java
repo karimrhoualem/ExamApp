@@ -15,11 +15,11 @@ import edu.coen390.androidapp.Model.Course;
 
 public class CourseAdapter extends BaseAdapter {
 
-    private TextView courseTextView;
-    private List<Course> courses;
     Context mContext;
+    private TextView courseTextView;
+    private final List<Course> courses;
 
-    public CourseAdapter(Context context, List<Course> courses){
+    public CourseAdapter(Context context, List<Course> courses) {
         this.mContext = context;
         this.courses = courses;
     }
@@ -44,8 +44,8 @@ public class CourseAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Course course = (Course) getItem(position);
         View listItem = convertView;
-        if(listItem == null){
-            listItem = LayoutInflater.from(mContext).inflate(R.layout.course_item,parent,false);
+        if (listItem == null) {
+            listItem = LayoutInflater.from(mContext).inflate(R.layout.course_item, parent, false);
         }
 
 

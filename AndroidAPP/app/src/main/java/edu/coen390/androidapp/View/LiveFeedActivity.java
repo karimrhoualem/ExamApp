@@ -1,57 +1,43 @@
 package edu.coen390.androidapp.View;
 
-import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.example.examapp.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.IOException;
+
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Student;
-import static android.app.PendingIntent.getActivity;
-import edu.coen390.androidapp.Model.Course;
 
 
 public class LiveFeedActivity extends AppCompatActivity {
 
-    /**
-     * Tag used for logger.
-     */
-    private static final String TAG = "LiveFeedActivity";
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
-
-
     //TODO: change URLs
     @VisibleForTesting
     public static final String WEB_FORM_URL = "http://192.168.2.135:5000/";
     public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/";
-
+    /**
+     * Tag used for logger.
+     */
+    private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
     private DatabaseHelper dbHelper;
@@ -81,9 +67,9 @@ public class LiveFeedActivity extends AppCompatActivity {
         // For now, just using a manually created Course object
         // https://stackoverflow.com/a/7827593/12044281
         Intent intent = getIntent();
-        course = (Course)intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
+        course = (Course) intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
 
-        Log.d(TAG,"after getIntent "+ course.toString());
+        Log.d(TAG, "after getIntent " + course.toString());
 
         dbHelper = new DatabaseHelper(this);
     }
@@ -113,8 +99,7 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         if (result == -1) {
             Log.d(TAG, "Error inserting student into DB table.");
-        }
-        else {
+        } else {
             Log.d(TAG, "Student successfully inserted into DB: \n"
                     + me.toString());
         }
@@ -122,7 +107,7 @@ public class LiveFeedActivity extends AppCompatActivity {
         try {
             // Get student information via an asynchronous JSON http request
             Thread thread = new Thread(() -> {
-                try  {
+                try {
                     studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -144,13 +129,13 @@ public class LiveFeedActivity extends AppCompatActivity {
 
             boolean isStudentSeated;
             String studentSeat = "Not Assigned";
-           if(isStudentConfirmed){
-                dbHelper.insertStudentSeat(student,course);
-                isStudentSeated = dbHelper.isStudentSeated(student,course);
-                if(isStudentSeated){
-                    studentSeat = Integer.toString(dbHelper.getStudentSeat(student,course));
+            if (isStudentConfirmed) {
+                dbHelper.insertStudentSeat(student, course);
+                isStudentSeated = dbHelper.isStudentSeated(student, course);
+                if (isStudentSeated) {
+                    studentSeat = Integer.toString(dbHelper.getStudentSeat(student, course));
                 }
-            }else{
+            } else {
                 isStudentSeated = false;
             }
 
@@ -170,7 +155,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                 saveButton.setClickable(false);
             }
 
-            if(isStudentSeated){
+            if (isStudentSeated) {
                 seatNumber.setText(studentSeat);
                 saveButton.setEnabled(true);
                 saveButton.setClickable(true);
@@ -181,7 +166,7 @@ public class LiveFeedActivity extends AppCompatActivity {
         }
     }
 
-    private void launchWebView(){
+    private void launchWebView() {
         myWebView = findViewById(R.id.webView);
 
         WebSettings webSettings = myWebView.getSettings();
@@ -205,8 +190,7 @@ public class LiveFeedActivity extends AppCompatActivity {
             String studentLastName = studentInformation.getString("lastName");
 
             return new Student(studentID, null, studentFirstName, studentLastName);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

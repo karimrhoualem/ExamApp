@@ -28,7 +28,7 @@ public class Course implements Serializable {
         this.code = code;
     }
 
-    public Course(long invigilator_id, String title, String code){
+    public Course(long invigilator_id, String title, String code) {
         this.invigilator_id = invigilator_id;
         this.title = title;
         this.code = code;

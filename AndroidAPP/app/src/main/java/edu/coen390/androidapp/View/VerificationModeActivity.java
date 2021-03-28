@@ -1,12 +1,11 @@
 package edu.coen390.androidapp.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.examapp.R;
 
@@ -36,8 +35,8 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
         cardScannerButton = findViewById(R.id.cardScannerButton);
 
         Intent intent = getIntent();
-        course = (Course)intent.getSerializableExtra(COURSE_INTENT);
-        Log.d(TAG,"After getIntent "+ course.toString());
+        course = (Course) intent.getSerializableExtra(COURSE_INTENT);
+        Log.d(TAG, "After getIntent " + course.toString());
         createExamTable();
 
         setupUI();
@@ -55,7 +54,7 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
         });
     }
 
-    private void createExamTable(){
+    private void createExamTable() {
 
         String courseExamTableName = course.getCode().
                 replaceAll("\\s+", "") + "Exam";

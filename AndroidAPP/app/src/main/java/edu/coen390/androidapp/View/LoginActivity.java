@@ -1,19 +1,20 @@
 package edu.coen390.androidapp.View;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.examapp.R;
+
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.User;
-
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -35,9 +36,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "DB helper object created.");
 
-        dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391", 100));
-        dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331", 50));
-        dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313", 40));
+        dbHelper.insertCourse(new Course(-1, 1, "Numerical Methods", "ENGR 391", 100));
+        dbHelper.insertCourse(new Course(-1, 2, "Fundamentals of Electrical Power", "ELEC 331", 50));
+        dbHelper.insertCourse(new Course(-1, 1, "Digital Systems Design II", "COEN 313", 40));
 
 
         newInvigilator();
@@ -45,26 +46,25 @@ public class LoginActivity extends AppCompatActivity {
         loginUser();
     }
 
-    private void setupUI (){
+    private void setupUI() {
 
         loginUserName = findViewById(R.id.UserName);
         loginPassword = findViewById(R.id.Password);
         login = findViewById(R.id.Login);
     }
 
-    private void loginUser(){
+    private void loginUser() {
         login.setOnClickListener(v -> {
-            boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString() , loginPassword.getText().toString());
-            if (verification){
+            boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString(), loginPassword.getText().toString());
+            if (verification) {
                 openCourseActivity();
-            }
-            else{
+            } else {
                 Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void newInvigilator(){
+    private void newInvigilator() {
         String firstNameP1 = "John";
         String lastNameP1 = "Doe";
         String userNameP1 = "j_doe";
@@ -91,9 +91,10 @@ public class LoginActivity extends AppCompatActivity {
 
         dbHelper.close();
     }
+
     private void openCourseActivity() {
         int id = 1;
-        Intent intent = new Intent (this, CourseActivity.class);
+        Intent intent = new Intent(this, CourseActivity.class);
         //intent.putExtra("invigilator_id",id);
         //Log.d(TAG,"after putExtra" + id);
         User user = dbHelper.getInvigilator(1);

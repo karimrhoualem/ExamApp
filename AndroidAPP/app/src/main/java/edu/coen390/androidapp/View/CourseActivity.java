@@ -1,15 +1,11 @@
 package edu.coen390.androidapp.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.examapp.R;
 
@@ -39,7 +35,7 @@ public class CourseActivity extends AppCompatActivity {
         setupUI();
     }
 
-    private void setupUI () {
+    private void setupUI() {
 
         dbHelper = new DatabaseHelper(this);
         courseListView = findViewById(R.id.courseListView);
@@ -52,8 +48,6 @@ public class CourseActivity extends AppCompatActivity {
         Log.d(TAG,"after getLongEXTRa " + invigilator_id);
         userNameTextView.setText("User name"); //this will be replaced with username of invigilator that is logged in
   */
-
-
 
 
         Intent intent = getIntent();
@@ -81,12 +75,11 @@ public class CourseActivity extends AppCompatActivity {
     private void loadListView(long invigilatorID) {
 
         courses = dbHelper.getCourses(invigilatorID);
-        CourseAdapter adapter = new CourseAdapter(CourseActivity.this,courses);
+        CourseAdapter adapter = new CourseAdapter(CourseActivity.this, courses);
         courseListView.setAdapter(adapter);
 
 
     }
-
 
 
 }
