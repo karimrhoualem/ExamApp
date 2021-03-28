@@ -69,7 +69,10 @@ public class CourseActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(view.getContext(), VerificationModeActivity.class);
-                Course currentCourse = new Course(courses.get(position).getId(),courses.get(position).getInvigilator_id(),courses.get(position).getTitle(),courses.get(position).getCode());
+                Course currentCourse = new Course(courses.get(position).getId(),
+                        courses.get(position).getInvigilator_id(),
+                        courses.get(position).getTitle(),
+                        courses.get(position).getCode());
                 intent.putExtra(VerificationModeActivity.COURSE_INTENT, currentCourse);
                 startActivity(intent);
             }

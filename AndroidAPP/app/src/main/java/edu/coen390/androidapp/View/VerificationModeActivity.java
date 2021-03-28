@@ -12,6 +12,7 @@ import com.example.examapp.R;
 
 import java.io.Serializable;
 
+import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 
 public class VerificationModeActivity extends AppCompatActivity implements Serializable {
@@ -20,26 +21,31 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
     private static final String TAG = "VerificationMode";
 
     private Course course;
-    private Button facialRecognitionButtion;
+    private Button facialRecognitionButton;
     private Button cardScannerButton;
+
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification_mode);
 
-        facialRecognitionButtion = findViewById(R.id.facialRecognitionButton);
+        facialRecognitionButton = findViewById(R.id.facialRecognitionButton);
         cardScannerButton = findViewById(R.id.cardScannerButton);
 
         Intent intent = getIntent();
         course = (Course)intent.getSerializableExtra(COURSE_INTENT);
         Log.d(TAG,"After getIntent "+ course.toString());
 
+        dbHelper = new DatabaseHelper(this);
+        dbHelper.createExamTable(course);
+
         setupUI();
     }
 
     private void setupUI() {
-        facialRecognitionButtion.setOnClickListener(new View.OnClickListener() {
+        facialRecognitionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(VerificationModeActivity.this, LiveFeedActivity.class);
                 intent.putExtra(COURSE_INTENT, course);

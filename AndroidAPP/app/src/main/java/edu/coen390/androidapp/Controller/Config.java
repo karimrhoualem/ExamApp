@@ -27,4 +27,11 @@ public class Config {
     public static final String STUDENT_LAST_NAME = "StudentLastName";
     public static final String STUDENT_USERNAME = "StudentUsername";
     public static final String STUDENT_PASSWORD = "StudentPassword";
+
+    public static final String EXAM_TABLE_NAME = "Exam";
+    public static final String EXAM_ID = "ExamID";
+    public static final String EXAM_COURSE_ID = "ExamCourseID";
+    public static final String EXAM_STUDENT_ID = "ExamStudentID";
+    public static final String EXAM_STUDENT_SEAT = "ExamStudentSeat";
+
 }
