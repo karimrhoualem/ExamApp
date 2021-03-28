@@ -51,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private Context context;
 
+
     /**
      * DatabaseHelper constructor.
      * @param context The context from the calling activity.
@@ -106,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ")";
         Log.d(TAG, "Table created with this query: " + CREATE_STUDENT_TABLE);
 
+
         //Create the tables.
         sqLiteDatabase.execSQL(CREATE_INVIGILATOR_TABLE);
         sqLiteDatabase.execSQL(CREATE_COURSE_TABLE);
@@ -147,6 +149,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
+
+
 
     public boolean isStudentRegisteredInCourse(Student student, Course course) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -399,6 +403,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     return new User();
     }
 
+    /**
+     * Create an Exam table for a particular course
+     * @param course The course conducting an examination
+     */
+    public void createExamTable(Course course){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String CREATE_EXAM_TABLE = "CREATE TABLE IF NOT EXISTS " + course.getCode().replaceAll("\\s+", "") + "Exam" + " ("
+                + Config.EXAM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Config.EXAM_COURSE_ID+ " TEXT, "
+                + Config.EXAM_STUDENT_ID+ " INTEGER, "
+                + Config.EXAM_STUDENT_SEAT  + " TEXT, "
+                + "FOREIGN KEY" + " (" + Config.EXAM_COURSE_ID +") "
+                + "REFERENCES " + Config.COURSE_TABLE_NAME + " ("
+                + Config.COURSE_ID + ") "
+                + "FOREIGN KEY" + " (" + Config.EXAM_STUDENT_ID +") "
+                + "REFERENCES " + Config.STUDENTS_TABLE_NAME + " ("
+                + Config.STUDENT_ID + ")"
+                + ")";
+        Log.d(TAG, "Table created with this query: " + CREATE_EXAM_TABLE);
+
+        sqLiteDatabase.execSQL(CREATE_EXAM_TABLE);
+    }
 
 }
 
