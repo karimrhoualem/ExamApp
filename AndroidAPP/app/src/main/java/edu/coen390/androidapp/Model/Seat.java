@@ -1,5 +1,6 @@
 package edu.coen390.androidapp.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class Seat {
+public class Seat implements Serializable {
     int totalSeatsNumber;
     List<Integer> seats;
     Map<Integer,OCCUPANCY> seatState;
