@@ -90,7 +90,7 @@ def load_face_extra_dataset():
 load_face_info()
 
 # faces from the labelled faces in the wild dataset, to make the dataset larger
-load_face_extra_dataset()
+# load_face_extra_dataset()
 
 stop_time = timeit.default_timer()
 print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))

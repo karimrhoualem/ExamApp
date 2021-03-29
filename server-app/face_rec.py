@@ -24,7 +24,7 @@ FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
 
-FACE_DISTANCE_THRESHOLD = 20
+FACE_DISTANCE_THRESHOLD = 40
 
 RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
 
@@ -198,7 +198,7 @@ def recognize_face(frameCount):
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                     if best_match_index < FACE_DISTANCE_THRESHOLD:
-                        print("Matched {name} with distance {dist} confidence {conf}".format(name=name, dist=best_match_index, conf=best_match_confidence))
+                        print("Matched {name} with distance {dist} confidence {conf}%".format(name=name, dist=best_match_index, conf=best_match_confidence))
                     else:
                         print("Ignoring Match {name} with distance {dist} below threshold {thresh}".format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
                         name = "Unknown"
