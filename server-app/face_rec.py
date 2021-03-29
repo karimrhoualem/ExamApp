@@ -196,11 +196,11 @@ def recognize_face(frameCount):
                 best_match_index = np.argmin(face_distances)
                 best_match_confidence = confidence_from_distance(best_match_index)
                 if matches[best_match_index]:
+                    name = known_face_names[best_match_index]
                     if best_match_index < FACE_DISTANCE_THRESHOLD:
-                        name = known_face_names[best_match_index]
                         print("Matched {name} with distance {dist} confidence {conf}".format(name=name, dist=best_match_index, conf=best_match_confidence))
                     else:
-                        print("Ignoring Match {name} with distance {dist} as conf {conf} below threshold {thresh}".format(name=name, dist=best_match_index, conf=best_match_confidence, thresh=FACE_DISTANCE_THRESHOLD))
+                        print("Ignoring Match {name} with distance {dist} below threshold {thresh}".format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
 
                 face_names.append(name)
 
