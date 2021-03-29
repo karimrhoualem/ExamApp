@@ -24,6 +24,8 @@ FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
 
+FACE_DISTANCE_THRESHOLD = 20
+
 RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
 
 
@@ -144,6 +146,11 @@ def load_face_info():
 load_face_info()
 print(known_face_names)
 
+def confidence_from_distance(dist):
+    conf = (FACE_DISTANCE_THRESHOLD - dist) / FACE_DISTANCE_THRESHOLD * 100
+    #conf = (100-dist)
+    return conf
+
 
 def recognize_face(frameCount):
     # Initialize some variables
@@ -186,15 +193,17 @@ def recognize_face(frameCount):
                 # Or instead, use the known face with the smallest distance to the new face
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                 best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
+                best_match_confidence = confidence_from_distance(best_match_index)
+                if matches[best_match_index] and best_match_index < FACE_DISTANCE_THRESHOLD:
                     name = known_face_names[best_match_index]
+                    print("Matched {name} with distance {dist} confidence {conf}, {num} other matches".format(name=name, dist=best_match_index, conf=best_match_confidence, num=len(face_distances)))
 
                 face_names.append(name)
 
                 if name == "Unknown":
-                    recognized_person = {"name": "Unknown", "ID": ""}
+                    recognized_person = {"name": "Unknown", "ID": "", "conf": 0}
                 else:
-                    recognized_person = {"name": name, "ID": json_face_info[name]}
+                    recognized_person = {"name": name, "ID": json_face_info[name], "conf": best_match_confidence}
 
         #process_this_frame = not process_this_frame
         process_this_frame = total % 4 # every 4th frame instead of every 2nd
@@ -215,6 +224,10 @@ def recognize_face(frameCount):
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+
+                # Put the confidence level in the top left
+                #cv2.rectangle(frame, (0,0), ())
+                cv2.putText(frame, recognized_person['conf'], (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
 
         total += 1
 
