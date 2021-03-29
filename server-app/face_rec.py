@@ -192,11 +192,15 @@ def recognize_face(frameCount):
 
                 # Or instead, use the known face with the smallest distance to the new face
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+                # NOTE: we get the distance to EVERY face in the encodings
                 best_match_index = np.argmin(face_distances)
                 best_match_confidence = confidence_from_distance(best_match_index)
-                if matches[best_match_index] and best_match_index < FACE_DISTANCE_THRESHOLD:
-                    name = known_face_names[best_match_index]
-                    print("Matched {name} with distance {dist} confidence {conf}, {num} other matches".format(name=name, dist=best_match_index, conf=best_match_confidence, num=len(face_distances)))
+                if matches[best_match_index]:
+                    if best_match_index < FACE_DISTANCE_THRESHOLD:
+                        name = known_face_names[best_match_index]
+                        print("Matched {name} with distance {dist} confidence {conf}".format(name=name, dist=best_match_index, conf=best_match_confidence))
+                    else:
+                        print("Ignoring Match {name} with distance {dist} as conf {conf} below threshold {thresh}".format(name=name, dist=best_match_index, conf=best_match_confidence, thresh=FACE_DISTANCE_THRESHOLD))
 
                 face_names.append(name)
 
@@ -228,7 +232,8 @@ def recognize_face(frameCount):
                 # Put the confidence level in the top left if the person was recognized
                 #cv2.rectangle(frame, (0,0), ())
                 if(recognized_person["name"] != "Unknown"):
-                    cv2.putText(frame, str(recognized_person['conf']), (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+                    cv2.putText(frame, "Conf:" + str(recognized_person['conf'])+"%", (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+
 
         total += 1
 
