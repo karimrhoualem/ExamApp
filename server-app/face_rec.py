@@ -201,6 +201,7 @@ def recognize_face(frameCount):
                         print("Matched {name} with distance {dist} confidence {conf}".format(name=name, dist=best_match_index, conf=best_match_confidence))
                     else:
                         print("Ignoring Match {name} with distance {dist} below threshold {thresh}".format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
+                        name = "Unknown"
 
                 face_names.append(name)
 
