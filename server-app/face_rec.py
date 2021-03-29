@@ -225,9 +225,10 @@ def recognize_face(frameCount):
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-                # Put the confidence level in the top left
+                # Put the confidence level in the top left if the person was recognized
                 #cv2.rectangle(frame, (0,0), ())
-                cv2.putText(frame, recognized_person['conf'], (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+                if(recognized_person["name"] != "Unknown"):
+                    cv2.putText(frame, str(recognized_person['conf']), (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
 
         total += 1
 
