@@ -236,7 +236,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         try{
             cursor = db.rawQuery(selectQuery, null);
-            //cursor = db.query(Config.COURSE_TABLE_NAME, null, Config.COURSE_INVIGILATOR_ID + "= ?", new String[]{String.valueOf(invigilatorID)}, null,null,null);
             if(cursor!=null){
                 if(cursor.moveToFirst()){
 
@@ -271,29 +270,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public long insertCourse(Course course){
 
-        long id = -1;
+        if(!checkCourseAlreadyExists(course)) {
 
-        //we want to write to database so we choose getWritableDatabase()
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
+            long id = -1;
 
-        contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
-        contentValues.put(Config.COURSE_TITLE, course.getTitle());
-        contentValues.put(Config.COURSE_CODE, course.getCode());
+            //we want to write to database so we choose getWritableDatabase()
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
 
-        try {
-            id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
-        }catch(SQLException e){
-            Log.d(TAG,"Exception: " +e.getMessage());
-            Toast.makeText(context,"Operation Failed: " +e.getMessage(), Toast.LENGTH_LONG).show();
+            contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
+            contentValues.put(Config.COURSE_TITLE, course.getTitle());
+            contentValues.put(Config.COURSE_CODE, course.getCode());
 
-        } finally{
-            db.close();
+            try {
+                id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
+            } catch (SQLException e) {
+                Log.d(TAG, "Exception: " + e.getMessage());
+                Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+            } finally {
+                db.close();
+            }
+            return id;
         }
-        return id;
+
+        else
+            return 0;
     }
 
+    public boolean checkCourseAlreadyExists(Course course){
 
+        SQLiteDatabase db = this.getReadableDatabase();
+        String courseCode = course.getCode();
+
+       String selectQuery = "SELECT  * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_CODE + " =?";
+       Cursor cursor = db.rawQuery(selectQuery, new String[] {courseCode});
+
+       int cursorCount = cursor.getCount();
+       db.close();
+
+       if(cursorCount <= 0){
+           return false;
+       }
+       else
+           return true;
+    }
 
 
 
@@ -398,6 +419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     return new User();
     }
+
 
 
 }

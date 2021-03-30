@@ -35,9 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "DB helper object created.");
 
-        dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391"));
-        dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331"));
-        dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313"));
+
 
 
         newInvigilator();
@@ -45,28 +43,26 @@ public class LoginActivity extends AppCompatActivity {
         loginUser();
     }
 
-    private void setupUI (){
+    private void setupUI () {
 
         loginUserName = (EditText) findViewById(R.id.UserName);
         loginPassword = (EditText) findViewById(R.id.Password);
         login = (Button) findViewById(R.id.Login);
-    }
 
-    private void loginUser(){
+    }
+    private void loginUser() {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString() , loginPassword.getText().toString());
-                if (verification){
-                    openCourseActivity();
-                }
-                else{
+                boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString(), loginPassword.getText().toString());
+                if (verification) {
+                    openCourseActivity(loginUserName.getText().toString());
+                } else {
                     Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
     private void newInvigilator(){
         String firstNameP1 = "John";
         String lastNameP1 = "Doe";
@@ -92,14 +88,18 @@ public class LoginActivity extends AppCompatActivity {
         //Log.d(TAG, "User: " + " " + user1.getFirstName() + " " + user1.getLastName() + " " + user1.getUserName()
         //    + " " + user1.getPassword());
 
+
+
         dbHelper.close();
     }
-    private void openCourseActivity() {
-        int id = 1;
+
+    //TODO: Replace hardcoded invigilator id with a method to get the logged-in inviglator's id
+    private void openCourseActivity(String userName) {
         Intent intent = new Intent (this, CourseActivity.class);
+        int id = 1;
         //intent.putExtra("invigilator_id",id);
         //Log.d(TAG,"after putExtra" + id);
-        User user = dbHelper.getInvigilator(1);
+        User user = dbHelper.getInvigilator(id);
         intent.putExtra("invigilatorObject", user);
         startActivity(intent);
     }

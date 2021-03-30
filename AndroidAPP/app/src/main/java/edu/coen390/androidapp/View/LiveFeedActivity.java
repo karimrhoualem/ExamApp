@@ -50,8 +50,8 @@ public class LiveFeedActivity extends AppCompatActivity {
 
     //TODO: change URLs
     @VisibleForTesting
-    public static final String WEB_FORM_URL = "http://192.168.0.167:5000/";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.167:5000/";
+    public static final String WEB_FORM_URL = "http://192.168.2.11:5000/";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
 
 
     private JSONObject studentInformation;

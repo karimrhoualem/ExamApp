@@ -46,6 +46,9 @@ public class CourseActivity extends AppCompatActivity {
         userNameTextView = findViewById(R.id.userNameTextView);
 
 
+        dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391"));
+        dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331"));
+        dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313"));
 /*
         //this will be replaced with the code below
         invigilator_id = intent.getIntExtra("invigilator_id",0);
@@ -57,7 +60,6 @@ public class CourseActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        // TODO: Get object from LoginActivity. Set username to text view
         User invigilator = (User) intent.getSerializableExtra("invigilatorObject");
         userNameTextView.setText(invigilator.getUserName());
 
