@@ -425,14 +425,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param student Student that requires seating
      * @param course  Course that is hosting the examination
      */
-    public void insertStudentSeat(Student student, Course course) {
+    public void insertStudentSeat(Student student, Course course, int seat) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Create content values to hold information
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.EXAM_COURSE_ID, course.getId());
         contentValues.put(Config.EXAM_STUDENT_ID, student.getID());
-        contentValues.put(Config.EXAM_STUDENT_SEAT, course.getSeats().getNextSeat());
+        contentValues.put(Config.EXAM_STUDENT_SEAT, seat);
 
         //Insert row - throw Exception
         try {

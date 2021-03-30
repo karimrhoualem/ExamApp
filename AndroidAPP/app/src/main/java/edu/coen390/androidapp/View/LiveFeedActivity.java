@@ -21,6 +21,7 @@ import com.example.examapp.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,6 +52,9 @@ public class LiveFeedActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button backButton;
     private Button saveButton;
+    private Timer timer;
+    private TimerTask timerTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,8 @@ public class LiveFeedActivity extends AppCompatActivity {
         Log.d(TAG, "after getIntent " + course.toString());
 
         dbHelper = new DatabaseHelper(this);
+        timer = new Timer();
+
     }
 
     private void setButtonListeners() {
@@ -115,6 +121,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                     + hamill.toString());
         }
 
+
         try {
             // Get student information via an asynchronous JSON http request
 /*
@@ -123,10 +130,20 @@ public class LiveFeedActivity extends AppCompatActivity {
             thread.start();*/
 
 
+            /*Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+*/
 
 
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
+            timer.scheduleAtFixedRate(timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     try {
@@ -135,7 +152,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                         Student student = getStudentFromJSONObject(studentInformation);
                         Log.d(TAG, "Student Info Updated : " + student.toString());
 
-                        // Search for the student in the Students DB table and verify whether they are enrolled in this course.
+                        // Search for the student in the Students DB table and verify
+                        // whether they are enrolled in this course.
 
                         boolean isStudentConfirmed;
 
@@ -146,13 +164,16 @@ public class LiveFeedActivity extends AppCompatActivity {
                         }
 
                         boolean isStudentSeated;
+                        int seat;
                         String studentSeat = "Not Assigned";
                         if (isStudentConfirmed) {
                             isStudentSeated = dbHelper.isStudentSeated(student, course);
                             if (!isStudentSeated) {
-                                dbHelper.insertStudentSeat(student, course);
+                                seat = course.getSeats().getNextSeat();
+                                dbHelper.insertStudentSeat(student, course, seat);
                             }
                             studentSeat = Integer.toString(dbHelper.getStudentSeat(student, course));
+                            //studentSeat = Integer.toString(seat);
                         } else {
                             isStudentSeated = false;
                         }
@@ -162,14 +183,16 @@ public class LiveFeedActivity extends AppCompatActivity {
                         if (isStudentConfirmed) {
                             studentName.setText(student.getFirstName() + " " + student.getLastName());
                             studentID.setText(Integer.toString(student.getID()));
-                            Drawable drawable = ContextCompat.getDrawable(LiveFeedActivity.this, R.drawable.success);
+                            Drawable drawable = ContextCompat.getDrawable(
+                                    LiveFeedActivity.this, R.drawable.success);
                             imageView.setImageDrawable(drawable);
                             saveButton.setEnabled(true);
                             saveButton.setClickable(true);
                         } else {
                             studentName.setText("N/A");
                             studentID.setText("N/A");
-                            Drawable drawable = ContextCompat.getDrawable(LiveFeedActivity.this, R.drawable.failure);
+                            Drawable drawable = ContextCompat.getDrawable(
+                                    LiveFeedActivity.this, R.drawable.failure);
                             imageView.setImageDrawable(drawable);
                             saveButton.setEnabled(false);
                             saveButton.setClickable(false);
@@ -185,9 +208,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-            }, 0, 1000);//put here time 1000 milliseconds=1 second
 
-
+            }, 0, 1000);//put here time 1000 milliseconds=1 second*/
 
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
