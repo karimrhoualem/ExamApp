@@ -18,7 +18,7 @@ import time
 import pickle
 
 # CONFIG
-IP_ADDRESS = "0.0.0.0"
+IP_ADDRESS = "192.168.2.135"
 PORT = 5000
 FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
@@ -192,7 +192,7 @@ def recognize_face(frameCount):
                 face_names.append(name)
 
                 if name == "Unknown":
-                    recognized_person = {"name": "Unknown", "ID": ""}
+                    recognized_person = {"name": "Unknown", "ID": "0"}
                 else:
                     recognized_person = {"name": name, "ID": json_face_info[name]}
 
