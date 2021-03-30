@@ -24,7 +24,8 @@ FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
 
-FACE_DISTANCE_THRESHOLD = 40
+FACE_DISTANCE_THRESHOLD = 25
+FACE_COMPARE_STRICTNESS = 0.4
 
 RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
 
@@ -149,7 +150,7 @@ print(known_face_names)
 def confidence_from_distance(dist):
     conf = (FACE_DISTANCE_THRESHOLD - dist) / FACE_DISTANCE_THRESHOLD * 100
     #conf = (100-dist)
-    return conf
+    return round(conf, 1)
 
 
 def recognize_face(frameCount):
@@ -162,7 +163,7 @@ def recognize_face(frameCount):
     global vs, outputFrame, lock, info, recognized_person
 
     total = 0
-    FRAME_SCALE_FACTOR = 4 # frame divided in size by this number
+    FRAME_SCALE_FACTOR = 3 # frame divided in size by this number
     while True:
         # Grab a single frame of video
         frame = vs.read()
@@ -182,7 +183,7 @@ def recognize_face(frameCount):
             face_names = []
             for face_encoding in face_encodings:
                 # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=FACE_COMPARE_STRICTNESS)
                 name = "Unknown"
 
                 # # If a match was found in known_face_encodings, just use the first one.
