@@ -9,8 +9,8 @@
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="392dp"
-        android:layout_height="269dp"
+        android:layout_width="395dp"
+        android:layout_height="234dp"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toTopOf="@+id/studentName_linearLayout"
@@ -22,9 +22,8 @@
 
     <LinearLayout
         android:id="@+id/studentName_linearLayout"
-        android:layout_width="410dp"
-        android:layout_height="79dp"
-        android:layout_marginBottom="2dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/studentID_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,9 +49,8 @@
 
     <LinearLayout
         android:id="@+id/studentID_linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="74dp"
-        android:layout_marginBottom="1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/seatNumber_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,8 +76,8 @@
 
     <LinearLayout
         android:id="@+id/seatNumber_linearLayout"
-        android:layout_width="410dp"
-        android:layout_height="70dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/confirmationLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,9 +103,8 @@
 
     <LinearLayout
         android:id="@+id/confirmationLinearLayout"
-        android:layout_width="393dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
