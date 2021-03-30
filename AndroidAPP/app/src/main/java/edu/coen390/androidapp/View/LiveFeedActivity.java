@@ -167,20 +167,6 @@ public class LiveFeedActivity extends AppCompatActivity {
                         boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
                         int seat = 0;
                         String studentSeat = "N/A";
-                       /* int seat;
-                        String studentSeat = "Not Assigned";
-                        if (isStudentConfirmed) {
-                            isStudentSeated = dbHelper.isStudentSeated(student, course);
-                            if (!isStudentSeated) {
-                                seat = course.getSeats().getNextSeat();
-                                dbHelper.insertStudentSeat(student, course, seat);
-                            }
-                            studentSeat = Integer.toString(dbHelper.getStudentSeat(student, course));
-                            //studentSeat = Integer.toString(seat);
-                        } else {
-                            isStudentSeated = false;
-                        }*/
-
 
                         // Display student information and confirmation status
                         if (isStudentConfirmed) {
