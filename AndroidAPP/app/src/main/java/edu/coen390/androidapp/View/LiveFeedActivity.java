@@ -21,6 +21,9 @@ import com.example.examapp.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
@@ -32,8 +35,8 @@ public class LiveFeedActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/";
-    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/";
+    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
     /**
      * Tag used for logger.
      */
@@ -94,72 +97,97 @@ public class LiveFeedActivity extends AppCompatActivity {
         launchWebView();
 
         // TODO: Remove this manual student entry later
-        Student me = new Student(26603157, new String[]{"ENGR 391", "COMP 472"}, "Karim", "Rhoualem");
-        long result = dbHelper.insertStudent(me);
+        Student obama = new Student(45454545, new String[]{"ENGR 391", "COMP 472"}, "Barack", "Obama");
+        Student tawfiq = new Student(40000390, new String[]{"ENGR 391", "COEN 313"}, "Tawfiq", "Jawhar");
+        Student hamill = new Student(40102453, new String[]{"ENGR 391", "COEN 313"}, "Mark", "Hamill");
+        long result = dbHelper.insertStudent(obama);
+        long result2 = dbHelper.insertStudent(tawfiq);
+        long result3 = dbHelper.insertStudent(hamill);
 
-        if (result == -1) {
+        if (result == -1 && result2 == -1 && result3 == -1) {
             Log.d(TAG, "Error inserting student into DB table.");
         } else {
             Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + me.toString());
+                    + obama.toString());
+            Log.d(TAG, "Student successfully inserted into DB: \n"
+                    + tawfiq.toString());
+            Log.d(TAG, "Student successfully inserted into DB: \n"
+                    + hamill.toString());
         }
 
         try {
             // Get student information via an asynchronous JSON http request
-            Thread thread = new Thread(() -> {
-                try {
-                    studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                } catch (Exception e) {
-                    e.printStackTrace();
+/*
+            JSONRefresh jsonObject = new JSONRefresh();
+            Thread thread = new Thread(jsonObject);
+            thread.start();*/
+
+
+
+
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
+                        Log.d(TAG, "Student Info Obtained : " );
+                        Student student = getStudentFromJSONObject(studentInformation);
+                        Log.d(TAG, "Student Info Updated : " + student.toString());
+
+                        // Search for the student in the Students DB table and verify whether they are enrolled in this course.
+
+                        boolean isStudentConfirmed;
+
+                        if (student != null) {
+                            isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
+                        } else {
+                            isStudentConfirmed = false;
+                        }
+
+                        boolean isStudentSeated;
+                        String studentSeat = "Not Assigned";
+                        if (isStudentConfirmed) {
+                            isStudentSeated = dbHelper.isStudentSeated(student, course);
+                            if (!isStudentSeated) {
+                                dbHelper.insertStudentSeat(student, course);
+                            }
+                            studentSeat = Integer.toString(dbHelper.getStudentSeat(student, course));
+                        } else {
+                            isStudentSeated = false;
+                        }
+
+
+                        // Display student information and confirmation status
+                        if (isStudentConfirmed) {
+                            studentName.setText(student.getFirstName() + " " + student.getLastName());
+                            studentID.setText(Integer.toString(student.getID()));
+                            Drawable drawable = ContextCompat.getDrawable(LiveFeedActivity.this, R.drawable.success);
+                            imageView.setImageDrawable(drawable);
+                            saveButton.setEnabled(true);
+                            saveButton.setClickable(true);
+                        } else {
+                            studentName.setText("N/A");
+                            studentID.setText("N/A");
+                            Drawable drawable = ContextCompat.getDrawable(LiveFeedActivity.this, R.drawable.failure);
+                            imageView.setImageDrawable(drawable);
+                            saveButton.setEnabled(false);
+                            saveButton.setClickable(false);
+                        }
+
+                        if (isStudentSeated) {
+                            seatNumber.setText(studentSeat);
+                        }
+
+                        saveButton.setOnClickListener(v -> recreate());
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            });
-            thread.start();
-            thread.join();
-
-            Student student = getStudentFromJSONObject(studentInformation);
-
-            // Search for the student in the Students DB table and verify whether they are enrolled in this course.
-            boolean isStudentConfirmed;
-
-            if (student != null) {
-                isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-            } else {
-                isStudentConfirmed = false;
-            }
-
-            boolean isStudentSeated;
-            String studentSeat = "Not Assigned";
-            if (isStudentConfirmed) {
-                dbHelper.insertStudentSeat(student, course);
-                isStudentSeated = dbHelper.isStudentSeated(student, course);
-                if (isStudentSeated) {
-                    studentSeat = Integer.toString(dbHelper.getStudentSeat(student, course));
-                }
-            } else {
-                isStudentSeated = false;
-            }
+            }, 0, 1000);//put here time 1000 milliseconds=1 second
 
 
-            // Display student information and confirmation status
-            if (isStudentConfirmed) {
-                studentName.setText(student.getFirstName() + " " + student.getLastName());
-                studentID.setText(Integer.toString(student.getID()));
-                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.success);
-                imageView.setImageDrawable(drawable);
-            } else {
-                studentName.setText("N/A");
-                studentID.setText("N/A");
-                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.failure);
-                imageView.setImageDrawable(drawable);
-                saveButton.setEnabled(false);
-                saveButton.setClickable(false);
-            }
-
-            if (isStudentSeated) {
-                seatNumber.setText(studentSeat);
-                saveButton.setEnabled(true);
-                saveButton.setClickable(true);
-            }
 
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
@@ -186,8 +214,22 @@ public class LiveFeedActivity extends AppCompatActivity {
     private Student getStudentFromJSONObject(JSONObject studentInformation) {
         try {
             int studentID = studentInformation.getInt("ID");
-            String studentFirstName = studentInformation.getString("firstName");
-            String studentLastName = studentInformation.getString("lastName");
+            String studentName = studentInformation.getString("name");
+            String studentFirstName;
+            String studentLastName ;
+            if(studentName.contains(" ") && studentID != 0){
+                String [] names = studentName.split(" ", 2);
+                studentFirstName = names[0];
+                studentLastName = names[1];
+            }else if(studentName.contains("_") && studentID != 0){
+                String [] names = studentName.split("_", 2);
+                studentFirstName = names[0];
+                studentLastName = names[1];
+
+            }else{
+                studentFirstName = "N/A";
+                studentLastName = "N/A";
+            }
 
             return new Student(studentID, null, studentFirstName, studentLastName);
         } catch (JSONException e) {
@@ -196,4 +238,25 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         return null;
     }
+
+    /*class JSONRefresh implements Runnable {
+        private volatile boolean exit = false;
+
+        @Override
+        public void run() {
+            try {
+                while (!exit) {
+                    studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
+                    Log.d(TAG, "Student Info Obtained");
+                    Thread.sleep(2000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void stop() {
+            exit = true;
+        }
+    }*/
 }

@@ -281,6 +281,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COURSE_TOTAL_ENROLLED, course.getNumOfStudents());
 
         try {
+
             id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
         } catch (SQLException e) {
             Log.d(TAG, "Exception: " + e.getMessage());
