@@ -245,9 +245,11 @@ def recognize_face(frameCount):
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
                 # Put the confidence level in the top left if the person was recognized
-                #cv2.rectangle(frame, (0,0), ())
+                # and their ID in the bottom left
                 if(recognized_person["name"] != "Unknown"):
                     cv2.putText(frame, "Conf:" + str(recognized_person['conf'])+"%", (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+                    # TODO: dynamically get frame height to place ID
+                    cv2.putText(frame, "ID: "+recognized_person["ID"], (0, 600),cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
 
 
         total += 1
