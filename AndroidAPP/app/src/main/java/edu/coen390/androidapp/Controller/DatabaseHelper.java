@@ -173,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             id = db.insertOrThrow(Config.STUDENTS_TABLE_NAME, null, contentValues);
         } catch (SQLiteException e) {
             Log.d(TAG, "Exception: " + e.getMessage());
-            Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             db.close();
         }
