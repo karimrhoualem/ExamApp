@@ -106,11 +106,13 @@ public class LiveFeedActivity extends AppCompatActivity {
         Student obama = new Student(45454545, new String[]{"ENGR 391", "COMP 472"}, "Barack", "Obama");
         Student tawfiq = new Student(40000390, new String[]{"ENGR 391", "COEN 313"}, "Tawfiq", "Jawhar");
         Student hamill = new Student(40102453, new String[]{"ENGR 391", "COEN 313"}, "Mark", "Hamill");
+        Student alec = new Student(40103773, new String[]{"ENGR 391", "COEN 313"}, "Alec", "Wolfe");
         long result = dbHelper.insertStudent(obama);
         long result2 = dbHelper.insertStudent(tawfiq);
         long result3 = dbHelper.insertStudent(hamill);
+        long result4 = dbHelper.insertStudent(alec);
 
-        if (result == -1 && result2 == -1 && result3 == -1) {
+        if (result == -1 && result2 == -1 && result3 == -1 && result4 == -1) {
             Log.d(TAG, "Error inserting student into DB table.");
         } else {
             Log.d(TAG, "Student successfully inserted into DB: \n"
@@ -119,6 +121,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                     + tawfiq.toString());
             Log.d(TAG, "Student successfully inserted into DB: \n"
                     + hamill.toString());
+            Log.d(TAG, "Student successfully inserted into DB: \n"
+                    + alec.toString());
         }
 
 
