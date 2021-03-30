@@ -11,6 +11,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
@@ -163,8 +164,10 @@ public class LiveFeedActivity extends AppCompatActivity {
                             isStudentConfirmed = false;
                         }
 
-                        boolean isStudentSeated;
-                        int seat;
+                        boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        int seat = 0;
+                        String studentSeat = "N/A";
+                       /* int seat;
                         String studentSeat = "Not Assigned";
                         if (isStudentConfirmed) {
                             isStudentSeated = dbHelper.isStudentSeated(student, course);
@@ -176,13 +179,20 @@ public class LiveFeedActivity extends AppCompatActivity {
                             //studentSeat = Integer.toString(seat);
                         } else {
                             isStudentSeated = false;
-                        }
+                        }*/
 
 
                         // Display student information and confirmation status
                         if (isStudentConfirmed) {
                             studentName.setText(student.getFirstName() + " " + student.getLastName());
                             studentID.setText(Integer.toString(student.getID()));
+                            if(!isStudentSeated){
+                                seat = course.getSeats().getNextSeat();
+                                dbHelper.insertStudentSeat(student, course, seat);
+                            }else{
+                                seat = dbHelper.getStudentSeat(student, course);
+                            }
+                            seatNumber.setText(Integer.toString(seat));
                             Drawable drawable = ContextCompat.getDrawable(
                                     LiveFeedActivity.this, R.drawable.success);
                             imageView.setImageDrawable(drawable);
@@ -191,6 +201,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                         } else {
                             studentName.setText("N/A");
                             studentID.setText("N/A");
+                            seatNumber.setText("N/A");
                             Drawable drawable = ContextCompat.getDrawable(
                                     LiveFeedActivity.this, R.drawable.failure);
                             imageView.setImageDrawable(drawable);
@@ -198,11 +209,20 @@ public class LiveFeedActivity extends AppCompatActivity {
                             saveButton.setClickable(false);
                         }
 
-                        if (isStudentSeated) {
+                        /*if (isStudentSeated) {
                             seatNumber.setText(studentSeat);
-                        }
+                        }*/
 
-                        saveButton.setOnClickListener(v -> recreate());
+                        int finalSeat = seat;
+                        saveButton.setOnClickListener(v ->{
+                            String toastText = String.format("%s %s is verified and seat %d is assigned", student.getFirstName(),student.getLastName(), finalSeat);
+                            Toast.makeText(LiveFeedActivity.this, toastText, Toast.LENGTH_LONG).show();
+                            studentName.setText("N/A");
+                            studentID.setText("N/A");
+                            seatNumber.setText("N/A");
+                            Toast.makeText(LiveFeedActivity.this, "READY TO VERIFY", Toast.LENGTH_LONG).show();
+                            //recreate();
+                        } );
 
                     } catch (Exception e) {
                         e.printStackTrace();
