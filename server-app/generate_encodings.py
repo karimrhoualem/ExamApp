@@ -1,23 +1,20 @@
-import threading
-import argparse
-import face_recognition
-import cv2
-import numpy as np
 import json
 import os
-import timeit
 import pickle
 import random
+import timeit
+
+import face_recognition
 
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 
-LABELLED_FACES_FOLDER ="faces/big-faces-dataset"
+LABELLED_FACES_FOLDER = "faces/big-faces-dataset"
 
 PICKLE_OUTPUT_FILE = "encodings.dat"
 
-#known_face_encodings = []
-#known_face_names = []
+# known_face_encodings = []
+# known_face_names = []
 
 # dict to store all the parallel arrays together
 # parallel arrays are so that the encodings array can be directly passed to face_recognition
@@ -28,6 +25,7 @@ face_info['encodings'] = []
 
 start_time = timeit.default_timer()
 print("Creating face encodings")
+
 
 # load the face info
 def load_face_info():
@@ -46,9 +44,9 @@ def load_face_info():
             person_image = face_recognition.load_image_file(face_file_path)
             person_face_encoding = face_recognition.face_encodings(person_image, num_jitters=100)[0]
 
-            #known_face_encodings.append(person_face_encoding)
+            # known_face_encodings.append(person_face_encoding)
             face_info['encodings'].append(person_face_encoding)
-            #known_face_names.append(person['name'])
+            # known_face_names.append(person['name'])
             face_info['names'].append(person['name'])
             face_info['ids'].append(person['ID'])
 
@@ -71,7 +69,7 @@ def load_face_extra_dataset():
         # some of the LFW folders have multiple faces, choose the first
         face_file_path = os.path.join(face_file_folder, os.listdir(face_file_folder)[0])
         print("Load face info for {name} from {path}".format(name=person, path=face_file_path))
-        #print(face_file_path)
+        # print(face_file_path)
 
         try:
             person_image = face_recognition.load_image_file(face_file_path)
