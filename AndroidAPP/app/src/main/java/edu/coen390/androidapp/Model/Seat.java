@@ -12,11 +12,13 @@ public class Seat implements Serializable {
     int totalSeatsNumber;
     List<Integer> seats;
     Map<Integer, OCCUPANCY> seatState;
+    Map<Integer, Integer> studentSeat;
 
     public Seat(int totalSeatsNumber) {
         this.totalSeatsNumber = totalSeatsNumber;
         seats = new LinkedList<>();
         seatState = new Hashtable<>();
+        studentSeat = new Hashtable<>();
         generateSeatNumbers();
     }
 
@@ -50,16 +52,24 @@ public class Seat implements Serializable {
         seatState.replace(seatNumber, OCCUPANCY.OCCUPIED);
     }
 
-    public int getNextSeat() {
+    public int getNextSeat(Student student) {
         if (!isFull()) {
             for (int seat : seats) {
                 if (!isOccupied(seat)) {
-                    setSeatOccupied(seat);
-                    return seat;
+                    if(studentSeat.get(student.getID()) == null){
+                        setSeatOccupied(seat);
+                        studentSeat.put(student.getID(),seat);
+                        return seat;
+                    }
+                    return  studentSeat.get(student);
                 }
             }
         }
         return -1;
+    }
+
+    public Map<Integer, Integer> getStudentSeat() {
+        return studentSeat;
     }
 
     public boolean isOccupied(int seatNumber) {

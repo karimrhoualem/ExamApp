@@ -172,7 +172,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                             studentName.setText(student.getFirstName() + " " + student.getLastName());
                             studentID.setText(Integer.toString(student.getID()));
                             if (!isStudentSeated) {
-                                seat = course.getSeats().getNextSeat();
+                                seat = course.getSeats().getNextSeat(student);
                                 dbHelper.insertStudentSeat(student, course, seat);
                             } else {
                                 seat = dbHelper.getStudentSeat(student, course);
