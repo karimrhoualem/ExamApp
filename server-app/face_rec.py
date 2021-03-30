@@ -207,8 +207,8 @@ def recognize_face(frameCount):
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                 # NOTE: we get the distance to EVERY face in the encodings
                 best_match_index = np.argmin(face_distances)
-                #best_match_confidence = confidence_from_distance(best_match_index)
-                best_match_confidence = face_distance_to_conf(best_match_index) * 100
+                best_match_confidence = confidence_from_distance(best_match_index)
+                #best_match_confidence = face_distance_to_conf(best_match_index)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                     if best_match_index < FACE_DISTANCE_THRESHOLD:
