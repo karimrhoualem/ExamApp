@@ -44,7 +44,7 @@ def load_face_info():
             # assume images for now to be in, eg, faces/obama/obama.jpg
             face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
             person_image = face_recognition.load_image_file(face_file_path)
-            person_face_encoding = face_recognition.face_encodings(person_image)[0]
+            person_face_encoding = face_recognition.face_encodings(person_image, num_jitters=100)[0]
 
             #known_face_encodings.append(person_face_encoding)
             face_info['encodings'].append(person_face_encoding)
@@ -90,7 +90,7 @@ def load_face_extra_dataset():
 load_face_info()
 
 # faces from the labelled faces in the wild dataset, to make the dataset larger
-load_face_extra_dataset()
+# load_face_extra_dataset()
 
 stop_time = timeit.default_timer()
 print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))

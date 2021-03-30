@@ -16,13 +16,17 @@ import os
 import timeit
 import time
 import pickle
+import math
 
 # CONFIG
-IP_ADDRESS = "192.168.2.135"
+IP_ADDRESS = "0.0.0.0"
 PORT = 5000
 FACE_INFO_FOLDER = "faces" #relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
+
+FACE_DISTANCE_THRESHOLD = 25
+FACE_COMPARE_STRICTNESS = 0.5
 
 RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
 
@@ -144,6 +148,22 @@ def load_face_info():
 load_face_info()
 print(known_face_names)
 
+def confidence_from_distance(dist):
+    conf = (FACE_DISTANCE_THRESHOLD - dist) / FACE_DISTANCE_THRESHOLD * 100
+    #conf = (100-dist)
+    return round(conf, 1)
+
+# From library https://github.com/ageitgey/face_recognition/wiki/Calculating-Accuracy-as-a-Percentage
+def face_distance_to_conf(face_distance, face_match_threshold=FACE_COMPARE_STRICTNESS):
+    if face_distance > face_match_threshold:
+        range = (1.0 - face_match_threshold)
+        linear_val = (1.0 - face_distance) / (range * 2.0)
+        return linear_val
+    else:
+        range = face_match_threshold
+        linear_val = 1.0 - (face_distance / (range * 2.0))
+        return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
+
 
 def recognize_face(frameCount):
     # Initialize some variables
@@ -155,7 +175,7 @@ def recognize_face(frameCount):
     global vs, outputFrame, lock, info, recognized_person
 
     total = 0
-    FRAME_SCALE_FACTOR = 4 # frame divided in size by this number
+    FRAME_SCALE_FACTOR = 3 # frame divided in size by this number
     while True:
         # Grab a single frame of video
         frame = vs.read()
@@ -175,7 +195,7 @@ def recognize_face(frameCount):
             face_names = []
             for face_encoding in face_encodings:
                 # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=FACE_COMPARE_STRICTNESS)
                 name = "Unknown"
 
                 # # If a match was found in known_face_encodings, just use the first one.
@@ -185,19 +205,27 @@ def recognize_face(frameCount):
 
                 # Or instead, use the known face with the smallest distance to the new face
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+                # NOTE: we get the distance to EVERY face in the encodings
                 best_match_index = np.argmin(face_distances)
+                best_match_confidence = confidence_from_distance(best_match_index)
+                #best_match_confidence = face_distance_to_conf(best_match_index)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
+                    if best_match_index < FACE_DISTANCE_THRESHOLD:
+                        print("Matched {name} with distance {dist} confidence {conf}%".format(name=name, dist=best_match_index, conf=best_match_confidence))
+                    else:
+                        print("Ignoring Match {name} with distance {dist} below threshold {thresh}".format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
+                        name = "Unknown"
 
                 face_names.append(name)
 
                 if name == "Unknown":
-                    recognized_person = {"name": "Unknown", "ID": "0"}
+                    recognized_person = {"name": "Unknown", "ID": "", "conf": 0}
                 else:
-                    recognized_person = {"name": name, "ID": json_face_info[name]}
+                    recognized_person = {"name": name, "ID": json_face_info[name], "conf": best_match_confidence}
 
-        #process_this_frame = not process_this_frame
-        process_this_frame = total % 4 # every 4th frame instead of every 2nd
+        process_this_frame = not process_this_frame
+        #process_this_frame = total % 4 # every 4th frame instead of every 2nd
 
         if total > frameCount:
             # Display the results
@@ -215,6 +243,14 @@ def recognize_face(frameCount):
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+
+                # Put the confidence level in the top left if the person was recognized
+                # and their ID in the bottom left
+                if(recognized_person["name"] != "Unknown"):
+                    cv2.putText(frame, "Conf:" + str(recognized_person['conf'])+"%", (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+                    # TODO: dynamically get frame height to place ID
+                    cv2.putText(frame, "ID: "+recognized_person["ID"], (0, 600),cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+
 
         total += 1
 

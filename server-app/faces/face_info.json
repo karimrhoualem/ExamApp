@@ -2,9 +2,27 @@
 	"people": 
 	[
 		{"name": "Barack Obama", "ID": "45454545", "folder": "obama"},
-		{"name": "Mark Hamill", "ID": "40023456", "folder": "hamill"},
+		{"name": "Mark Hamill", "ID": "00000000", "folder": "hamill"},
 		{"name": "Joe Biden", "ID": "00000000", "folder": "biden"},
 		{"name": "Alec Wolfe", "ID": "40103773", "folder": "alec"},
-		{"name": "Tawfiq Jawhar", "ID": "40000390", "folder": "tawfiq"}
+		{"name": "Tawfiq Jawhar", "ID": "00000390", "folder": "tawfiq"},
+		{"name": "Esther Anil", "ID": "", "folder": "anil"},
+		{"name": "Beyonce", "ID": "", "folder": "beyonce"},
+		{"name": "Nadine Caron", "ID": "", "folder": "caron"},
+		{"name": "Jeremy Dutcher", "ID": "", "folder": "dutcher"},
+		{"name": "Gong Li", "ID": "", "folder": "gongli"},
+		{"name": "Aamir Khan", "ID": "", "folder": "khan"},
+		{"name": "Mackenzie Foy", "ID": "", "folder": "mackenzie"},
+		{"name": "Emmanuel Macron", "ID": "", "folder": "macron"},
+		{"name": "Angela Merkel", "ID": "", "folder": "merkel"},
+		{"name": "Anjali Nair", "ID": "", "folder": "nair"},
+		{"name": "Oprah", "ID": "", "folder": "oprah"},
+		{"name": "Serena Williams", "ID": "", "folder": "serena"},
+		{"name": "Shinzo Abe", "ID": "", "folder": "shinzo"},
+		{"name": "Saikumar", "ID": "", "folder": "saikumar"},
+		{"name": "Tsai Ing-wen", "ID": "", "folder": "tsai"},
+		{"name": "Xi Jinping", "ID": "", "folder": "xi"},
+		{"name": "YeoJeong Cho", "ID": "", "folder": "yeojeong"},
+		{"name": "Micheal Jordan", "ID": "", "folder": "mj"}
 	]
 }
