@@ -224,8 +224,8 @@ def recognize_face(frameCount):
                 else:
                     recognized_person = {"name": name, "ID": json_face_info[name], "conf": best_match_confidence}
 
-        #process_this_frame = not process_this_frame
-        process_this_frame = total % 4 # every 4th frame instead of every 2nd
+        process_this_frame = not process_this_frame
+        #process_this_frame = total % 4 # every 4th frame instead of every 2nd
 
         if total > frameCount:
             # Display the results
