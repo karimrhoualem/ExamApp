@@ -22,7 +22,6 @@ import com.example.examapp.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -149,7 +148,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                 public void run() {
                     try {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                        Log.d(TAG, "Student Info Obtained : " );
+                        Log.d(TAG, "Student Info Obtained : ");
                         Student student = getStudentFromJSONObject(studentInformation);
                         Log.d(TAG, "Student Info Updated : " + student.toString());
 
@@ -172,10 +171,10 @@ public class LiveFeedActivity extends AppCompatActivity {
                         if (isStudentConfirmed) {
                             studentName.setText(student.getFirstName() + " " + student.getLastName());
                             studentID.setText(Integer.toString(student.getID()));
-                            if(!isStudentSeated){
+                            if (!isStudentSeated) {
                                 seat = course.getSeats().getNextSeat();
                                 dbHelper.insertStudentSeat(student, course, seat);
-                            }else{
+                            } else {
                                 seat = dbHelper.getStudentSeat(student, course);
                             }
                             seatNumber.setText(Integer.toString(seat));
@@ -200,15 +199,15 @@ public class LiveFeedActivity extends AppCompatActivity {
                         }*/
 
                         int finalSeat = seat;
-                        saveButton.setOnClickListener(v ->{
-                            String toastText = String.format("%s %s is verified and seat %d is assigned", student.getFirstName(),student.getLastName(), finalSeat);
+                        saveButton.setOnClickListener(v -> {
+                            String toastText = String.format("%s %s is verified and seat %d is assigned", student.getFirstName(), student.getLastName(), finalSeat);
                             Toast.makeText(LiveFeedActivity.this, toastText, Toast.LENGTH_LONG).show();
                             studentName.setText("N/A");
                             studentID.setText("N/A");
                             seatNumber.setText("N/A");
                             Toast.makeText(LiveFeedActivity.this, "READY TO VERIFY", Toast.LENGTH_LONG).show();
                             //recreate();
-                        } );
+                        });
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -244,17 +243,17 @@ public class LiveFeedActivity extends AppCompatActivity {
             int studentID = studentInformation.getInt("ID");
             String studentName = studentInformation.getString("name");
             String studentFirstName;
-            String studentLastName ;
-            if(studentName.contains(" ") && studentID != 0){
-                String [] names = studentName.split(" ", 2);
+            String studentLastName;
+            if (studentName.contains(" ") && studentID != 0) {
+                String[] names = studentName.split(" ", 2);
                 studentFirstName = names[0];
                 studentLastName = names[1];
-            }else if(studentName.contains("_") && studentID != 0){
-                String [] names = studentName.split("_", 2);
+            } else if (studentName.contains("_") && studentID != 0) {
+                String[] names = studentName.split("_", 2);
                 studentFirstName = names[0];
                 studentLastName = names[1];
 
-            }else{
+            } else {
                 studentFirstName = "N/A";
                 studentLastName = "N/A";
             }

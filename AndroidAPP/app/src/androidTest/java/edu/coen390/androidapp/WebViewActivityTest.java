@@ -22,8 +22,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class WebViewActivityTest {
-    private String validHostPort = "^\\s*(.*?):(\\d+)\\s*$";
-
     @Rule
     public ActivityTestRule<LiveFeedActivity> mActivityRule = new ActivityTestRule<LiveFeedActivity>(
             LiveFeedActivity.class, false, false) {
@@ -32,6 +30,13 @@ public class WebViewActivityTest {
             onWebView().forceJavascriptEnabled();
         }
     };
+    private String validHostPort = "^\\s*(.*?):(\\d+)\\s*$";
+
+    private static Intent withWebFormIntent() {
+        Intent basicFormIntent = new Intent();
+        basicFormIntent.putExtra(LiveFeedActivity.KEY_URL_TO_LOAD, LiveFeedActivity.WEB_FORM_URL);
+        return basicFormIntent;
+    }
 
     @Test
     public void webView_validUrl_Test() {
@@ -50,15 +55,6 @@ public class WebViewActivityTest {
         assertFalse(match);
     }
 
-    @Test
-    public void webView_verifyWebServerUrl_Test() {
-        mActivityRule.launchActivity(withWebFormIntent());
-
-        //TODO: Change the string to the URL of the web server
-        onWebView()
-            .check(webMatches(getCurrentUrl(), containsString("google")));
-    }
-
     // TODO: uncomment this when testing with the actual server. Add ID to <img> element.
 //    @Test
 //    public void webView_verifyImageReceivedFromWebServer_Test() {
@@ -68,9 +64,12 @@ public class WebViewActivityTest {
 //            .withElement(findElement(Locator.ID, "facial_recognition"));
 //    }
 
-    private static Intent withWebFormIntent() {
-        Intent basicFormIntent = new Intent();
-        basicFormIntent.putExtra(LiveFeedActivity.KEY_URL_TO_LOAD, LiveFeedActivity.WEB_FORM_URL);
-        return basicFormIntent;
+    @Test
+    public void webView_verifyWebServerUrl_Test() {
+        mActivityRule.launchActivity(withWebFormIntent());
+
+        //TODO: Change the string to the URL of the web server
+        onWebView()
+                .check(webMatches(getCurrentUrl(), containsString("google")));
     }
 }

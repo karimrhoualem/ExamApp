@@ -15,9 +15,9 @@ import edu.coen390.androidapp.Model.Course;
 
 public class CourseAdapter extends BaseAdapter {
 
+    private final List<Course> courses;
     Context mContext;
     private TextView courseTextView;
-    private final List<Course> courses;
 
     public CourseAdapter(Context context, List<Course> courses) {
         this.mContext = context;

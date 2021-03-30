@@ -81,6 +81,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return str.toString();
     }
 
+    // =============================== Student Table Methods ===============================
+
     /**
      * Used to convert a comma-separated string to an array.
      *
@@ -215,9 +217,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public void testMethod() {
-        SQLiteDatabase db = this.getWritableDatabase();
+    // =============================== Course Table Methods ===============================
+    public long insertCourse(Course course) {
+
+        if (!checkCourseAlreadyExists(course)) {
+
+            long id = -1;
+
+            //we want to write to database so we choose getWritableDatabase()
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+
+            contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
+            contentValues.put(Config.COURSE_TITLE, course.getTitle());
+            contentValues.put(Config.COURSE_CODE, course.getCode());
+            contentValues.put(Config.COURSE_TOTAL_ENROLLED, course.getNumOfStudents());
+
+            try {
+
+                id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
+            } catch (SQLException e) {
+                Log.d(TAG, "Exception: " + e.getMessage());
+                Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+            } finally {
+                db.close();
+            }
+            return id;
+        } else
+            return 0;
     }
+
+
+    // =============================== Invigilator Table Methods ===============================
 
     //get all courses assigned to an invigilator based on the invigilator primary key id
     public List<Course> getCourses(long invigilatorID) {
@@ -267,84 +299,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-   /* public long insertCourse(Course course) {
-
-        long id = -1;
-
-        //we want to write to database so we choose getWritableDatabase()
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
-        contentValues.put(Config.COURSE_TITLE, course.getTitle());
-        contentValues.put(Config.COURSE_CODE, course.getCode());
-        contentValues.put(Config.COURSE_TOTAL_ENROLLED, course.getNumOfStudents());
-
-        try {
-
-            id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
-        } catch (SQLException e) {
-            Log.d(TAG, "Exception: " + e.getMessage());
-            Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-        } finally {
-            db.close();
-        }
-        return id;
-    }*/
-
-    public long insertCourse(Course course){
-
-        if(!checkCourseAlreadyExists(course)) {
-
-            long id = -1;
-
-            //we want to write to database so we choose getWritableDatabase()
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-
-            contentValues.put(Config.COURSE_INVIGILATOR_ID, course.getInvigilator_id());
-            contentValues.put(Config.COURSE_TITLE, course.getTitle());
-            contentValues.put(Config.COURSE_CODE, course.getCode());
-            contentValues.put(Config.COURSE_TOTAL_ENROLLED, course.getNumOfStudents());
-
-            try {
-
-                id = db.insertOrThrow(Config.COURSE_TABLE_NAME, null, contentValues);
-            } catch (SQLException e) {
-                Log.d(TAG, "Exception: " + e.getMessage());
-                Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-            } finally {
-                db.close();
-            }
-            return id;
-        }
-
-        else
-            return 0;
-    }
-
-    public boolean checkCourseAlreadyExists(Course course){
+    public boolean checkCourseAlreadyExists(Course course) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String courseCode = course.getCode();
 
         String selectQuery = "SELECT  * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_CODE + " =?";
-        Cursor cursor = db.rawQuery(selectQuery, new String[] {courseCode});
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{courseCode});
 
         int cursorCount = cursor.getCount();
+        cursor.close();
         db.close();
 
-        if(cursorCount <= 0){
-            return false;
-        }
-        else
-            return true;
+        return cursorCount > 0;
     }
-
-
-
 
     /**
      * Add Invigilator to Data Base
@@ -372,6 +340,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+
+    // =============================== Exam Table Methods ===============================
 
     /**
      * Verify if User (Invigilator) is in the Data Base.
@@ -499,6 +470,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
+    // =============================== Helper Methods ===============================
+
     /**
      * Retrieve assigned student seat
      *
@@ -575,7 +549,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return cursorCount > 0;
     }
-
 
 }
 
