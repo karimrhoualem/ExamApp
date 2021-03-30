@@ -16,6 +16,7 @@ import os
 import timeit
 import time
 import pickle
+import math
 
 # CONFIG
 IP_ADDRESS = "0.0.0.0"
@@ -25,7 +26,7 @@ FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
 
 FACE_DISTANCE_THRESHOLD = 25
-FACE_COMPARE_STRICTNESS = 0.4
+FACE_COMPARE_STRICTNESS = 0.5
 
 RUN_ON_PI = (hasattr(os, 'uname') and os.uname().machine == 'armv7l') # detect if we are running on raspberry pi by CPU architecture
 
@@ -152,6 +153,17 @@ def confidence_from_distance(dist):
     #conf = (100-dist)
     return round(conf, 1)
 
+# From library https://github.com/ageitgey/face_recognition/wiki/Calculating-Accuracy-as-a-Percentage
+def face_distance_to_conf(face_distance, face_match_threshold=FACE_COMPARE_STRICTNESS):
+    if face_distance > face_match_threshold:
+        range = (1.0 - face_match_threshold)
+        linear_val = (1.0 - face_distance) / (range * 2.0)
+        return linear_val
+    else:
+        range = face_match_threshold
+        linear_val = 1.0 - (face_distance / (range * 2.0))
+        return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
+
 
 def recognize_face(frameCount):
     # Initialize some variables
@@ -195,7 +207,8 @@ def recognize_face(frameCount):
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                 # NOTE: we get the distance to EVERY face in the encodings
                 best_match_index = np.argmin(face_distances)
-                best_match_confidence = confidence_from_distance(best_match_index)
+                #best_match_confidence = confidence_from_distance(best_match_index)
+                best_match_confidence = face_distance_to_conf(best_match_index) * 100
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                     if best_match_index < FACE_DISTANCE_THRESHOLD:
