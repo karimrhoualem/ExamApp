@@ -2,8 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51eafb1a-d791-474d-8cda-84565d264a5c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/android.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/android.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AndroidAPP/.idea/render.experimental.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/java/edu/coen390/androidapp/Model/Course.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/values-round/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/values/dimens.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/6.5/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/main/java/edu/coen390/androidapp/Controller/DatabaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/java/edu/coen390/androidapp/Controller/DatabaseHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/main/java/edu/coen390/androidapp/View/CourseActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/java/edu/coen390/androidapp/View/CourseActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/layout/activity_course.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/layout/activity_course.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidAPP/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
