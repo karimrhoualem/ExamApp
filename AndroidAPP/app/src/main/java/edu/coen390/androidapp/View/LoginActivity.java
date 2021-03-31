@@ -35,9 +35,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "DB helper object created.");
 
-
-
-
         newInvigilator();
         setupUI();
         loginUser();
@@ -56,7 +53,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString(), loginPassword.getText().toString());
                 if (verification) {
-                    openCourseActivity(loginUserName.getText().toString());
+                    String user_name = loginUserName.getText().toString();
+                    openCourseActivity(user_name);
                 } else {
                     Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
                 }
@@ -84,22 +82,16 @@ public class LoginActivity extends AppCompatActivity {
 
         // Testing  getInvigilator function - It works
 
-        //user1 = dbHelper.getInvigilator(1);
-        //Log.d(TAG, "User: " + " " + user1.getFirstName() + " " + user1.getLastName() + " " + user1.getUserName()
-        //    + " " + user1.getPassword());
-
-
+       // User testuser = dbHelper.getInvigilator(1);
+        //Log.d(TAG, "User: " + " " + testuser.getFirstName() + " " + testuser.getLastName() + " " + testuser.getUserName()
+       //  + " " + testuser.getPassword());
 
         dbHelper.close();
     }
 
-    //TODO: Replace hardcoded invigilator id with a method to get the logged-in inviglator's id
     private void openCourseActivity(String userName) {
         Intent intent = new Intent (this, CourseActivity.class);
-        int id = 1;
-        //intent.putExtra("invigilator_id",id);
-        //Log.d(TAG,"after putExtra" + id);
-        User user = dbHelper.getInvigilator(id);
+        User user = dbHelper.getInvigilator(userName);
         intent.putExtra("invigilatorObject", user);
         startActivity(intent);
     }

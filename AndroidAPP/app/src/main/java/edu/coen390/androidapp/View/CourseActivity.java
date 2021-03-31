@@ -49,14 +49,6 @@ public class CourseActivity extends AppCompatActivity {
         dbHelper.insertCourse(new Course(-1, 1,"Numerical Methods", "ENGR 391"));
         dbHelper.insertCourse(new Course(-1, 2,"Fundamentals of Electrical Power", "ELEC 331"));
         dbHelper.insertCourse(new Course(-1, 1,"Digital Systems Design II", "COEN 313"));
-/*
-        //this will be replaced with the code below
-        invigilator_id = intent.getIntExtra("invigilator_id",0);
-        Log.d(TAG,"after getLongEXTRa " + invigilator_id);
-        userNameTextView.setText("User name"); //this will be replaced with username of invigilator that is logged in
-  */
-
-
 
 
         Intent intent = getIntent();
