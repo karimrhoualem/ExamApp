@@ -345,5 +345,3 @@ if __name__ == '__main__':
 vs.stop()
 cv2.destroyAllWindows()
 
-# Cleanup GPIO channels
-GPIO.cleanup()
