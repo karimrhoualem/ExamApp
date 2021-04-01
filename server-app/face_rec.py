@@ -18,9 +18,6 @@ from flask import Response, jsonify
 from flask import render_template
 from imutils.video import VideoStream
 
-import RPi.GPIO as GPIO
-from mfrc522 import SimpleMFRC522
-reader = SimpleMFRC522()
 
 # CONFIG
 IP_ADDRESS = "192.168.0.91"
@@ -52,8 +49,6 @@ info = None
 json_face_info = {}
 recognized_person = {}
 lock = threading.Lock()  # lock for outputFrame so that it is not read while being updated
-
-rfid_status = {'status':'noscan', 'name':'', 'id':''} # used to track most recent RFID scan info
 
 # initialize a flask object
 app = Flask(__name__)
@@ -306,37 +301,6 @@ def generate_stream():
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
                bytearray(encodedImage) + b'\r\n')
 
-
-# Function to run in a thread that will constantly check the RFID scanner
-def rfid_detect_loop(rfid_status):
-    #global rfid_status
-    while(True):
-        try:
-            id, text = reader.read()
-            #print(id)
-            #print(text)
-            print("RFID: Detected card, UID:{uid}, data:{data}".format(uid=id, data=text))
-            fields = text.split(',')
-            
-            if(len(fields) == 2):
-                rfid_status['name'] = fields[0]
-                rfid_status['id'] = fields[1].replace(' ', '')
-                rfid_status['status'] = 'goodscan'
-            else:
-                rfid_status['status'] = 'badscan'
-                rfid_status['name'] = ''
-                rfid_status['id'] = ''
-            
-        except Exception as e:
-            rfid_status['status'] = 'error'
-            rfid_status['error'] = str(e)
-            rfid_status['name'] = ''
-            rfid_status['id'] = ''
-            
-        #finally:
-        #   GPIO.cleanup()
-            
-        time.sleep(0.25) # don't check too often
     
 
 @app.route("/person_info")
@@ -358,10 +322,6 @@ def video_feed():
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-@app.route("/rfid")
-def rfid_status_route():
-    return jsonify(rfid_status)
-
 # check to see if this is the main thread of execution
 if __name__ == '__main__':
     # construct the argument parser and parse command line arguments
@@ -376,14 +336,6 @@ if __name__ == '__main__':
     t.daemon = True
     t.start()
     
-    # start a thread for the rfid card system
-    #t_rfid = threading.Thread(target=rfid_detect_loop)
-    #t_rfid.daemon = True
-    #t_rfid.start()
-    # start a separate process for the RFID card system (otherwise, we are sharing a core with the video recognition and detecting the cards is laggy)
-    p_rfid = multiprocessing.Process(target=rfid_detect_loop, args = (rfid_status))
-    p_rfid.daemon = True
-    p_rfid.start()
 
     # start the flask app
     app.run(host=IP_ADDRESS, port=PORT, debug=True,
