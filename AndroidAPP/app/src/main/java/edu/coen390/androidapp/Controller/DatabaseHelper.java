@@ -418,6 +418,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Get a particular invigilator from the data base.
+     * @param user_name The id of the invigilator to be recovered
+     * @return The invigilator that was recovered from the data base
+     */
+    public User getInvigilator(String user_name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Selecting desired criteria
+        String selectQuery = "SELECT * " + " FROM " + Config.INVIGILATOR_TABLE_NAME + " WHERE " + Config.INVIGILATOR_USERNAME + " = '" + user_name + "'";
+
+        try {
+            cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.INVIGILATOR_ID));
+                    String firstName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_LAST_NAME));
+                    String userName = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_USERNAME));
+                    String password = cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_PASSWORD));
+
+                    return new User(id, firstName, lastName, userName, password);
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return new User();
+    }
+
+    /**
      * Create an Exam table for a particular course
      *
      * @param course The course conducting an examination
