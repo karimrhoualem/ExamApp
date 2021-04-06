@@ -10,7 +10,7 @@
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="395dp"
+        android:layout_width="396dp"
         android:layout_height="234dp"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
@@ -129,7 +129,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="15dp"
                 android:gravity="center"
                 android:text="BACK"
                 app:backgroundTint="@color/purple_700" />
