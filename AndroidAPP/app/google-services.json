@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "561171814663-pavduqffvp1gtiq44b0lf0v5k2i93mov.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.coen390.androidapp",
+            "certificate_hash": "8f6e7c3f21d42c6e131939edb10416ef5c51f666"
+          }
+        },
+        {
           "client_id": "561171814663-2s86gav278q1p7scgbq775tr90ls7rff.apps.googleusercontent.com",
           "client_type": 3
         }
