@@ -52,6 +52,9 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
 
         cardScannerButton.setOnClickListener(v -> {
             // TODO: empty for now. To be completed in sprint 3 when we receive the card reader.
+            Intent intent = new Intent(VerificationModeActivity.this, CardScanActivity.class);
+            intent.putExtra(COURSE_INTENT, course);
+            startActivity(intent);
         });
 
         manualVerification.setOnClickListener(v -> {
