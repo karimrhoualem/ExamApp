@@ -158,12 +158,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //To be handled in the event that the database version ever needs to be updated.
     }
 
+    /**
+     * Add Student to Database
+     * @param student
+     * @return
+     */
     public long insertStudent(Student student) {
         long id = -1;
 
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(Config.STUDENT_ID, student.getID());
         contentValues.put(Config.STUDENT_COURSE_ID, convertArrayToString(student.getCourses()));
         contentValues.put(Config.STUDENT_FIRST_NAME, student.getFirstName());
@@ -180,6 +185,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
+
+    /**
+     * Get a specific student from database
+     * @param studentId The Student that we are retrieving from database
+     * @return The student object
+     */
+
+    public Student getStudent(long studentId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        // Selecting desired criteria
+        String selectQuery = "SELECT * " + " FROM " + Config.STUDENTS_TABLE_NAME+ " WHERE " + Config.STUDENT_ID + " = " + studentId;
+
+        try {
+            cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(Config.STUDENT_ID));
+                    String firstName = cursor.getString(cursor.getColumnIndex(Config.STUDENT_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndex(Config.STUDENT_LAST_NAME));
+
+                    return new Student(id, null, firstName, lastName);
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return new Student();
+
+    }
+
+    /**
+     * Verify if student is registered in a specific course
+     * @param student
+     * @param course
+     * @return
+     */
 
     public boolean isStudentRegisteredInCourse(Student student, Course course) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -217,7 +264,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+
     // =============================== Course Table Methods ===============================
+
+
+    /**
+     * Insert Course into database
+     * @param course
+     * @return
+     */
     public long insertCourse(Course course) {
 
         if (!checkCourseAlreadyExists(course)) {
@@ -250,6 +305,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // =============================== Invigilator Table Methods ===============================
+
+    /**
+     * Get all courses from a specific invigilator
+     * @param invigilatorID
+     * @return
+     */
 
     //get all courses assigned to an invigilator based on the invigilator primary key id
     public List<Course> getCourses(long invigilatorID) {
@@ -298,6 +359,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Collections.emptyList();
 
     }
+
+    /**
+     * Verify if a course exists
+     * @param course
+     * @return
+     */
 
     public boolean checkCourseAlreadyExists(Course course) {
 

@@ -4,13 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.examapp.R;
-
 import java.util.List;
-
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.CourseAdapter;
 import edu.coen390.androidapp.Model.Course;
@@ -53,7 +49,7 @@ public class CourseActivity extends AppCompatActivity {
         Intent intent = getIntent();
         // TODO: Get object from LoginActivity. Set username to text view
         User invigilator = (User) intent.getSerializableExtra("invigilatorObject");
-        userNameTextView.setText(invigilator.getUserName());
+        userNameTextView.setText("User:" + "  " + invigilator.getUserName());
 
         loadListView(invigilator.getId());
 

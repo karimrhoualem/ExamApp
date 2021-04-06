@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp"
         android:usesCleartextTraffic="true">
-        <activity android:name="edu.coen390.androidapp.View.VerificationModeActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.ManualVerification"></activity>
+        <activity android:name="edu.coen390.androidapp.View.VerificationModeActivity" />
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -30,7 +31,7 @@
 
         <activity
             android:name="edu.coen390.androidapp.View.CourseActivity"
-            android:label="@string/title_activity_course">
+           >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.coen390.androidapp.View.LoginActivity" />

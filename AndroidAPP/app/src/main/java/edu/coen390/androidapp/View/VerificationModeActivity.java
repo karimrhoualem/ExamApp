@@ -23,7 +23,7 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
     private Course course;
     private Button facialRecognitionButton;
     private Button cardScannerButton;
-
+    private Button manualVerification;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -33,6 +33,7 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
 
         facialRecognitionButton = findViewById(R.id.facialRecognitionButton);
         cardScannerButton = findViewById(R.id.cardScannerButton);
+        manualVerification = findViewById(R.id.manualVerificationButton);
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(COURSE_INTENT);
@@ -51,6 +52,12 @@ public class VerificationModeActivity extends AppCompatActivity implements Seria
 
         cardScannerButton.setOnClickListener(v -> {
             // TODO: empty for now. To be completed in sprint 3 when we receive the card reader.
+        });
+
+        manualVerification.setOnClickListener(v -> {
+            Intent intent = new Intent(VerificationModeActivity.this, ManualVerification.class);
+            intent.putExtra(COURSE_INTENT, course);
+            startActivity(intent);
         });
     }
 

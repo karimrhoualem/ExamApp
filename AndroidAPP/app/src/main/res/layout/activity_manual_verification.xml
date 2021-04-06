@@ -1,25 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context="edu.coen390.androidapp.View.LiveFeedActivity">
+    tools:context="edu.coen390.androidapp.View.ManualVerification">
 
 
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="395dp"
-        android:layout_height="234dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/studentName_linearLayout"
+    <TextView
+        android:id="@+id/nameStudentid_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Enter student ID"
+        android:textColor="#020202"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldStudentId"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:gravity="center_horizontal"
+        android:hint="Student ID"
+        android:textColorHint="#3700B3"
+        app:boxStrokeColor="#FF3700B3"
+        app:hintTextColor="#FF3700B3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </WebView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_studentId"
+            android:layout_width="362dp"
+            android:layout_height="54dp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/verifyButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="50dp"
+        android:text="Verify"
+        app:backgroundTint="@color/purple_700"
+        app:layout_constraintBottom_toTopOf="@+id/studentName_linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldStudentId" />
 
     <LinearLayout
         android:id="@+id/studentName_linearLayout"
@@ -30,7 +71,7 @@
         app:layout_constraintBottom_toTopOf="@+id/studentID_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/webView">
+        app:layout_constraintTop_toBottomOf="@+id/verifyButton">
 
         <TextView
             android:id="@+id/textView1"
@@ -129,7 +170,7 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="15dp"
                 android:gravity="center"
                 android:text="BACK"
                 app:backgroundTint="@color/purple_700" />
@@ -144,9 +185,10 @@
                 android:gravity="center"
                 android:text="save"
                 app:backgroundTint="@color/purple_700"
-                />
-        </LinearLayout>
+                 />
 
+
+        </LinearLayout>
 
     </LinearLayout>
 

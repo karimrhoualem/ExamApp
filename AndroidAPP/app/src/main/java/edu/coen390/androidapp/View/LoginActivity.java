@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.examapp.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
@@ -19,10 +20,9 @@ import edu.coen390.androidapp.Model.User;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private WebView myWebView;
     private Button login;
     private DatabaseHelper dbHelper;
-    private EditText loginUserName, loginPassword;
+    private TextInputEditText loginUserName, loginPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupUI() {
 
-        loginUserName = findViewById(R.id.UserName);
-        loginPassword = findViewById(R.id.Password);
+        loginUserName = findViewById(R.id.txt_user);
+        loginPassword = findViewById(R.id.txt_password);
         login = findViewById(R.id.Login);
     }
 
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             if (verification) {
                 openCourseActivity();
             } else {
-                Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -82,18 +82,11 @@ public class LoginActivity extends AppCompatActivity {
 
         dbHelper.addInvigilator(user1);
         dbHelper.addInvigilator(user2);
-
-        // Testing  getInvigilator function - It works
-
-        //user1 = dbHelper.getInvigilator(1);
-        //Log.d(TAG, "User: " + " " + user1.getFirstName() + " " + user1.getLastName() + " " + user1.getUserName()
-        //    + " " + user1.getPassword());
-
         dbHelper.close();
     }
 
     private void openCourseActivity() {
-        int id = 1;
+
         Intent intent = new Intent(this, CourseActivity.class);
         //intent.putExtra("invigilator_id",id);
         //Log.d(TAG,"after putExtra" + id);

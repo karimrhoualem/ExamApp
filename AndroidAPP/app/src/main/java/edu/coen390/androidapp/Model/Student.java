@@ -10,6 +10,8 @@ public class Student implements Serializable {
     private String firstName;
     private String lastName;
 
+    public Student(){};
+
     public Student(int ID, String[] courses, String firstName, String lastName) {
         this.ID = ID;
         this.courses = courses;

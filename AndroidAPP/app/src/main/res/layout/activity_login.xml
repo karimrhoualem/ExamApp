@@ -1,96 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="15dp"
-    android:layout_marginTop="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginBottom="15dp">
+    android:background="@drawable/background"
+    tools:context="edu.coen390.androidapp.View.ManualVerification">
 
 
-    <TextView
-        android:id="@+id/University"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="@string/university"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="#020202"
-        android:textSize="60sp"
-        android:textStyle="bold" />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="121dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/AppName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.111"
+        app:srcCompat="@drawable/logo"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/AppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/University"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="132dp"
         android:text="@string/examapp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="#E65100"
+        android:textColor="#FF3700B3"
         android:textSize="40sp"
         android:textStyle="bold"
-        android:typeface="serif" />
+        android:typeface="serif"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/UserName_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AppName"
-        android:layout_marginLeft="85dp"
-        android:layout_marginTop="75dp"
-        android:text="User Name"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="#020202"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/Password_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AppName"
-        android:layout_marginLeft="85dp"
-        android:layout_marginTop="170dp"
-        android:text="@string/password"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="#020202"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/UserName"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/AppName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        android:layout_marginTop="85dp"
+        android:layout_marginBottom="274dp"
+        android:foregroundTint="#3700B3"
+        android:gravity="center_horizontal"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:textColorHint="#3700B3"
+        app:boxStrokeColor="#FF3700B3"
+        app:hintTextColor="#FF3700B3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
-    <EditText
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_user"
+            android:layout_width="362dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/Password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/UserName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:inputType="textPassword" />
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:hint="Password"
+        app:boxStrokeColor="#FF3700B3"
+        app:hintTextColor="#FF3700B3"
+        android:textColorHint="#3700B3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/UserName"
+        app:passwordToggleEnabled="true">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_password"
+            android:layout_width="362dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:inputType="textPassword"
+            app:layout_constraintStart_toStartOf="parent" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/Login"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Password"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
         android:text="@string/login"
-        app:iconTint="#FFFFFF" />
-</RelativeLayout>
+        android:textColor="@android:color/white"
+        app:backgroundTint="@color/purple_700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Password" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
