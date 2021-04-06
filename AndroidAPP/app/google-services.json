@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "561171814663",
+    "project_id": "directed-hour-309900",
+    "storage_bucket": "directed-hour-309900.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561171814663:android:f8ce84fa9444eae24a4da2",
+        "android_client_info": {
+          "package_name": "edu.coen390.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561171814663-2s86gav278q1p7scgbq775tr90ls7rff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7hz8T0BtSp8rx00p6bcexbWLHRlKhtio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561171814663-2s86gav278q1p7scgbq775tr90ls7rff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

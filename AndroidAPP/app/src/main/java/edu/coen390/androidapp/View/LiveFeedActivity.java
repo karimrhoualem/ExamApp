@@ -17,7 +17,8 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.examapp.R;
+//import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

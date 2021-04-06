@@ -7,7 +7,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.examapp.R;
+//import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 
 import java.io.Serializable;
 

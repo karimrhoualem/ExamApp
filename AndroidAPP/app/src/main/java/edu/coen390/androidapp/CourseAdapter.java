@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.examapp.R;
+//import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 
 import java.util.List;
 
