@@ -36,8 +36,10 @@ public class LiveFeedActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
-    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+//    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
+//    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
     /**
      * Tag used for logger.
      */
@@ -61,6 +63,18 @@ public class LiveFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_feed);
 
+        setupUI();
+
+        Intent intent = getIntent();
+        course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
+
+        Log.d(TAG, "after getIntent " + course.toString());
+
+        dbHelper = new DatabaseHelper(this);
+        timer = new Timer();
+    }
+
+    private void setupUI() {
         studentName = findViewById(R.id.studentNameTextView);
         studentID = findViewById(R.id.studentIDTextView);
         seatNumber = findViewById(R.id.seatNumberTextView);
@@ -68,22 +82,6 @@ public class LiveFeedActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         saveButton = findViewById(R.id.saveButton);
 
-        setButtonListeners();
-
-        // Receive Course object when CourseActivity intent begins LiveFeedActivity
-        // For now, just using a manually created Course object
-        // https://stackoverflow.com/a/7827593/12044281
-        Intent intent = getIntent();
-        course = (Course) intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
-
-        Log.d(TAG, "after getIntent " + course.toString());
-
-        dbHelper = new DatabaseHelper(this);
-        timer = new Timer();
-
-    }
-
-    private void setButtonListeners() {
         backButton.setOnClickListener(v -> LiveFeedActivity.this.finish());
 
         saveButton.setOnClickListener(v -> {
@@ -101,30 +99,6 @@ public class LiveFeedActivity extends AppCompatActivity {
         super.onStart();
 
         launchWebView();
-
-        // TODO: Remove this manual student entry later
-        Student obama = new Student(45454545, new String[]{"ENGR 391", "COMP 472"}, "Barack", "Obama");
-        Student tawfiq = new Student(40000390, new String[]{"ENGR 391", "COEN 313"}, "Tawfiq", "Jawhar");
-        Student hamill = new Student(40102453, new String[]{"ENGR 391", "COEN 313"}, "Mark", "Hamill");
-        Student alec = new Student(40103773, new String[]{"ENGR 391", "COEN 313"}, "Alec", "Wolfe");
-        long result = dbHelper.insertStudent(obama);
-        long result2 = dbHelper.insertStudent(tawfiq);
-        long result3 = dbHelper.insertStudent(hamill);
-        long result4 = dbHelper.insertStudent(alec);
-
-        if (result == -1 && result2 == -1 && result3 == -1 && result4 == -1) {
-            Log.d(TAG, "Error inserting student into DB table.");
-        } else {
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + obama.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + tawfiq.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + hamill.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + alec.toString());
-        }
-
 
         try {
             // Get student information via an asynchronous JSON http request
@@ -174,7 +148,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                         // Display student information and confirmation status
                         if (isStudentConfirmed) {
                             studentName.setText(student.getFirstName() + " " + student.getLastName());
-                            studentID.setText(Integer.toString(student.getID()));
+                            studentID.setText(Integer.toString((int)student.getId()));
                             if (!isStudentSeated) {
                                 seat = course.getSeats().getNextSeat(student);
                                 dbHelper.insertStudentSeat(student, course, seat);
@@ -262,7 +236,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                 studentLastName = "N/A";
             }
 
-            return new Student(studentID, null, studentFirstName, studentLastName);
+            return new Student(studentID, null, studentFirstName, studentLastName, null, null);
         } catch (JSONException e) {
             e.printStackTrace();
         }

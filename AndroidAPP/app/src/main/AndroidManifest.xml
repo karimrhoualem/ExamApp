@@ -15,9 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp"
         android:usesCleartextTraffic="true">
-        <activity android:name="edu.coen390.androidapp.View.CardScanActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.ProfessorReportActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.CardScanActivity" />
         <activity android:name="edu.coen390.androidapp.View.ManualVerification" />
-        <activity android:name="edu.coen390.androidapp.View.VerificationModeActivity" />
+        <activity android:name="edu.coen390.androidapp.View.InvigilatorActivity" />
 
         <uses-library
             android:name="com.google.android.wearable"

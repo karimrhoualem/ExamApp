@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -32,7 +31,8 @@ public class CardScanActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+//    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
 
     //*********tested using JSON_test2.py********
 
@@ -72,14 +72,12 @@ public class CardScanActivity extends AppCompatActivity {
         setButtonListeners();
 
         Intent intent = getIntent();
-        course = (Course) intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
+        course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
 
         Log.d(TAG, "after getIntent " + course.toString());
 
         dbHelper = new DatabaseHelper(this);
         timer = new Timer();
-
-
     }
 
     private void setButtonListeners() {
@@ -98,10 +96,6 @@ public class CardScanActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        //*****this is for testing
-        //Student me = new Student(26603157, new String[]{"ENGR 391", "COMP 472"}, "Karim", "Rhoualem");
-        //long result = dbHelper.insertStudent(me);
 
         try {
             // Get student information via an asynchronous JSON http request
@@ -123,8 +117,6 @@ public class CardScanActivity extends AppCompatActivity {
             });
 */
 
-
-
             timer.scheduleAtFixedRate(timerTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -141,12 +133,10 @@ public class CardScanActivity extends AppCompatActivity {
 
                         if (student != null) {
                             isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-                        } else {
+                        }
+                        else {
                             isStudentConfirmed = false;
                         }
-
-
-
 
                         boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
                         seat = 0;
@@ -155,15 +145,12 @@ public class CardScanActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
-
-
                                 // Display student information and confirmation status
                                 if (isStudentConfirmed) {
                                     String name = student.getFirstName() + " " + student.getLastName();
                                     studentName.setText(name);
                                     Log.d(TAG,"student name: " + name);
-                                    studentID.setText(Integer.toString(student.getID()));
+                                    studentID.setText(Integer.toString((int)student.getId()));
                                     if (!isStudentSeated) {
                                         seat = course.getSeats().getNextSeat(student);
                                         dbHelper.insertStudentSeat(student, course, seat);
@@ -178,6 +165,10 @@ public class CardScanActivity extends AppCompatActivity {
                                     imageView.setImageDrawable(drawable);
                                     saveButton.setEnabled(true);
                                     saveButton.setClickable(true);
+
+                                    // Cancel the timer thread when a student is correctly identified,
+                                    // otherwise it keeps running even when we leave the activity.
+                                    cancel();
                                 } else {
                                     studentName.setText("N/A");
                                     studentID.setText("N/A");
@@ -188,7 +179,6 @@ public class CardScanActivity extends AppCompatActivity {
                                     saveButton.setEnabled(false);
                                     saveButton.setClickable(false);
                                 }
-
                             }
                         });
 
@@ -214,8 +204,6 @@ public class CardScanActivity extends AppCompatActivity {
                 }
 
             }, 0, 1000);//put here time 1000 milliseconds=1 second*/
-
-
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
@@ -242,7 +230,7 @@ public class CardScanActivity extends AppCompatActivity {
                 studentLastName = "N/A";
             }
 
-            return new Student(studentID, null, studentFirstName, studentLastName);
+            return new Student(studentID, null, studentFirstName, studentLastName, null, null);
         } catch (JSONException e) {
             e.printStackTrace();
         }

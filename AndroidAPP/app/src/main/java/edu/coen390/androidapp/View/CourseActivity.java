@@ -10,72 +10,67 @@ import java.util.List;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.CourseAdapter;
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.Invigilator;
+import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
+import edu.coen390.androidapp.Model.UserType;
 
 public class CourseActivity extends AppCompatActivity {
-
-
+    public static final String CourseIntentKey = "COURSE_INTENT_KEY";
     private static final String TAG = "CourseActivity";
     protected ListView courseListView;
     protected DatabaseHelper dbHelper;
     protected List<Course> courses;
-    protected int invigilator_id;
     private TextView userNameTextView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
-
         setupUI();
     }
 
     private void setupUI() {
-
         dbHelper = new DatabaseHelper(this);
         courseListView = findViewById(R.id.courseListView);
         userNameTextView = findViewById(R.id.userNameTextView);
 
-
-/*
-        //this will be replaced with the code below
-        invigilator_id = intent.getIntExtra("invigilator_id",0);
-        Log.d(TAG,"after getLongEXTRa " + invigilator_id);
-        userNameTextView.setText("User name"); //this will be replaced with username of invigilator that is logged in
-  */
-
-
         Intent intent = getIntent();
-        // TODO: Get object from LoginActivity. Set username to text view
-        User invigilator = (User) intent.getSerializableExtra("invigilatorObject");
-        userNameTextView.setText("User:" + "  " + invigilator.getUserName());
+        User user = (User) intent.getSerializableExtra(CourseIntentKey);
+        if (user instanceof Invigilator) {
+//            Invigilator invigilator = (Invigilator) user;
+            userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
+            loadListView(user.getId(), UserType.INVIGILATOR);
 
-        loadListView(invigilator.getId());
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
+                intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
+            });
+        }
+        else if (user instanceof Professor) {
+//            Professor professor = (Professor) user;
+            userNameTextView.setText("Professor:" + "  " + user.getUserName());
+            loadListView(user.getId(), UserType.PROFESSOR);
 
-
-        courseListView.setOnItemClickListener((parent, view, position, id) -> {
-
-            Intent intent1 = new Intent(view.getContext(), VerificationModeActivity.class);
-            Course currentCourse = new Course(courses.get(position).getId(),
-                    courses.get(position).getInvigilator_id(),
-                    courses.get(position).getTitle(),
-                    courses.get(position).getCode(),
-                    courses.get(position).getNumOfStudents());
-            intent1.putExtra(VerificationModeActivity.COURSE_INTENT, currentCourse);
-            startActivity(intent1);
-        });
-
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), ProfessorReportActivity.class);
+                intent1.putExtra(ProfessorReportActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
+            });
+        }
     }
 
-    private void loadListView(long invigilatorID) {
+    private Course getCourse(int position) {
+        return new Course(courses.get(position).getId(),
+                courses.get(position).getTitle(),
+                courses.get(position).getCode(),
+                courses.get(position).getNumOfStudents());
+    }
 
-        courses = dbHelper.getCourses(invigilatorID);
+    private void loadListView(long id, UserType userType) {
+        courses = dbHelper.getCourses(id, userType);
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this, courses);
         courseListView.setAdapter(adapter);
-
-
     }
-
-
 }

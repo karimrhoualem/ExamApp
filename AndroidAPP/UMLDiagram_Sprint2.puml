@@ -1,0 +1,186 @@
+@startuml
+class edu.coen390.androidapp.Model.User {
+- long id
+- String firstName
+- String lastName
+- String userName
+- String password
++ long getId()
++ void setId(int)
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
++ String getUserName()
++ void setUserName(String)
++ String getPassword()
++ void setPassword(String)
+}
+class edu.coen390.androidapp.View.LiveFeedActivity {
+- {static} String TAG
++ {static} String KEY_URL_TO_LOAD
++ {static} String WEB_FORM_URL
++ {static} String JSON_STUDENT_URL
+- JSONObject studentInformation
+- WebView myWebView
+- DatabaseHelper dbHelper
+- Course course
+- TextView studentName
+- TextView studentID
+- TextView seatNumber
+- ImageView imageView
+- Button backButton
+- Button saveButton
+# void onCreate(Bundle)
+- void setButtonListeners()
+# void onStart()
+- void launchWebView()
+- Student getStudentFromJSONObject(JSONObject)
+}
+class edu.coen390.androidapp.Model.HttpRequest {
+- {static} String TAG
++ {static} JSONObject getJSONObjectFromURL(String)
+}
+class edu.coen390.androidapp.Model.Student {
+- int ID
+- String[] courses
+- String firstName
+- String lastName
++ int getID()
++ void setID(int)
++ String[] getCourses()
++ void setCourses(String[])
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
++ String toString()
+}
+class edu.coen390.androidapp.Controller.DatabaseHelper {
+- {static} String TAG
+- {static} String DATABASE_NAME
+- {static} int DATABASE_VERSION
++ {static} String strSeparator
+- Context context
++ void onCreate(SQLiteDatabase)
++ void onUpgrade(SQLiteDatabase,int,int)
++ long insertStudent(Student)
++ boolean isStudentRegisteredInCourse(Student,Course)
++ void testMethod()
++ {static} String convertArrayToString(String[])
++ {static} String[] convertStringToArray(String)
++ List<Course> getCourses(long)
++ long insertCourse(Course)
++ void addInvigilator(User)
++ boolean verifyInvigilator(String,String)
++ User getInvigilator(long)
+}
+class edu.coen390.androidapp.View.CourseActivity {
+- {static} String TAG
+# ListView courseListView
+# DatabaseHelper dbHelper
+# List<Course> courses
+# int invigilator_id
+- TextView userNameTextView
+# void onCreate(Bundle)
+- void setupUI()
+- void loadListView(long)
+}
+class edu.coen390.androidapp.CourseAdapter {
+- TextView courseTextView
+- List<Course> courses
+~ Context mContext
++ int getCount()
++ Object getItem(int)
++ long getItemId(int)
++ View getView(int,View,ViewGroup)
+}
+class edu.coen390.androidapp.Controller.Config {
++ {static} String DATABASE_NAME
++ {static} String INVIGILATOR_TABLE_NAME
++ {static} String INVIGILATOR_ID
++ {static} String INVIGILATOR_USERNAME
++ {static} String INVIGILATOR_PASSWORD
++ {static} String INVIGILATOR_FIRST_NAME
++ {static} String INVIGILATOR_LAST_NAME
++ {static} String COURSE_TABLE_NAME
++ {static} String COURSE_ID
++ {static} String COURSE_INVIGILATOR_ID
++ {static} String COURSE_TITLE
++ {static} String COURSE_CODE
++ {static} String COURSE_DESCRIPTION
++ {static} String STUDENTS_TABLE_NAME
++ {static} String STUDENT_ID
++ {static} String STUDENT_COURSE_ID
++ {static} String STUDENT_FIRST_NAME
++ {static} String STUDENT_LAST_NAME
++ {static} String STUDENT_USERNAME
++ {static} String STUDENT_PASSWORD
+}
+class edu.coen390.androidapp.Model.Course {
+- long id
+- long invigilator_id
+- String title
+- String code
++ String toString()
++ long getId()
++ void setId(long)
++ long getInvigilator_id()
++ void setInvigilator_id(long)
++ String getTitle()
++ void setTitle(String)
++ String getCode()
++ void setCode(String)
+}
+class edu.coen390.androidapp.View.LoginActivity {
+- {static} String TAG
+- WebView myWebView
+- Button login
+- DatabaseHelper dbHelper
+- EditText loginUserName
+# void onCreate(Bundle)
+- void setupUI()
+- void loginUser()
+- void newInvigilator()
+- void openCourseActivity()
+}
+class edu.coen390.androidapp.View.VerificationModeActivity {
++ {static} String COURSE_INTENT
+- {static} String TAG
+- Course course
+- Button facialRecognitionButtion
+- Button cardScannerButton
+# void onCreate(Bundle)
+- void setupUI()
+}
+class edu.coen390.androidapp.Model.Invigilator {
+- int ID
+- String firstName
+- String lastName
+- String username
+- String password
++ int getID()
++ void setID(int)
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
++ String getUsername()
++ void setUsername(String)
++ String getPassword()
++ void setPassword(String)
+}
+
+
+java.io.Serializable <|.. edu.coen390.androidapp.Model.User
+androidx.appcompat.app.AppCompatActivity <|-- edu.coen390.androidapp.View.LiveFeedActivity
+java.io.Serializable <|.. edu.coen390.androidapp.Model.Student
+android.database.sqlite.SQLiteOpenHelper <|-- edu.coen390.androidapp.Controller.DatabaseHelper
+androidx.appcompat.app.AppCompatActivity <|-- edu.coen390.androidapp.View.CourseActivity
+android.widget.BaseAdapter <|-- edu.coen390.androidapp.CourseAdapter
+java.io.Serializable <|.. edu.coen390.androidapp.Model.Course
+androidx.appcompat.app.AppCompatActivity <|-- edu.coen390.androidapp.View.LoginActivity
+java.io.Serializable <|.. edu.coen390.androidapp.View.VerificationModeActivity
+androidx.appcompat.app.AppCompatActivity <|-- edu.coen390.androidapp.View.VerificationModeActivity
+java.io.Serializable <|.. edu.coen390.androidapp.Model.Invigilator
+@enduml

@@ -16,9 +16,6 @@ import android.widget.Toast;
 import com.example.examapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Student;
@@ -54,7 +51,6 @@ public class ManualVerification extends AppCompatActivity {
         super.onStart();
 
         Log.d(TAG, "On Start");
-        addStudentToDatabase();
         searchStudent();
         saveStudent();
     }
@@ -86,7 +82,7 @@ public class ManualVerification extends AppCompatActivity {
         // For now, just using a manually created Course object
         // https://stackoverflow.com/a/7827593/12044281
         Intent intent = getIntent();
-        course = (Course) intent.getSerializableExtra(VerificationModeActivity.COURSE_INTENT);
+        course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
         
 
         Log.d(TAG, "after getIntent " + course.toString());
@@ -95,37 +91,6 @@ public class ManualVerification extends AppCompatActivity {
 
 
     }
-
-    protected void addStudentToDatabase() {
-
-        Student obama = new Student(45454545, new String[]{"ENGR 391", "COMP 472"}, "Barack", "Obama");
-        Student tawfiq = new Student(40000390, new String[]{"ENGR 391", "COEN 313"}, "Tawfiq", "Jawhar");
-        Student hamill = new Student(40102453, new String[]{"ENGR 391", "COEN 313"}, "Mark", "Hamill");
-        Student alec = new Student(40103773, new String[]{"ENGR 391", "COEN 313"}, "Alec", "Wolfe");
-
-        long result = dbHelper.insertStudent(obama);
-        long result2 = dbHelper.insertStudent(tawfiq);
-        long result3 = dbHelper.insertStudent(hamill);
-        long result4 = dbHelper.insertStudent(alec);
-
-        Log.d(TAG, "result: " + result);
-
-        if (result == -1 && result2 == -1 && result3 == -1 && result4 == -1) {
-            Log.d(TAG, "Error inserting student into DB table.");
-        } else {
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + obama.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + tawfiq.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + hamill.toString());
-            Log.d(TAG, "Student successfully inserted into DB: \n"
-                    + alec.toString());
-
-        }
-
-    }
-
 
     // TODO ????
     private void saveStudent() {
@@ -174,7 +139,7 @@ public class ManualVerification extends AppCompatActivity {
                     // Display student information and confirmation status
                     if (isStudentConfirmed) {
                         studentName.setText(student.getFirstName() + " " + student.getLastName());
-                        studentID.setText(Integer.toString(student.getID()));
+                        studentID.setText(Integer.toString((int)student.getId()));
                         if (!isStudentSeated) {
                             seat = course.getSeats().getNextSeat(student);
                             dbHelper.insertStudentSeat(student, course, seat);

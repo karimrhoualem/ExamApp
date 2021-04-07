@@ -3,24 +3,30 @@ package edu.coen390.androidapp.Model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-
     private long id;
+    private String[] courses;
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
 
-    public User() {
+    public User() {}
 
-    }
-
-    public User(long id, String firstName, String lastName, String userName, String password) {
+    public User(long id, String[] courses, String firstName, String lastName, String userName, String password) {
         this.id = id;
+        this.courses = courses;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.password = password;
+    }
 
+    public String[] getCourses() {
+        return courses;
+    }
+
+    public void setCourses(String[] courses) {
+        this.courses = courses;
     }
 
     public long getId() {

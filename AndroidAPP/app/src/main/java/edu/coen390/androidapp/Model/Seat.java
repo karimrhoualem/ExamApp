@@ -56,9 +56,9 @@ public class Seat implements Serializable {
         if (!isFull()) {
             for (int seat : seats) {
                 if (!isOccupied(seat)) {
-                    if(studentSeat.get(student.getID()) == null){
+                    if(studentSeat.get(student.getId()) == null){
                         setSeatOccupied(seat);
-                        studentSeat.put(student.getID(),seat);
+                        studentSeat.put((int)student.getId(),seat);
                         return seat;
                     }
                     return  studentSeat.get(student);
