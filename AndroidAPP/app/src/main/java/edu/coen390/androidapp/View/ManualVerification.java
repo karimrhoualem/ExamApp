@@ -142,7 +142,7 @@ public class ManualVerification extends AppCompatActivity {
                         studentID.setText(Integer.toString((int)student.getId()));
                         if (!isStudentSeated) {
                             seat = course.getSeats().getNextSeat(student);
-                            dbHelper.insertStudentSeat(student, course, seat);
+                            dbHelper.insertInExamTable(student, course, seat);
                         } else {
                             seat = dbHelper.getStudentSeat(student, course);
                         }

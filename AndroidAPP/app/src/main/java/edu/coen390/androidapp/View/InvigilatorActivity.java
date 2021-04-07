@@ -23,12 +23,13 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
     private Button facialRecognitionButton;
     private Button cardScannerButton;
     private Button manualVerification;
+    private Button generateReportButton;
     private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verification_mode);
+        setContentView(R.layout.activity_invigilator);
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(COURSE_INTENT);
@@ -42,6 +43,7 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         facialRecognitionButton = findViewById(R.id.facialRecognitionButton);
         cardScannerButton = findViewById(R.id.cardScannerButton);
         manualVerification = findViewById(R.id.manualVerificationButton);
+        generateReportButton = findViewById(R.id.generateReportButton);
 
         facialRecognitionButton.setOnClickListener(v -> {
             Intent intent = new Intent(InvigilatorActivity.this, LiveFeedActivity.class);
@@ -57,6 +59,12 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
 
         manualVerification.setOnClickListener(v -> {
             Intent intent = new Intent(InvigilatorActivity.this, ManualVerification.class);
+            intent.putExtra(COURSE_INTENT, course);
+            startActivity(intent);
+        });
+
+        generateReportButton.setOnClickListener(v -> {
+            Intent intent = new Intent(InvigilatorActivity.this, InvigilatorReportActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });

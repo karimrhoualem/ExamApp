@@ -17,6 +17,7 @@ import java.util.List;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
+import edu.coen390.androidapp.Model.ReportRows;
 import edu.coen390.androidapp.Model.Student;
 import edu.coen390.androidapp.Model.UserType;
 
@@ -662,6 +663,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.EXAM_COURSE_ID + " TEXT, "
                 + Config.EXAM_STUDENT_ID + " INTEGER, "
                 + Config.EXAM_STUDENT_SEAT + " INTEGER, "
+                + Config.EXAM_SIGNED_OUT + " INTEGER, "
                 + "FOREIGN KEY" + " (" + Config.EXAM_COURSE_ID + ") "
                 + "REFERENCES " + Config.COURSE_TABLE_NAME + " ("
                 + Config.COURSE_ID + ") "
@@ -674,13 +676,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_EXAM_TABLE);
     }
 
+
+    public List<ReportRows> getReportRows(Course course) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        List<ReportRows> rowList = new ArrayList<>();
+
+        // Selecting desired criteria
+        String selectQuery = "SELECT *" + " FROM " + Config.EXAM_TABLE_NAME.get(course.getCode());
+
+        try {
+            cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int examId = cursor.getInt(cursor.getColumnIndex(Config.EXAM_ID));
+                        String courseId = cursor.getString(cursor.getColumnIndex(Config.EXAM_COURSE_ID));
+                        String studentId = cursor.getString(cursor.getColumnIndex(Config.EXAM_STUDENT_ID));
+                        String seatNumber = cursor.getString(cursor.getColumnIndex(Config.EXAM_STUDENT_SEAT));
+                        int isSignedOut = cursor.getInt(cursor.getColumnIndex(Config.EXAM_SIGNED_OUT));
+
+                        ReportRows row = new ReportRows(examId, courseId, studentId, seatNumber, isSignedOut);
+                        rowList.add(row);
+                    }
+                    while (cursor.moveToNext());
+
+                    return rowList;
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+        return null;
+    }
+
+
     /**
      * Assign Seat Number to student
      *
      * @param student Student that requires seating
      * @param course  Course that is hosting the examination
      */
-    public void insertStudentSeat(Student student, Course course, int seat) {
+    public void insertInExamTable(Student student, Course course, int seat) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Create content values to hold information
@@ -688,6 +730,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.EXAM_COURSE_ID, course.getId());
         contentValues.put(Config.EXAM_STUDENT_ID, student.getId());
         contentValues.put(Config.EXAM_STUDENT_SEAT, seat);
+        contentValues.put(Config.EXAM_SIGNED_OUT, 0);
 
         //Insert row - throw Exception
         try {
@@ -700,6 +743,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
 
+    }
+
+    public int updateSignOutStatus(Course course, ReportRows row, int status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(Config.EXAM_SIGNED_OUT, status);
+        return db.update(Config.EXAM_TABLE_NAME.get(course.getCode()), cv,
+                Config.EXAM_STUDENT_ID + "= ?", new String[] {row.getStudentId()});
     }
 
 

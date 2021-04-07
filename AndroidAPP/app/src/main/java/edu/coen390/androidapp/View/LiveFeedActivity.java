@@ -38,8 +38,8 @@ public class LiveFeedActivity extends AppCompatActivity {
     @VisibleForTesting
 //    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
 //    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
+    public static final String WEB_FORM_URL = "http://192.168.0.166:5001";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5001";
     /**
      * Tag used for logger.
      */
@@ -151,7 +151,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                             studentID.setText(Integer.toString((int)student.getId()));
                             if (!isStudentSeated) {
                                 seat = course.getSeats().getNextSeat(student);
-                                dbHelper.insertStudentSeat(student, course, seat);
+                                dbHelper.insertInExamTable(student, course, seat);
                             } else {
                                 seat = dbHelper.getStudentSeat(student, course);
                             }

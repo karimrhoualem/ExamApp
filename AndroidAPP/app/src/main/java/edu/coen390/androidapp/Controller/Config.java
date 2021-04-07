@@ -44,4 +44,5 @@ public class Config {
     public static final String EXAM_COURSE_ID = "ExamCourseID";
     public static final String EXAM_STUDENT_ID = "ExamStudentID";
     public static final String EXAM_STUDENT_SEAT = "ExamStudentSeat";
+    public static final String EXAM_SIGNED_OUT = "ExamSignedOut";
 }

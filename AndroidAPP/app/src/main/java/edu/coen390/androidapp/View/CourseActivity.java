@@ -38,7 +38,6 @@ public class CourseActivity extends AppCompatActivity {
         Intent intent = getIntent();
         User user = (User) intent.getSerializableExtra(CourseIntentKey);
         if (user instanceof Invigilator) {
-//            Invigilator invigilator = (Invigilator) user;
             userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
             loadListView(user.getId(), UserType.INVIGILATOR);
 
@@ -49,13 +48,12 @@ public class CourseActivity extends AppCompatActivity {
             });
         }
         else if (user instanceof Professor) {
-//            Professor professor = (Professor) user;
             userNameTextView.setText("Professor:" + "  " + user.getUserName());
             loadListView(user.getId(), UserType.PROFESSOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
-                Intent intent1 = new Intent(view.getContext(), ProfessorReportActivity.class);
-                intent1.putExtra(ProfessorReportActivity.COURSE_INTENT, getCourse(position));
+                Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
+                intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
                 startActivity(intent1);
             });
         }
