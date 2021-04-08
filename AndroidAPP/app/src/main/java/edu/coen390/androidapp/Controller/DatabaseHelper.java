@@ -17,7 +17,7 @@ import java.util.List;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
-import edu.coen390.androidapp.Model.ReportRows;
+import edu.coen390.androidapp.Model.ReportRow;
 import edu.coen390.androidapp.Model.Student;
 import edu.coen390.androidapp.Model.UserType;
 
@@ -677,10 +677,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<ReportRows> getReportRows(Course course) {
+    public List<ReportRow> getReportRows(Course course) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
-        List<ReportRows> rowList = new ArrayList<>();
+        List<ReportRow> rowList = new ArrayList<>();
 
         // Selecting desired criteria
         String selectQuery = "SELECT *" + " FROM " + Config.EXAM_TABLE_NAME.get(course.getCode());
@@ -697,7 +697,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String seatNumber = cursor.getString(cursor.getColumnIndex(Config.EXAM_STUDENT_SEAT));
                         int isSignedOut = cursor.getInt(cursor.getColumnIndex(Config.EXAM_SIGNED_OUT));
 
-                        ReportRows row = new ReportRows(examId, courseId, studentId, seatNumber, isSignedOut);
+                        ReportRow row = new ReportRow(examId, courseId, studentId, seatNumber, isSignedOut);
                         rowList.add(row);
                     }
                     while (cursor.moveToNext());
@@ -745,7 +745,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public int updateSignOutStatus(Course course, ReportRows row, int status) {
+    public int updateSignOutStatus(Course course, ReportRow row, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues cv = new ContentValues();

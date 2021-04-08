@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp"
         android:usesCleartextTraffic="true">
-        <activity android:name="edu.coen390.androidapp.View.InvigilatorReportActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.ProfessorReportActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.InvigilatorReportActivity" />
         <activity android:name="edu.coen390.androidapp.View.ProfessorActivity" />
         <activity android:name="edu.coen390.androidapp.View.CardScanActivity" />
         <activity android:name="edu.coen390.androidapp.View.ManualVerification" />

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TableLayout;
@@ -19,7 +18,7 @@ import java.util.List;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
-import edu.coen390.androidapp.Model.ReportRows;
+import edu.coen390.androidapp.Model.ReportRow;
 
 /*
  * Good example for UI: https://www.tutorialspoint.com/how-to-add-table-rows-dynamically-in-android-layout
@@ -76,10 +75,10 @@ public class InvigilatorReportActivity extends AppCompatActivity {
     }
 
     private void generateTableBody() {
-        List<ReportRows> listOfRows = dbHelper.getReportRows(course);
+        List<ReportRow> listOfRows = dbHelper.getReportRows(course);
 
         if (listOfRows != null) {
-            for (ReportRows row : listOfRows) {
+            for (ReportRow row : listOfRows) {
                 TableRow tr_body = new TableRow(this);
                 tr_body.setBackgroundColor(Color.WHITE);
 
