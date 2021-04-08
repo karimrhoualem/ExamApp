@@ -19,6 +19,7 @@ import java.util.List;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.ReportRow;
+import edu.coen390.androidapp.Model.Student;
 
 public class ProfessorReportActivity extends AppCompatActivity {
     private Course course;
@@ -43,12 +44,12 @@ public class ProfessorReportActivity extends AppCompatActivity {
         tr_head.setBackgroundColor(Color.GRAY);
 
         TextView examId = new TextView(this);
-        examId.setText("Exam ID");
+        examId.setText("Exam");
         examId.setTextColor(Color.WHITE);
         tr_head.addView(examId);
 
         TextView courseId = new TextView(this);
-        courseId.setText("Course ID");
+        courseId.setText("Course");
         courseId.setTextColor(Color.WHITE);
         tr_head.addView(courseId);
 
@@ -57,8 +58,13 @@ public class ProfessorReportActivity extends AppCompatActivity {
         studentId.setTextColor(Color.WHITE);
         tr_head.addView(studentId);
 
+        TextView studentName = new TextView(this);
+        studentName.setText("Name");
+        studentName.setTextColor(Color.WHITE);
+        tr_head.addView(studentName);
+
         TextView seatNumber = new TextView(this);
-        seatNumber.setText("Seat Number");
+        seatNumber.setText("Seat");
         seatNumber.setTextColor(Color.WHITE);
         tr_head.addView(seatNumber);
 
@@ -75,6 +81,8 @@ public class ProfessorReportActivity extends AppCompatActivity {
 
         if (listOfRows != null) {
             for (ReportRow row : listOfRows) {
+                Student student = dbHelper.getStudent(Long.parseLong(row.getStudentId()));
+
                 TableRow tr_body = new TableRow(this);
                 tr_body.setBackgroundColor(Color.WHITE);
 
@@ -92,6 +100,11 @@ public class ProfessorReportActivity extends AppCompatActivity {
                 studentId.setText(String.valueOf(row.getStudentId()));
                 studentId.setTextColor(Color.BLACK);
                 tr_body.addView(studentId);
+
+                TextView studentName = new TextView(this);
+                studentName.setText(student.getFirstName() + " " + student.getLastName());
+                studentName.setTextColor(Color.BLACK);
+                tr_body.addView(studentName);
 
                 TextView seatNumber = new TextView(this);
                 seatNumber.setText(String.valueOf(row.getStudentSeat()));
@@ -118,5 +131,6 @@ public class ProfessorReportActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(ProfessorReportActivity.this);
         tableLayout = findViewById(R.id.professorTableLayout);
         tableLayout.removeAllViews();
+        tableLayout.setStretchAllColumns(true);
     }
 }
