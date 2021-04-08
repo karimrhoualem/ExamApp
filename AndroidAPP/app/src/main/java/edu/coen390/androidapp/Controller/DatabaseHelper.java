@@ -722,7 +722,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param student Student that requires seating
      * @param course  Course that is hosting the examination
      */
-    public void insertInExamTable(Student student, Course course, int seat) {
+    public int insertInExamTable(Student student, Course course, int seat) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Create content values to hold information
@@ -736,13 +736,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             db.insertOrThrow(Config.EXAM_TABLE_NAME.get(course.getCode()),
                     null, contentValues);
+            return 1;
         } catch (SQLException e) {
             Log.d(TAG, "Exception: " + e.getMessage());
             Toast.makeText(context, "Operation Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
             db.close();
         }
-
+        return -1;
     }
 
     public int updateSignOutStatus(Course course, ReportRow row, int status) {
@@ -783,7 +784,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         //this is for one row
                         seat = cursor.getInt(cursor.getColumnIndex(Config.EXAM_STUDENT_SEAT));
 
-                    } while (cursor.moveToNext()); //go to next row of db
+                    }
+                    while (cursor.moveToNext()); //go to next row of db
 
                     return seat;
                 }
@@ -820,16 +822,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] selectionArg = {String.valueOf(student.getId())};
 
         // Query user table
-        Cursor cursor = db.query(Config.EXAM_TABLE_NAME.get(course.getCode()),
-                columnExamTable,
-                selection,
-                selectionArg,
-                null,
-                null,
-                null);
-        int cursorCount = cursor.getCount();
-        cursor.close();
-        db.close();
+        Cursor cursor = null;
+        int cursorCount = 0;
+        try {
+            cursor = db.query(Config.EXAM_TABLE_NAME.get(course.getCode()),
+                    columnExamTable,
+                    selection,
+                    selectionArg,
+                    null,
+                    null,
+                    null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    cursorCount = cursor.getCount();
+                }
+            }
+        }
+        catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+        }
+        finally {
+            cursor.close();
+            db.close();
+        }
 
         return cursorCount > 0;
     }
