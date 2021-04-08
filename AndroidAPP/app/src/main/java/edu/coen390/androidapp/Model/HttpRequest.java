@@ -41,4 +41,33 @@ public class HttpRequest {
 
         return null;
     }
+
+    public static Student getStudentFromJSONObject(JSONObject studentInformation) {
+        try {
+            int studentID = studentInformation.getInt("ID");
+            String studentName = studentInformation.getString("name");
+            String studentFirstName;
+            String studentLastName;
+            if (studentName.contains(" ") && studentID != 0) {
+                String[] names = studentName.split(" ", 2);
+                studentFirstName = names[0];
+                studentLastName = names[1];
+            } else if (studentName.contains("_") && studentID != 0) {
+                String[] names = studentName.split("_", 2);
+                studentFirstName = names[0];
+                studentLastName = names[1];
+
+            } else {
+                studentFirstName = "N/A";
+                studentLastName = "N/A";
+            }
+
+            return new Student(studentID, null, studentFirstName, studentLastName, null, null);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

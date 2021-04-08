@@ -1,6 +1,8 @@
 package edu.coen390.androidapp.View;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.examapp.R;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,17 +35,13 @@ import edu.coen390.androidapp.Model.Student;
 
 
 public class LiveFeedActivity extends AppCompatActivity {
-
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
 //    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
 //    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String WEB_FORM_URL = "http://192.168.0.166:5001";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5001";
-    /**
-     * Tag used for logger.
-     */
+    public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
@@ -53,10 +52,9 @@ public class LiveFeedActivity extends AppCompatActivity {
     private TextView seatNumber;
     private ImageView imageView;
     private Button backButton;
-    private Button saveButton;
     private Timer timer;
     private TimerTask timerTask;
-
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +65,12 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
-
-        Log.d(TAG, "after getIntent " + course.toString());
-
-        dbHelper = new DatabaseHelper(this);
-        timer = new Timer();
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString(course.getCode(), "");
+        if (!json.equals("")) {
+            Gson gson = new Gson();
+            course = gson.fromJson(json, Course.class);
+        }
     }
 
     private void setupUI() {
@@ -80,18 +79,13 @@ public class LiveFeedActivity extends AppCompatActivity {
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
         backButton = findViewById(R.id.backButton);
-        saveButton = findViewById(R.id.saveButton);
-
-        backButton.setOnClickListener(v -> LiveFeedActivity.this.finish());
-
-        saveButton.setOnClickListener(v -> {
-            // TODO: Save student information and seat number in a new DB table for the current course.
-
-            // TODO: Display a toast that shows successful save.
-
-            // TODO: Return to previous activity.
-            //LiveFeedActivity.this.finish();
+        backButton.setOnClickListener(v ->{
+            Toast.makeText(this, "Card Scan Activity Cancelled.", Toast.LENGTH_SHORT).show();
+            LiveFeedActivity.this.finish();
         });
+
+        dbHelper = new DatabaseHelper(this);
+        timer = new Timer();
     }
 
     @Override
@@ -101,100 +95,162 @@ public class LiveFeedActivity extends AppCompatActivity {
         launchWebView();
 
         try {
-            // Get student information via an asynchronous JSON http request
-/*
-            JSONRefresh jsonObject = new JSONRefresh();
-            Thread thread = new Thread(jsonObject);
-            thread.start();*/
-
-
-            /*Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-*/
-
-
             timer.scheduleAtFixedRate(timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     try {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                        Log.d(TAG, "Student Info Obtained : ");
-                        Student student = getStudentFromJSONObject(studentInformation);
+                        Log.d(TAG, "Student Info Obtained : "+ studentInformation);
+                        Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
                         Log.d(TAG, "Student Info Updated : " + student.toString());
 
-                        // Search for the student in the Students DB table and verify
-                        // whether they are enrolled in this course.
-
                         boolean isStudentConfirmed;
-
                         if (student != null) {
                             isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-                        } else {
+                        }
+                        else {
                             isStudentConfirmed = false;
                         }
 
                         boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
-                        int seat = 0;
-                        String studentSeat = "N/A";
 
-                        // Display student information and confirmation status
                         if (isStudentConfirmed) {
-                            studentName.setText(student.getFirstName() + " " + student.getLastName());
-                            studentID.setText(Integer.toString((int)student.getId()));
                             if (!isStudentSeated) {
-                                seat = course.getSeats().getNextSeat(student);
-                                dbHelper.insertInExamTable(student, course, seat);
-                            } else {
-                                seat = dbHelper.getStudentSeat(student, course);
+                                int seat = course.getSeats().getNextSeat(student);
+                                if (seat != -1) {
+                                    int status = dbHelper.insertInExamTable(student, course, seat);
+                                    if (status == 1) {
+                                        String name = student.getFirstName() + " " + student.getLastName();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                studentName.setText(name);
+                                                studentID.setText(Integer.toString((int)student.getId()));
+                                                seatNumber.setText(Integer.toString(seat));
+                                                Drawable drawable = ContextCompat.getDrawable(
+                                                        LiveFeedActivity.this, R.drawable.success);
+                                                imageView.setImageDrawable(drawable);
+                                                Toast.makeText(LiveFeedActivity.this,
+                                                        "Student with ID: " + student.getId() + " has been successfully confirmed. " +
+                                                                "Returning to previous page.",
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        Thread thread = new Thread(){
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(3000);
+
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    Gson gson = new Gson();
+                                                    String json = gson.toJson(course);
+                                                    editor.putString(course.getCode(), json);
+                                                    editor.apply();
+
+                                                    // Cancel the timer thread when a student is correctly identified,
+                                                    // otherwise it keeps running even when we leave the activity.
+                                                    cancel();
+                                                    LiveFeedActivity.this.finish();
+                                                }
+                                                catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        };
+                                        thread.start();
+                                        thread.join();
+                                    }
+                                    else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(LiveFeedActivity.this, "Error inserting student in exam table. Please try again.",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                }
+                                else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(LiveFeedActivity.this, "Error assigning seat to student. Please try again.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
-                            seatNumber.setText(Integer.toString(seat));
-                            Drawable drawable = ContextCompat.getDrawable(
-                                    LiveFeedActivity.this, R.drawable.success);
-                            imageView.setImageDrawable(drawable);
-                            saveButton.setEnabled(true);
-                            saveButton.setClickable(true);
-                        } else {
-                            studentName.setText("N/A");
-                            studentID.setText("N/A");
-                            seatNumber.setText("N/A");
-                            Drawable drawable = ContextCompat.getDrawable(
-                                    LiveFeedActivity.this, R.drawable.failure);
-                            imageView.setImageDrawable(drawable);
-                            saveButton.setEnabled(false);
-                            saveButton.setClickable(false);
+                            else {
+                                int seat = dbHelper.getStudentSeat(student, course);
+                                if (seat != -1) {
+                                    String name = student.getFirstName() + " " + student.getLastName();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            studentName.setText(name);
+                                            studentID.setText(Integer.toString((int)student.getId()));
+                                            seatNumber.setText(Integer.toString(seat));
+                                            Drawable drawable = ContextCompat.getDrawable(
+                                                    LiveFeedActivity.this, R.drawable.success);
+                                            imageView.setImageDrawable(drawable);
+                                            Toast.makeText(LiveFeedActivity.this,
+                                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                            "Returning to previous page.",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                    Thread thread = new Thread(){
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                Thread.sleep(3000);
+
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                Gson gson = new Gson();
+                                                String json = gson.toJson(course);
+                                                editor.putString(course.getCode(), json);
+                                                editor.apply();
+
+                                                // Cancel the timer thread when a student is correctly identified,
+                                                // otherwise it keeps running even when we leave the activity.
+                                                cancel();
+                                                LiveFeedActivity.this.finish();
+                                            }
+                                            catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    };
+                                    thread.start();
+                                    thread.join();
+                                }
+                            }
                         }
-
-                        /*if (isStudentSeated) {
-                            seatNumber.setText(studentSeat);
-                        }*/
-
-                        int finalSeat = seat;
-                        saveButton.setOnClickListener(v -> {
-                            String toastText = String.format("%s %s is verified and seat %d is assigned", student.getFirstName(), student.getLastName(), finalSeat);
-                            Toast.makeText(LiveFeedActivity.this, toastText, Toast.LENGTH_LONG).show();
-                            studentName.setText("N/A");
-                            studentID.setText("N/A");
-                            seatNumber.setText("N/A");
-                            Toast.makeText(LiveFeedActivity.this, "READY TO VERIFY", Toast.LENGTH_LONG).show();
-                            //recreate();
-                        });
-
-                    } catch (Exception e) {
+                        else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    studentName.setText("N/A");
+                                    studentID.setText("N/A");
+                                    seatNumber.setText("N/A");
+                                    Drawable drawable = ContextCompat.getDrawable(
+                                            LiveFeedActivity.this, R.drawable.failure);
+                                    imageView.setImageDrawable(drawable);
+                                    Toast.makeText(LiveFeedActivity.this,
+                                            "Cannot identify student. Please try again.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-
-            }, 0, 1000);//put here time 1000 milliseconds=1 second*/
-
-        } catch (Exception e) {
+            }, 0, 1000);
+        }
+        catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
     }
@@ -215,53 +271,4 @@ public class LiveFeedActivity extends AppCompatActivity {
             }
         });
     }
-
-    private Student getStudentFromJSONObject(JSONObject studentInformation) {
-        try {
-            int studentID = studentInformation.getInt("ID");
-            String studentName = studentInformation.getString("name");
-            String studentFirstName;
-            String studentLastName;
-            if (studentName.contains(" ") && studentID != 0) {
-                String[] names = studentName.split(" ", 2);
-                studentFirstName = names[0];
-                studentLastName = names[1];
-            } else if (studentName.contains("_") && studentID != 0) {
-                String[] names = studentName.split("_", 2);
-                studentFirstName = names[0];
-                studentLastName = names[1];
-
-            } else {
-                studentFirstName = "N/A";
-                studentLastName = "N/A";
-            }
-
-            return new Student(studentID, null, studentFirstName, studentLastName, null, null);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /*class JSONRefresh implements Runnable {
-        private volatile boolean exit = false;
-
-        @Override
-        public void run() {
-            try {
-                while (!exit) {
-                    studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                    Log.d(TAG, "Student Info Obtained");
-                    Thread.sleep(2000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void stop() {
-            exit = true;
-        }
-    }*/
 }
