@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
+import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Student;
 
@@ -36,6 +37,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
     private Course course;
     private DatabaseHelper dbHelper;
     private SharedPreferences sharedPreferences;
+    private SharedPreferenceHelper sharedPreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +48,10 @@ public class ManualVerificationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
 
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(course.getCode(), "");
-        if (!json.equals("")) {
-            Gson gson = new Gson();
-            course = gson.fromJson(json, Course.class);
+        sharedPreferenceHelper = new SharedPreferenceHelper(ManualVerificationActivity.this);
+        Course retrievedCourse = sharedPreferenceHelper.getProfile(course);
+        if (retrievedCourse != null) {
+            course = retrievedCourse;
         }
     }
 
@@ -63,17 +64,16 @@ public class ManualVerificationActivity extends AppCompatActivity {
 
     private void setupUI() {
         studId = findViewById(R.id.txt_studentId);
-        verifyButton = (Button) findViewById(R.id.verifyButton);
+        verifyButton = findViewById(R.id.verifyButton);
         studentName = findViewById(R.id.studentNameTextView);
         studentID = findViewById(R.id.studentIDTextView);
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v ->{
-            Toast.makeText(this, "Card Scan Activity Cancelled.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Manual Verification Cancelled.", Toast.LENGTH_SHORT).show();
             ManualVerificationActivity.this.finish();
         });
-
         dbHelper = new DatabaseHelper(this);
     }
 
@@ -114,20 +114,16 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                     Thread thread = new Thread(){
                                         @Override
                                         public void run() {
-                                            try {
-                                                Thread.sleep(3000);
+                                        try {
+                                            Thread.sleep(3000);
 
-                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                Gson gson = new Gson();
-                                                String json = gson.toJson(course);
-                                                editor.putString(course.getCode(), json);
-                                                editor.apply();
+                                            sharedPreferenceHelper.saveProfile(course);
 
-                                                ManualVerificationActivity.this.finish();
-                                            }
-                                            catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+                                            ManualVerificationActivity.this.finish();
+                                        }
+                                        catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                         }
                                     };
                                     thread.start();
@@ -150,19 +146,16 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                 Thread thread = new Thread(){
                                     @Override
                                     public void run() {
-                                        try {
-                                            Thread.sleep(3000);
+                                    try {
+                                        Thread.sleep(3000);
 
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            Gson gson = new Gson();
-                                            String json = gson.toJson(course);
-                                            editor.putString(course.getCode(), json);
-                                            editor.apply();
-                                            ManualVerificationActivity.this.finish();
-                                        }
-                                        catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                        sharedPreferenceHelper.saveProfile(course);
+
+                                        ManualVerificationActivity.this.finish();
+                                    }
+                                    catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     }
                                 };
                                 thread.start();

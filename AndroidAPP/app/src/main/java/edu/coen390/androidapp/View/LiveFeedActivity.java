@@ -29,6 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
+import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Student;
@@ -55,6 +56,7 @@ public class LiveFeedActivity extends AppCompatActivity {
     private Timer timer;
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
+    private SharedPreferenceHelper sharedPreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,11 @@ public class LiveFeedActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(InvigilatorActivity.COURSE_INTENT);
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(course.getCode(), "");
-        if (!json.equals("")) {
-            Gson gson = new Gson();
-            course = gson.fromJson(json, Course.class);
+
+        sharedPreferenceHelper = new SharedPreferenceHelper(LiveFeedActivity.this);
+        Course retrievedCourse = sharedPreferenceHelper.getProfile(course);
+        if (retrievedCourse != null) {
+            course = retrievedCourse;
         }
     }
 
@@ -139,23 +141,19 @@ public class LiveFeedActivity extends AppCompatActivity {
                                         Thread thread = new Thread(){
                                             @Override
                                             public void run() {
-                                                try {
-                                                    Thread.sleep(3000);
+                                            try {
+                                                Thread.sleep(3000);
 
-                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                    Gson gson = new Gson();
-                                                    String json = gson.toJson(course);
-                                                    editor.putString(course.getCode(), json);
-                                                    editor.apply();
+                                                sharedPreferenceHelper.saveProfile(course);
 
-                                                    // Cancel the timer thread when a student is correctly identified,
-                                                    // otherwise it keeps running even when we leave the activity.
-                                                    cancel();
-                                                    LiveFeedActivity.this.finish();
-                                                }
-                                                catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
+                                                // Cancel the timer thread when a student is correctly identified,
+                                                // otherwise it keeps running even when we leave the activity.
+                                                cancel();
+                                                LiveFeedActivity.this.finish();
+                                            }
+                                            catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                             }
                                         };
                                         thread.start();
@@ -203,23 +201,19 @@ public class LiveFeedActivity extends AppCompatActivity {
                                     Thread thread = new Thread(){
                                         @Override
                                         public void run() {
-                                            try {
-                                                Thread.sleep(3000);
+                                        try {
+                                            Thread.sleep(3000);
 
-                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                Gson gson = new Gson();
-                                                String json = gson.toJson(course);
-                                                editor.putString(course.getCode(), json);
-                                                editor.apply();
+                                            sharedPreferenceHelper.saveProfile(course);
 
-                                                // Cancel the timer thread when a student is correctly identified,
-                                                // otherwise it keeps running even when we leave the activity.
-                                                cancel();
-                                                LiveFeedActivity.this.finish();
-                                            }
-                                            catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+                                            // Cancel the timer thread when a student is correctly identified,
+                                            // otherwise it keeps running even when we leave the activity.
+                                            cancel();
+                                            LiveFeedActivity.this.finish();
+                                        }
+                                        catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                         }
                                     };
                                     thread.start();

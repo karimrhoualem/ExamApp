@@ -163,6 +163,7 @@
             android:id="@+id/cancelSaveLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
@@ -174,18 +175,6 @@
                 android:gravity="center"
                 android:text="BACK"
                 app:backgroundTint="@color/purple_700" />
-
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="save"
-                app:backgroundTint="@color/purple_700"
-                 />
 
 
         </LinearLayout>
