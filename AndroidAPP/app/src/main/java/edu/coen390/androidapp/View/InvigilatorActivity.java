@@ -58,7 +58,7 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         });
 
         manualVerification.setOnClickListener(v -> {
-            Intent intent = new Intent(InvigilatorActivity.this, ManualVerification.class);
+            Intent intent = new Intent(InvigilatorActivity.this, ManualVerificationActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });

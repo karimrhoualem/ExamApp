@@ -19,7 +19,7 @@
         <activity android:name="edu.coen390.androidapp.View.InvigilatorReportActivity" />
         <activity android:name="edu.coen390.androidapp.View.ProfessorActivity" />
         <activity android:name="edu.coen390.androidapp.View.CardScanActivity" />
-        <activity android:name="edu.coen390.androidapp.View.ManualVerification" />
+        <activity android:name="edu.coen390.androidapp.View.ManualVerificationActivity" />
         <activity android:name="edu.coen390.androidapp.View.InvigilatorActivity" />
 
         <uses-library
