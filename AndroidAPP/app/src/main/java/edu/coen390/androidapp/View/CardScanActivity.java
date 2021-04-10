@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 import com.google.gson.Gson;
 
 import org.json.JSONException;

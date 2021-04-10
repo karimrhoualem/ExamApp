@@ -12,7 +12,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 
 import java.util.List;
 

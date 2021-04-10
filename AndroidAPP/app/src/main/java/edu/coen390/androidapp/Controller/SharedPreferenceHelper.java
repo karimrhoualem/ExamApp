@@ -3,7 +3,7 @@ package edu.coen390.androidapp.Controller;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 import com.google.gson.Gson;
 
 import edu.coen390.androidapp.Model.Course;
