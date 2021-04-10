@@ -81,13 +81,7 @@ public class SharedPreferenceHelper {
     }
 
 
-    public void saveInvigilator(User user) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(user);
-        editor.putString("Invigilator", json);
-        editor.apply();
-    }
+
 
     //doesn't work when just returning a user
     public User getUser() {
@@ -109,25 +103,6 @@ public class SharedPreferenceHelper {
 }
 
 
-    public Invigilator getInvigilator () {
-        String json = sharedPreferences.getString("Invigilator", "");
-        if(!json.equals("")){
-            Gson gson = new Gson();
-            return gson.fromJson(json, Invigilator.class);
-            } else {
-                return null;
-            }
-        }
-
-    public Professor getProfessor () {
-        String json = sharedPreferences.getString("Professor", "");
-        if(!json.equals("")){
-            Gson gson = new Gson();
-            return gson.fromJson(json, Professor.class);
-        } else {
-            return null;
-        }
-    }
 
 
 }
