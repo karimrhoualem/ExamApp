@@ -10,15 +10,31 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicReference;
 
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.ReportRow;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.Model.TestUser;
+import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
 
 /**
@@ -52,6 +68,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private final Context context;
 
+    /**
+     * Firebase Authenticated User
+     */
+    private FirebaseUser firebaseUser;
+
+    /**
+     * Firebase Database Object
+     */
+    private FirebaseFirestore db;
+
+    AtomicReference<String> firstName;
+
 
     /**
      * DatabaseHelper constructor.
@@ -61,6 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        db = FirebaseFirestore.getInstance();
         Log.d(TAG, "Inside DatabaseHelper constructor.");
     }
 
@@ -849,5 +878,104 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return cursorCount > 0;
     }
+
+
+    public void setFirebaseUser(FirebaseUser firebaseUser) {
+        this.firebaseUser = firebaseUser;
+    }
+
+    public void verifyUserType(DbCallback dbCallback){
+       Map<String, Object> map = new HashMap<>();
+       String id;
+       String type;
+       //firstName = new AtomicReference<>();
+
+        Queue<TestUser> userList = new LinkedList<>();
+
+        ArrayList<String> testUserList = new ArrayList<>();
+
+
+        DocumentReference docRef = db
+                .collection("test")
+                .document("1");
+
+        Task<DocumentSnapshot > taskUser = docRef.get();
+
+       taskUser
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+                            testUserList.add(document.getString("firstName"));
+                            Log.d(TAG, "First Name : " + testUserList.get(0));
+
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                });
+
+       /*while(!taskUser.isComplete()){
+           try {
+               Thread.sleep(20);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+       }
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+
+
+
+    }
+
+    public User getUser(String type, String id){
+        DocumentReference docRef = null;
+        Queue<User> userList = new LinkedList<>();
+        switch(type){
+            case "prof" :
+                docRef = db
+                        .collection("professors")
+                        .document(id);
+                break;
+            default:
+                break;
+        }
+
+       if(docRef != null){
+           docRef
+                   .get()
+                   .addOnCompleteListener(task -> {
+                       if (task.isSuccessful()) {
+                           DocumentSnapshot document = task.getResult();
+                           if (document.exists()) {
+                               Log.d(TAG, type + " data: " + document.getData());
+                               User user = document.toObject(Professor.class);
+                               userList.add(user);
+
+                           } else {
+                               Log.d(TAG, "No such document");
+                           }
+                       } else {
+                           Log.d(TAG, "get failed with ", task.getException());
+                       }
+                   });
+
+       }
+
+
+        return userList.poll();
+    }
+
+
 }
 

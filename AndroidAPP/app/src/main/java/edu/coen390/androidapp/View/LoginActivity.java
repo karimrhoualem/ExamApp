@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import edu.coen390.androidapp.Controller.DbCallback;
 import edu.coen390.androidapp.R;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
@@ -92,11 +93,18 @@ public class LoginActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        signOut();
+    }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    //TODO:Sign out after merging with paulina's branch
     private void signOut()
     {
         FirebaseAuth.getInstance().signOut();
@@ -144,6 +152,17 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if(user != null) {
             Intent intent = new Intent(this, CourseActivity.class);
+            final String[] firstName = new String[1];
+
+            dbHelper.setFirebaseUser(user);
+            dbHelper.verifyUserType(new DbCallback() {
+                @Override
+                public void onCallback(String user) {
+                    firstName[0] = user;
+                    Log.d(TAG, "User data: " + user);
+                }
+            });
+            System.out.println(firstName[0]);
             startActivity(intent);
         }
         else

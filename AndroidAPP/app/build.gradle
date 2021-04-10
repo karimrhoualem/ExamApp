@@ -62,4 +62,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
+    compile 'com.google.code.gson:gson:2.6.2'
 }

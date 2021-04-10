@@ -39,10 +39,10 @@ public class LiveFeedActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-//    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
-//    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
+   public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    //public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
+    //public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
@@ -123,60 +123,44 @@ public class LiveFeedActivity extends AppCompatActivity {
                                     int status = dbHelper.insertInExamTable(student, course, seat);
                                     if (status == 1) {
                                         String name = student.getFirstName() + " " + student.getLastName();
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                studentName.setText(name);
-                                                studentID.setText(Integer.toString((int)student.getId()));
-                                                seatNumber.setText(Integer.toString(seat));
-                                                Drawable drawable = ContextCompat.getDrawable(
-                                                        LiveFeedActivity.this, R.drawable.success);
-                                                imageView.setImageDrawable(drawable);
-                                                Toast.makeText(LiveFeedActivity.this,
-                                                        "Student with ID: " + student.getId() + " has been successfully confirmed. " +
-                                                                "Returning to previous page.",
-                                                        Toast.LENGTH_LONG).show();
-                                            }
+                                        runOnUiThread(() -> {
+                                            studentName.setText(name);
+                                            studentID.setText(Integer.toString((int)student.getId()));
+                                            seatNumber.setText(Integer.toString(seat));
+                                            Drawable drawable = ContextCompat.getDrawable(
+                                                    LiveFeedActivity.this, R.drawable.success);
+                                            imageView.setImageDrawable(drawable);
+                                            Toast.makeText(LiveFeedActivity.this,
+                                                    "Student with ID: " + student.getId() + " has been successfully confirmed. " +
+                                                            "Returning to previous page.",
+                                                    Toast.LENGTH_LONG).show();
                                         });
-                                        Thread thread = new Thread(){
-                                            @Override
-                                            public void run() {
-                                            try {
-                                                Thread.sleep(3000);
+                                        Thread thread = new Thread(() -> {
+                                        try {
+                                            Thread.sleep(3000);
 
-                                                sharedPreferenceHelper.saveProfile(course);
+                                            sharedPreferenceHelper.saveProfile(course);
 
-                                                // Cancel the timer thread when a student is correctly identified,
-                                                // otherwise it keeps running even when we leave the activity.
-                                                cancel();
-                                                LiveFeedActivity.this.finish();
-                                            }
-                                            catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            }
-                                        };
+                                            // Cancel the timer thread when a student is correctly identified,
+                                            // otherwise it keeps running even when we leave the activity.
+                                            cancel();
+                                            LiveFeedActivity.this.finish();
+                                        }
+                                        catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        });
                                         thread.start();
                                         thread.join();
                                     }
                                     else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(LiveFeedActivity.this, "Error inserting student in exam table. Please try again.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                        runOnUiThread(() -> Toast.makeText(LiveFeedActivity.this, "Error inserting student in exam table. Please try again.",
+                                                Toast.LENGTH_SHORT).show());
                                     }
                                 }
                                 else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(LiveFeedActivity.this, "Error assigning seat to student. Please try again.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                    runOnUiThread(() -> Toast.makeText(LiveFeedActivity.this, "Error assigning seat to student. Please try again.",
+                                            Toast.LENGTH_SHORT).show());
                                 }
                             }
                             else {
@@ -198,43 +182,37 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Thread thread = new Thread(){
-                                        @Override
-                                        public void run() {
-                                        try {
-                                            Thread.sleep(3000);
+                                    Thread thread = new Thread(() -> {
+                                    try {
+                                        Thread.sleep(3000);
 
-                                            sharedPreferenceHelper.saveProfile(course);
+                                        sharedPreferenceHelper.saveProfile(course);
 
-                                            // Cancel the timer thread when a student is correctly identified,
-                                            // otherwise it keeps running even when we leave the activity.
-                                            cancel();
-                                            LiveFeedActivity.this.finish();
-                                        }
-                                        catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        }
-                                    };
+                                        // Cancel the timer thread when a student is correctly identified,
+                                        // otherwise it keeps running even when we leave the activity.
+                                        cancel();
+                                        LiveFeedActivity.this.finish();
+                                    }
+                                    catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    });
                                     thread.start();
                                     thread.join();
                                 }
                             }
                         }
                         else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    studentName.setText("N/A");
-                                    studentID.setText("N/A");
-                                    seatNumber.setText("N/A");
-                                    Drawable drawable = ContextCompat.getDrawable(
-                                            LiveFeedActivity.this, R.drawable.failure);
-                                    imageView.setImageDrawable(drawable);
-                                    Toast.makeText(LiveFeedActivity.this,
-                                            "Cannot identify student. Please try again.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                            runOnUiThread(() -> {
+                                studentName.setText("N/A");
+                                studentID.setText("N/A");
+                                seatNumber.setText("N/A");
+                                Drawable drawable = ContextCompat.getDrawable(
+                                        LiveFeedActivity.this, R.drawable.failure);
+                                imageView.setImageDrawable(drawable);
+                                Toast.makeText(LiveFeedActivity.this,
+                                        "Cannot identify student. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
                             });
                         }
                     }
