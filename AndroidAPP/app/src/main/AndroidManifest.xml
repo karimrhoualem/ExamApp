@@ -17,17 +17,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp"
         android:usesCleartextTraffic="true">
-        <activity android:name="edu.coen390.androidapp.View.ProfessorReportActivity"></activity>
+        <activity android:name="edu.coen390.androidapp.View.ProfessorReportActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.ProfessorActivity" />
 
-        <activity android:name="edu.coen390.androidapp.View.InvigilatorReportActivity" />
-        <activity android:name="edu.coen390.androidapp.View.ProfessorActivity" />
-        <activity android:name="edu.coen390.androidapp.View.CardScanActivity" />
+        </activity>
+
+        <activity android:name="edu.coen390.androidapp.View.InvigilatorReportActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.InvigilatorActivity" />
+
+        </activity>
+        <activity android:name="edu.coen390.androidapp.View.ProfessorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.CourseActivity" />
+        </activity>
+        <activity android:name="edu.coen390.androidapp.View.CardScanActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.InvigilatorActivity" />
+        </activity>
 
         <activity android:name="edu.coen390.androidapp.View.ManualVerificationActivity">
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="edu.coen390.androidapp.View.InvigilatorActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.InvigilatorActivity" />
         </activity>
 
         <activity android:name="edu.coen390.androidapp.View.InvigilatorActivity">
@@ -48,9 +65,14 @@
             android:value="false" />
 
 
+
         <activity android:name="edu.coen390.androidapp.View.CourseActivity"></activity>
 
-        <activity android:name="edu.coen390.androidapp.View.LiveFeedActivity" />
+        <activity android:name="edu.coen390.androidapp.View.LiveFeedActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.coen390.androidapp.View.InvigilatorActivity" />
+        </activity>
 
         <activity android:name="edu.coen390.androidapp.View.LoginActivity">
             <intent-filter>

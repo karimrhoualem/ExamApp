@@ -7,7 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:foregroundTint="#FFFFFF"
+    android:paddingTop="5dp"
     tools:context="edu.coen390.androidapp.View.CourseActivity">
+
 
     <ListView
         android:id="@+id/courseListView"
@@ -19,7 +22,11 @@
         android:layout_marginTop="100dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:clickable="true">
+        android:animationCache="true"
+        android:clickable="true"
+        android:dividerHeight="3dp"
+        android:elevation="200dp"
+        android:headerDividersEnabled="true">
 
     </ListView>
 
@@ -32,8 +39,7 @@
         android:layout_marginStart="12dp"
         android:textColor="#020202"
         android:textSize="15sp"
-        android:textStyle="italic"
-        />
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/listTitleTextView"
@@ -43,10 +49,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="12dp"
         android:layout_marginTop="52dp"
+        android:text="Select a course from the list: "
         android:textColor="#020202"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="Select a course from the list: " />
+        android:textStyle="bold" />
 
 </RelativeLayout>
-

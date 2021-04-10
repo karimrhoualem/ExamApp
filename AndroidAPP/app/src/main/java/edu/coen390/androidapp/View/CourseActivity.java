@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.examapp.R;
 import java.util.List;
@@ -55,59 +59,81 @@ public class CourseActivity extends AppCompatActivity {
         userNameTextView = findViewById(R.id.userNameTextView);
 
         Intent intent = getIntent();
+
         sharedPreferenceHelper = new SharedPreferenceHelper(CourseActivity.this);
 
         user = (User) intent.getSerializableExtra(CourseIntentKey);
 
 
-       //this works
+        //this works
         //User retrievedUser = sharedPreferenceHelper.getInvigilator();
 
 
         //the issue is returning a USER. Need to return an INVIGILATOR or PROFESSOR
-       User retrievedUser = sharedPreferenceHelper.getUser();
+        User retrievedUser = sharedPreferenceHelper.getUser();
 
         if (retrievedUser != null) {
             Log.d(TAG, "if statement" + retrievedUser.getUserName());
             user = retrievedUser;
         }
 
-            if (user instanceof Invigilator) {
-                userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
-                Log.d(TAG, "invigilator "+user.getUserName());
-                loadListView(user.getId(), UserType.INVIGILATOR);
+        if (user instanceof Invigilator) {
+            userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
+            Log.d(TAG, "invigilator " + user.getUserName());
+            loadListView(user.getId(), UserType.INVIGILATOR);
 
-                //maybe this should be save Invigilator, but don't know how.
-               // Invigilator invigilator = (Invigilator) user;
-                //sharedPreferenceHelper.saveInvigilator(invigilator);
+            //maybe this should be save Invigilator, but don't know how.
+            // Invigilator invigilator = (Invigilator) user;
+            //sharedPreferenceHelper.saveInvigilator(invigilator);
 
-                //this works as long as getting the user returns an invigilator
-                sharedPreferenceHelper.saveUser(user, UserType.INVIGILATOR);
+            //this works as long as getting the user returns an invigilator
+            sharedPreferenceHelper.saveUser(user, UserType.INVIGILATOR);
 
-                courseListView.setOnItemClickListener((parent, view, position, id) -> {
-                    Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
-                    intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
-                    startActivity(intent1);
-
-
-                });
-            } else if (user instanceof Professor) {
-                userNameTextView.setText("Professor:" + "  " + user.getUserName());
-                loadListView(user.getId(), UserType.PROFESSOR);
-
-                //maybe this should be save Professor
-                sharedPreferenceHelper.saveUser(user, UserType.PROFESSOR);
-
-                courseListView.setOnItemClickListener((parent, view, position, id) -> {
-                    Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
-                    intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
-                    startActivity(intent1);
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
+                intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
 
 
-                });
-            }
+            });
+        } else if (user instanceof Professor) {
+            userNameTextView.setText("Professor:" + "  " + user.getUserName());
+            loadListView(user.getId(), UserType.PROFESSOR);
+
+            //maybe this should be save Professor
+            sharedPreferenceHelper.saveUser(user, UserType.PROFESSOR);
+
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
+                intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
+
+
+            });
         }
 
+        User user = (User) intent.getSerializableExtra(CourseIntentKey);
+        if (user instanceof Invigilator) {
+            userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
+            loadListView(user.getId(), UserType.INVIGILATOR);
+
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
+                intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
+            });
+        } else if (user instanceof Professor) {
+            userNameTextView.setText("Professor:" + "  " + user.getUserName());
+            loadListView(user.getId(), UserType.PROFESSOR);
+
+            courseListView.setOnItemClickListener((parent, view, position, id) -> {
+                Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
+                intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
+                startActivity(intent1);
+            });
+
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -130,5 +156,25 @@ public class CourseActivity extends AppCompatActivity {
         Log.d(TAG, courses.toString());
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this, courses);
         courseListView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

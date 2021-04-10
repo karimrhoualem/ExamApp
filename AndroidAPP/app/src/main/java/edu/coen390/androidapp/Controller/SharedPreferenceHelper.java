@@ -62,7 +62,6 @@ public class SharedPreferenceHelper {
         }
     }
 
-
     public void saveUser(User user, UserType userType) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -100,9 +99,8 @@ public class SharedPreferenceHelper {
       else {
       return null;
         }
-}
 
-
+    }
 
 
 }
