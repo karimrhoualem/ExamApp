@@ -143,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
+            System.out.println("Firebase user logged in: " + user.getUid());
             Intent intent = new Intent(this, CourseActivity.class);
             startActivity(intent);
         }
@@ -151,46 +152,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
-
-//    private void setupUI() {
-//        userNameEditText = findViewById(R.id.txt_user);
-//        passwordEditText = findViewById(R.id.txt_password);
-//        login = findViewById(R.id.Login);
-//    }
-//
-//    private void setupUserLogin() {
-//        login.setOnClickListener(v -> {
-//            Editable username = userNameEditText.getText();
-//            Editable password = passwordEditText.getText();
-//
-//            if (username != null && password != null) {
-//                boolean isInvigilator = dbHelper.verifyInvigilator(username.toString(), password.toString());
-//                if (isInvigilator) {
-//                    openCourseActivity(UserType.INVIGILATOR);
-//                    return;
-//                }
-//
-//                boolean isProfessor = dbHelper.verifyProfessor(username.toString(), password.toString());
-//                if (isProfessor) {
-//                    openCourseActivity(UserType.PROFESSOR);
-//                    return;
-//                }
-//
-//                username.clear();
-//                password.clear();
-//                Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
-//            }
-//            else {
-//                if (username != null) {
-//                    username.clear();
-//                }
-//                if (password != null) {
-//                    password.clear();
-//                }
-//                Toast.makeText(LoginActivity.this, "Please enter a valid Username and Password.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
     private void openCourseActivity(UserType userType) {
         Intent intent = new Intent(this, CourseActivity.class);

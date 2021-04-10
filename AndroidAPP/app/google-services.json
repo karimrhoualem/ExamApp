@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "561171814663-pforaqeir79nff0phlnjh9q8fdg5en2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.coen390.androidapp",
+            "certificate_hash": "124486a2c7ff8eb557d61a959a193deb961ec8c3"
+          }
+        },
+        {
           "client_id": "561171814663-2s86gav278q1p7scgbq775tr90ls7rff.apps.googleusercontent.com",
           "client_type": 3
         }
