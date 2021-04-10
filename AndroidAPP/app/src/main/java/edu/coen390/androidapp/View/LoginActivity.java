@@ -2,10 +2,9 @@ package edu.coen390.androidapp.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
-import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,16 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.coen390.androidapp.R;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
-import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.Invigilator;
+import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
+import edu.coen390.androidapp.Model.UserType;
 
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private WebView myWebView;
     private Button login;
     private DatabaseHelper dbHelper;
-    private EditText loginUserName, loginPassword;
+    private TextInputEditText userNameEditText, passwordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,75 +31,64 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Log.d(TAG, "Creating DB helper object.");
-
         dbHelper = new DatabaseHelper(this);
-        //dbHelper.testMethod(); // Test method. Must call getWritableDatabase() or getReadableDatabase() for DB to be created.
-
         Log.d(TAG, "DB helper object created.");
 
-        dbHelper.insertCourse(new Course(-1, 1, "Numerical Methods", "ENGR 391", 100));
-        dbHelper.insertCourse(new Course(-1, 2, "Fundamentals of Electrical Power", "ELEC 331", 50));
-        dbHelper.insertCourse(new Course(-1, 1, "Digital Systems Design II", "COEN 313", 40));
-
-
-        newInvigilator();
+        dbHelper.createTestData();  //TODO: to be replaced when cloud database is setup.
         setupUI();
-        loginUser();
+        setupUserLogin();
     }
 
     private void setupUI() {
-
-        loginUserName = findViewById(R.id.UserName);
-        loginPassword = findViewById(R.id.Password);
+        userNameEditText = findViewById(R.id.txt_user);
+        passwordEditText = findViewById(R.id.txt_password);
         login = findViewById(R.id.Login);
     }
 
-    private void loginUser() {
+    private void setupUserLogin() {
         login.setOnClickListener(v -> {
-            boolean verification = dbHelper.verifyInvigilator(loginUserName.getText().toString(), loginPassword.getText().toString());
-            if (verification) {
-                openCourseActivity();
-            } else {
-                Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_SHORT).show();
+            Editable username = userNameEditText.getText();
+            Editable password = passwordEditText.getText();
+
+            if (username != null && password != null) {
+                boolean isInvigilator = dbHelper.verifyInvigilator(username.toString(), password.toString());
+                if (isInvigilator) {
+                    openCourseActivity(UserType.INVIGILATOR);
+                    return;
+                }
+
+                boolean isProfessor = dbHelper.verifyProfessor(username.toString(), password.toString());
+                if (isProfessor) {
+                    openCourseActivity(UserType.PROFESSOR);
+                    return;
+                }
+
+                username.clear();
+                password.clear();
+                Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                if (username != null) {
+                    username.clear();
+                }
+                if (password != null) {
+                    password.clear();
+                }
+                Toast.makeText(LoginActivity.this, "Please enter a valid Username and Password.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void newInvigilator() {
-        String firstNameP1 = "John";
-        String lastNameP1 = "Doe";
-        String userNameP1 = "j_doe";
-        String passwordP1 = "1234";
-        String firstNameP2 = "Karen";
-        String lastNameP2 = "Land";
-        String userNameP2 = "k_lan";
-        String passwordP2 = "5678";
-
-        long id = -1;
-        User user1 = new User(id, firstNameP1, lastNameP1, userNameP1, passwordP1);
-        User user2 = new User(id, firstNameP2, lastNameP2, userNameP2, passwordP2);
-
-        // Insert invigilator into database
-
-        dbHelper.addInvigilator(user1);
-        dbHelper.addInvigilator(user2);
-
-        // Testing  getInvigilator function - It works
-
-        //user1 = dbHelper.getInvigilator(1);
-        //Log.d(TAG, "User: " + " " + user1.getFirstName() + " " + user1.getLastName() + " " + user1.getUserName()
-        //    + " " + user1.getPassword());
-
-        dbHelper.close();
-    }
-
-    private void openCourseActivity() {
-        int id = 1;
+    private void openCourseActivity(UserType userType) {
         Intent intent = new Intent(this, CourseActivity.class);
-        //intent.putExtra("invigilator_id",id);
-        //Log.d(TAG,"after putExtra" + id);
-        User user = dbHelper.getInvigilator("j_doe");
-        intent.putExtra("invigilatorObject", user);
+        if (userType == UserType.INVIGILATOR) {
+            User user = (Invigilator) dbHelper.getInvigilator(userNameEditText.getText().toString());
+            intent.putExtra(CourseActivity.CourseIntentKey, user);
+        }
+        else if (userType == UserType.PROFESSOR){
+            User user = (Professor) dbHelper.getProfessor(userNameEditText.getText().toString());
+            intent.putExtra(CourseActivity.CourseIntentKey, user);
+        }
         startActivity(intent);
     }
 }

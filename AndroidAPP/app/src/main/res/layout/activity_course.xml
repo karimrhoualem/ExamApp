@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/background"
     tools:context="edu.coen390.androidapp.View.CourseActivity">
 
     <ListView
@@ -29,7 +29,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp" />
+        android:layout_marginStart="12dp"
+        android:textColor="#020202"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        />
 
     <TextView
         android:id="@+id/listTitleTextView"
@@ -39,6 +43,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="12dp"
         android:layout_marginTop="52dp"
+        android:textColor="#020202"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:text="Select a course from the list: " />
 
 </RelativeLayout>

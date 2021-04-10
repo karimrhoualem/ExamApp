@@ -45,23 +45,23 @@ public class Seat implements Serializable {
     }
 
     public void setSeatOccupied(int seatNumber) {
-        seatState.replace(seatNumber, OCCUPANCY.OCCUPIED);
+        seatState.put(seatNumber, OCCUPANCY.OCCUPIED);
     }
 
     public void setSeatEmpty(int seatNumber) {
-        seatState.replace(seatNumber, OCCUPANCY.OCCUPIED);
+        seatState.put(seatNumber, OCCUPANCY.OCCUPIED);
     }
 
     public int getNextSeat(Student student) {
         if (!isFull()) {
             for (int seat : seats) {
                 if (!isOccupied(seat)) {
-                    if(studentSeat.get(student.getID()) == null){
+                    if(studentSeat.get((int)student.getId()) == null){
                         setSeatOccupied(seat);
-                        studentSeat.put(student.getID(),seat);
+                        studentSeat.put((int)student.getId(), seat);
                         return seat;
                     }
-                    return  studentSeat.get(student);
+                    return studentSeat.get((int)student.getId());
                 }
             }
         }
@@ -73,23 +73,27 @@ public class Seat implements Serializable {
     }
 
     public boolean isOccupied(int seatNumber) {
-        if (!seatState.isEmpty())
-            return !Objects.equals(seatState.get(seatNumber), OCCUPANCY.EMPTY);
+        if (!seatState.isEmpty()) {
+            if (seatState.get(seatNumber) == OCCUPANCY.EMPTY) {
+                return false;
+            }
+            else if (seatState.get(seatNumber) == OCCUPANCY.OCCUPIED) {
+                return true;
+            }
+        }
         return true;
     }
 
     public boolean isFull() {
-        int totalOccupied = 0;
         for (int seat : seats)
-            if (seatState.get(seat) == OCCUPANCY.OCCUPIED)
-                totalOccupied++;
-        return totalOccupied == totalSeatsNumber;
+            if (seatState.get(seat) == OCCUPANCY.EMPTY) {
+                return false;
+            }
+        return true;
     }
 
     enum OCCUPANCY {
         OCCUPIED,
         EMPTY
     }
-
-
 }
