@@ -41,8 +41,8 @@ public class LiveFeedActivity extends AppCompatActivity {
     @VisibleForTesting
 //    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
 //    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String WEB_FORM_URL = "http://192.168.0.166:5000";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
+    public static final String WEB_FORM_URL = "http://192.168.2.11:5000";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
@@ -247,6 +247,13 @@ public class LiveFeedActivity extends AppCompatActivity {
         catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        timer.cancel();
     }
 
     private void launchWebView() {
