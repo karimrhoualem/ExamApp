@@ -1,5 +1,6 @@
 package edu.coen390.androidapp.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -10,6 +11,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -60,6 +63,27 @@ public class ManualVerificationActivity extends AppCompatActivity {
 
         Log.d(TAG, "On Start");
         searchStudent();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+
+    }
+    @Override
+    public boolean onOptionsItemSelected (@NonNull MenuItem item){
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void setupUI() {

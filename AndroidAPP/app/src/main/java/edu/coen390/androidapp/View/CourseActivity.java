@@ -2,8 +2,12 @@ package edu.coen390.androidapp.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.examapp.R;
 import java.util.List;
@@ -46,8 +50,7 @@ public class CourseActivity extends AppCompatActivity {
                 intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
                 startActivity(intent1);
             });
-        }
-        else if (user instanceof Professor) {
+        } else if (user instanceof Professor) {
             userNameTextView.setText("Professor:" + "  " + user.getUserName());
             loadListView(user.getId(), UserType.PROFESSOR);
 
@@ -70,5 +73,25 @@ public class CourseActivity extends AppCompatActivity {
         courses = dbHelper.getCourses(id, userType);
         CourseAdapter adapter = new CourseAdapter(CourseActivity.this, courses);
         courseListView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

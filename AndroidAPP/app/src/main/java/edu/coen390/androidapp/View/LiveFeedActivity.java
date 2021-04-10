@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -81,8 +84,8 @@ public class LiveFeedActivity extends AppCompatActivity {
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
         backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v ->{
-            Toast.makeText(this, "Card Scan Activity Cancelled.", Toast.LENGTH_SHORT).show();
+        backButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Facial Recognition Cancelled.", Toast.LENGTH_SHORT).show();
             LiveFeedActivity.this.finish();
         });
 
@@ -102,15 +105,14 @@ public class LiveFeedActivity extends AppCompatActivity {
                 public void run() {
                     try {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                        Log.d(TAG, "Student Info Obtained : "+ studentInformation);
+                        Log.d(TAG, "Student Info Obtained : " + studentInformation);
                         Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
                         Log.d(TAG, "Student Info Updated : " + student.toString());
 
                         boolean isStudentConfirmed;
                         if (student != null) {
                             isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-                        }
-                        else {
+                        } else {
                             isStudentConfirmed = false;
                         }
 
@@ -127,7 +129,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                                             @Override
                                             public void run() {
                                                 studentName.setText(name);
-                                                studentID.setText(Integer.toString((int)student.getId()));
+                                                studentID.setText(Integer.toString((int) student.getId()));
                                                 seatNumber.setText(Integer.toString(seat));
                                                 Drawable drawable = ContextCompat.getDrawable(
                                                         LiveFeedActivity.this, R.drawable.success);
@@ -138,28 +140,26 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                         Toast.LENGTH_LONG).show();
                                             }
                                         });
-                                        Thread thread = new Thread(){
+                                        Thread thread = new Thread() {
                                             @Override
                                             public void run() {
-                                            try {
-                                                Thread.sleep(3000);
+                                                try {
+                                                    Thread.sleep(3000);
 
-                                                sharedPreferenceHelper.saveProfile(course);
+                                                    sharedPreferenceHelper.saveProfile(course);
 
-                                                // Cancel the timer thread when a student is correctly identified,
-                                                // otherwise it keeps running even when we leave the activity.
-                                                cancel();
-                                                LiveFeedActivity.this.finish();
-                                            }
-                                            catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+                                                    // Cancel the timer thread when a student is correctly identified,
+                                                    // otherwise it keeps running even when we leave the activity.
+                                                    cancel();
+                                                    LiveFeedActivity.this.finish();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         };
                                         thread.start();
                                         thread.join();
-                                    }
-                                    else {
+                                    } else {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -168,8 +168,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                }
-                                else {
+                                } else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -178,8 +177,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
-                            }
-                            else {
+                            } else {
                                 int seat = dbHelper.getStudentSeat(student, course);
                                 if (seat != -1) {
                                     String name = student.getFirstName() + " " + student.getLastName();
@@ -187,7 +185,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             studentName.setText(name);
-                                            studentID.setText(Integer.toString((int)student.getId()));
+                                            studentID.setText(Integer.toString((int) student.getId()));
                                             seatNumber.setText(Integer.toString(seat));
                                             Drawable drawable = ContextCompat.getDrawable(
                                                     LiveFeedActivity.this, R.drawable.success);
@@ -198,30 +196,28 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Thread thread = new Thread(){
+                                    Thread thread = new Thread() {
                                         @Override
                                         public void run() {
-                                        try {
-                                            Thread.sleep(3000);
+                                            try {
+                                                Thread.sleep(3000);
 
-                                            sharedPreferenceHelper.saveProfile(course);
+                                                sharedPreferenceHelper.saveProfile(course);
 
-                                            // Cancel the timer thread when a student is correctly identified,
-                                            // otherwise it keeps running even when we leave the activity.
-                                            cancel();
-                                            LiveFeedActivity.this.finish();
-                                        }
-                                        catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                                // Cancel the timer thread when a student is correctly identified,
+                                                // otherwise it keeps running even when we leave the activity.
+                                                cancel();
+                                                LiveFeedActivity.this.finish();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     };
                                     thread.start();
                                     thread.join();
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -237,14 +233,12 @@ public class LiveFeedActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }, 0, 1000);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
     }
@@ -264,5 +258,25 @@ public class LiveFeedActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

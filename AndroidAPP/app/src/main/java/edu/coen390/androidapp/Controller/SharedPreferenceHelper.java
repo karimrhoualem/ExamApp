@@ -21,6 +21,7 @@ public class SharedPreferenceHelper {
 
     /**
      * Constructor used to create a SharePreferenceHelper object
+     *
      * @param context The context from the executing Activity.
      */
     public SharedPreferenceHelper(Context context) {
@@ -30,6 +31,7 @@ public class SharedPreferenceHelper {
 
     /**
      * Saves the Course passed as a parameter to SharePreferences file.
+     *
      * @param course The Course object to be saved.
      */
     public void saveProfile(Course course) {
@@ -42,6 +44,7 @@ public class SharedPreferenceHelper {
 
     /**
      * Gets the Course from the SharedPreferences file.
+     *
      * @return The Course object.
      */
     public Course getProfile(Course course) {
@@ -49,9 +52,9 @@ public class SharedPreferenceHelper {
         if (!json.equals("")) {
             Gson gson = new Gson();
             return gson.fromJson(json, Course.class);
-        }
-        else {
+        } else {
             return null;
         }
     }
+
 }

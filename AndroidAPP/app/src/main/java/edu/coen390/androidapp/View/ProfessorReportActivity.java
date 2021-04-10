@@ -1,10 +1,13 @@
 package edu.coen390.androidapp.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TableLayout;
@@ -132,5 +135,26 @@ public class ProfessorReportActivity extends AppCompatActivity {
         tableLayout = findViewById(R.id.professorTableLayout);
         tableLayout.removeAllViews();
         tableLayout.setStretchAllColumns(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+
+    }
+    @Override
+    public boolean onOptionsItemSelected (@NonNull MenuItem item){
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
+
     }
 }
