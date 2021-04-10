@@ -7,14 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-//import com.example.examapp.R;
-import edu.coen390.androidapp.R;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.examapp.R;
 
 import java.util.List;
 
 import edu.coen390.androidapp.Model.Course;
 
 public class CourseAdapter extends BaseAdapter {
+
 
     private final List<Course> courses;
     Context mContext;

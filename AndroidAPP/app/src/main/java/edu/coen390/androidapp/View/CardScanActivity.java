@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,8 +37,8 @@ public class CardScanActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-//    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000";
+    //public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
     private static final String TAG = "CardScanActivity";
     private JSONObject studentInformation;
     private DatabaseHelper dbHelper;
@@ -76,8 +78,8 @@ public class CardScanActivity extends AppCompatActivity {
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
         backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v ->{
-            Toast.makeText(this, "Card Scan Activity Cancelled.", Toast.LENGTH_SHORT).show();
+        backButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Card Scan Cancelled.", Toast.LENGTH_SHORT).show();
             CardScanActivity.this.finish();
         });
 
@@ -93,152 +95,171 @@ public class CardScanActivity extends AppCompatActivity {
             timer.scheduleAtFixedRate(timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                try {
-                    studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                    Log.d(TAG, "Student Info Obtained : "+ studentInformation);
-                    Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
-                    Log.d(TAG, "Student Info Updated : " + student.toString());
+                    try {
+                        studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
+                        Log.d(TAG, "Student Info Obtained : " + studentInformation);
+                        Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
+                        Log.d(TAG, "Student Info Updated : " + student.toString());
 
-                    boolean isStudentConfirmed;
-                    if (student != null) {
-                        isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-                    }
-                    else {
-                        isStudentConfirmed = false;
-                    }
+                        boolean isStudentConfirmed;
+                        if (student != null) {
+                            isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
+                        } else {
+                            isStudentConfirmed = false;
+                        }
 
-                    boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
 
-                    if (isStudentConfirmed) {
-                        if (!isStudentSeated) {
-                            int seat = course.getSeats().getNextSeat(student);
-                            if (seat != -1) {
-                                int status = dbHelper.insertInExamTable(student, course, seat);
-                                if (status == 1) {
+                        if (isStudentConfirmed) {
+                            if (!isStudentSeated) {
+                                int seat = course.getSeats().getNextSeat(student);
+                                if (seat != -1) {
+                                    int status = dbHelper.insertInExamTable(student, course, seat);
+                                    if (status == 1) {
+                                        String name = student.getFirstName() + " " + student.getLastName();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                studentName.setText(name);
+                                                studentID.setText(Integer.toString((int) student.getId()));
+                                                seatNumber.setText(Integer.toString(seat));
+                                                Drawable drawable = ContextCompat.getDrawable(
+                                                        CardScanActivity.this, R.drawable.success);
+                                                imageView.setImageDrawable(drawable);
+                                                Toast.makeText(CardScanActivity.this,
+                                                        "Student with ID: " + student.getId() + " has been successfully confirmed. " +
+                                                                "Returning to previous page.",
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        Thread thread = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(5000);
+
+                                                    sharedPreferenceHelper.saveProfile(course);
+
+                                                    // Cancel the timer thread when a student is correctly identified,
+                                                    // otherwise it keeps running even when we leave the activity.
+                                                    cancel();
+                                                    CardScanActivity.this.finish();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        };
+                                        thread.start();
+                                        thread.join();
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(CardScanActivity.this, "Error inserting student in exam table. Please try again.",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(CardScanActivity.this, "Error assigning seat to student. Please try again.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            } else {
+                                int seat = dbHelper.getStudentSeat(student, course);
+                                if (seat != -1) {
                                     String name = student.getFirstName() + " " + student.getLastName();
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             studentName.setText(name);
-                                            studentID.setText(Integer.toString((int)student.getId()));
+                                            studentID.setText(Integer.toString((int) student.getId()));
                                             seatNumber.setText(Integer.toString(seat));
                                             Drawable drawable = ContextCompat.getDrawable(
                                                     CardScanActivity.this, R.drawable.success);
                                             imageView.setImageDrawable(drawable);
                                             Toast.makeText(CardScanActivity.this,
-                                                    "Student with ID: " + student.getId() + " has been successfully confirmed. " +
+                                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
                                                             "Returning to previous page.",
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Thread thread = new Thread(){
+                                    Thread thread = new Thread() {
                                         @Override
                                         public void run() {
-                                        try {
-                                            Thread.sleep(3000);
+                                            try {
+                                                Thread.sleep(5000);
 
-                                            sharedPreferenceHelper.saveProfile(course);
+                                                sharedPreferenceHelper.saveProfile(course);
 
-                                            // Cancel the timer thread when a student is correctly identified,
-                                            // otherwise it keeps running even when we leave the activity.
-                                            cancel();
-                                            CardScanActivity.this.finish();
-                                        }
-                                        catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                                // Cancel the timer thread when a student is correctly identified,
+                                                // otherwise it keeps running even when we leave the activity.
+                                                cancel();
+                                                CardScanActivity.this.finish();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     };
                                     thread.start();
                                     thread.join();
                                 }
-                                else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(CardScanActivity.this, "Error inserting student in exam table. Please try again.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
                             }
-                            else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                    Toast.makeText(CardScanActivity.this, "Error assigning seat to student. Please try again.",
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    studentName.setText("N/A");
+                                    studentID.setText("N/A");
+                                    seatNumber.setText("N/A");
+                                    Drawable drawable = ContextCompat.getDrawable(
+                                            CardScanActivity.this, R.drawable.failure);
+                                    imageView.setImageDrawable(drawable);
+                                    Toast.makeText(CardScanActivity.this,
+                                            "Cannot identify student. Please try again.",
                                             Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
+                                }
+                            });
                         }
-                        else {
-                            int seat = dbHelper.getStudentSeat(student, course);
-                            if (seat != -1) {
-                                String name = student.getFirstName() + " " + student.getLastName();
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        studentName.setText(name);
-                                        studentID.setText(Integer.toString((int)student.getId()));
-                                        seatNumber.setText(Integer.toString(seat));
-                                        Drawable drawable = ContextCompat.getDrawable(
-                                                CardScanActivity.this, R.drawable.success);
-                                        imageView.setImageDrawable(drawable);
-                                        Toast.makeText(CardScanActivity.this,
-                                                "Student with ID: " + student.getId() + " has has already been confirmed. " +
-                                                        "Returning to previous page.",
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                Thread thread = new Thread(){
-                                    @Override
-                                    public void run() {
-                                    try {
-                                        Thread.sleep(3000);
-
-                                        sharedPreferenceHelper.saveProfile(course);
-
-                                        // Cancel the timer thread when a student is correctly identified,
-                                        // otherwise it keeps running even when we leave the activity.
-                                        cancel();
-                                        CardScanActivity.this.finish();
-                                    }
-                                    catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    }
-                                };
-                                thread.start();
-                                thread.join();
-                            }
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                studentName.setText("N/A");
-                                studentID.setText("N/A");
-                                seatNumber.setText("N/A");
-                                Drawable drawable = ContextCompat.getDrawable(
-                                        CardScanActivity.this, R.drawable.failure);
-                                imageView.setImageDrawable(drawable);
-                                Toast.makeText(CardScanActivity.this,
-                                        "Cannot identify student. Please try again.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
                 }
             }, 0, 1000);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        timer.cancel();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
 }
