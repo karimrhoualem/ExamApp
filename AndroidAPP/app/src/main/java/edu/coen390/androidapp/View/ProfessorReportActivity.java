@@ -15,12 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
+import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.ReportRow;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
 import edu.coen390.androidapp.R;
 
 public class ProfessorReportActivity extends AppCompatActivity {
+    public static final String REPORT_INTENT = "REPORT_INTENT";
     private Course course;
     private TableLayout tableLayout;
     private DatabaseHelper dbHelper;
@@ -43,7 +46,7 @@ public class ProfessorReportActivity extends AppCompatActivity {
         tr_head.setBackgroundColor(Color.GRAY);
 
         TextView examId = new TextView(this);
-        examId.setText("Exam");
+        examId.setText("#");
         examId.setTextColor(Color.WHITE);
         tr_head.addView(examId);
 
@@ -141,13 +144,26 @@ public class ProfessorReportActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            case android.R.id.home:
+                endActivity(course);
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
 
+    private void endActivity(Course course) {
+        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(ProfessorReportActivity.this);
+        sharedPreferenceHelper.saveProfile(course);
+        sharedPreferenceHelper.saveSource(Source.PROFESSORREPORT_ACTIVITY);
+        sharedPreferenceHelper.saveCourseCode(course.getCode());
+        ProfessorReportActivity.this.finish();
     }
 }

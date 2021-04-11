@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
 
@@ -65,6 +66,7 @@ public class SharedPreferenceHelper {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         User currentUser = null;
+
         if (userType == UserType.INVIGILATOR) {
             currentUser = user;
             editor.putString("UserType", "Invigilator");
@@ -72,6 +74,7 @@ public class SharedPreferenceHelper {
             currentUser = user;
             editor.putString("UserType", "Professor");
         }
+
         String json = gson.toJson(currentUser);
 
         editor.putString("User", json);
@@ -82,8 +85,7 @@ public class SharedPreferenceHelper {
     //doesn't work when just returning a user
     public User getUser() {
         String json = sharedPreferences.getString("User", "");
-        String userType = sharedPreferences.getString("UserType", "");
-
+        String userType = sharedPreferences.getString("UserType","" );
         if (!json.equals("") && !userType.equals("")) {
             Gson gson = new Gson();
             if (userType.equals("Invigilator")) {
@@ -91,10 +93,36 @@ public class SharedPreferenceHelper {
             } else if (userType.equals("Professor")) {
                 return gson.fromJson(json, Professor.class);
             }
+            return null;
         }
-        return null;
-
+        else {
+            return null;
+        }
     }
 
+    public void saveSource(Source source) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Source", source.name());
+        editor.apply();
+    }
 
+    public String getSource() {
+        return sharedPreferences.getString("Source", "");
+    }
+
+    public void saveCourseCode(String code) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Course_Code", code);
+        editor.apply();
+    }
+
+    public String getCourseCode() {
+        return sharedPreferences.getString("Course_Code", "");
+    }
+
+    public void clearSource() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("Source");
+        editor.apply();
+    }
 }
