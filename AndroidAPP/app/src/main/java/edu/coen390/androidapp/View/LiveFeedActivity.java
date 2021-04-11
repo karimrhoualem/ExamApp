@@ -141,16 +141,13 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                             "Returning to previous page.",
                                                     Toast.LENGTH_LONG).show();
                                         });
-                                        Thread thread = new Thread() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    Thread.sleep(5000);
-                                                    cancel();
-                                                    endActivity(course);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
+                                        Thread thread = new Thread(() -> {
+                                            try {
+                                                Thread.sleep(5000);
+                                                cancel();
+                                                endActivity(course);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
                                         });
                                         thread.start();
