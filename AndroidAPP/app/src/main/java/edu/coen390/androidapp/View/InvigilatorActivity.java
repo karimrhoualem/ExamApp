@@ -6,18 +6,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.examapp.R;
 
 import java.io.Serializable;
 
 import edu.coen390.androidapp.Controller.Config;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.R;
 
 public class InvigilatorActivity extends AppCompatActivity implements Serializable {
     public static final String COURSE_INTENT = "COURSE";
@@ -92,14 +90,12 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
 
     }
 }
