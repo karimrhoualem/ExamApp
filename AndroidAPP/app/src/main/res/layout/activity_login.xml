@@ -21,7 +21,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.111"
         app:srcCompat="@drawable/logo"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:contentDescription="@string/app_logo" />
 
     <TextView
         android:id="@+id/AppName"
@@ -49,7 +50,7 @@
         android:layout_marginBottom="274dp"
         android:foregroundTint="#3700B3"
         android:gravity="center_horizontal"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="textPersonName"
         android:textColorHint="#3700B3"
         app:boxStrokeColor="#FF3700B3"
@@ -77,10 +78,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:gravity="center_horizontal"
-        android:hint="Password"
+        android:hint="@string/password"
+        android:textColorHint="#3700B3"
         app:boxStrokeColor="#FF3700B3"
         app:hintTextColor="#FF3700B3"
-        android:textColorHint="#3700B3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/UserName"

@@ -25,8 +25,8 @@
         android:id="@+id/studentName_linearLayout"
         android:layout_width="400dp"
         android:layout_height="58dp"
-        android:orientation="horizontal"
         android:layout_marginTop="50dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/studentID_linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +94,7 @@
             android:text="Seat Number:"
             tools:layout_editor_absoluteX="-2dp"
             tools:layout_editor_absoluteY="461dp" />
+
         <TextView
             android:id="@+id/seatNumberTextView"
             android:layout_width="200dp"
@@ -116,7 +117,8 @@
         <ImageView
             android:id="@+id/successMessageImageView"
             android:layout_width="match_parent"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:contentDescription="@string/verification_image" />
 
         <LinearLayout
             android:id="@+id/cancelSaveLinearLayout"
@@ -132,14 +134,13 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="15dp"
                 android:gravity="center"
-                android:text="BACK"
+                android:text="@string/back"
                 app:backgroundTint="@color/purple_700" />
 
         </LinearLayout>
 
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
