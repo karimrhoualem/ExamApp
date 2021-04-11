@@ -1,11 +1,5 @@
 package edu.coen390.androidapp.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -19,14 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examapp.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.R;
 
 public class ManualVerificationActivity extends AppCompatActivity {
     private static final String TAG = "ManualVerificationActivity";
@@ -58,7 +55,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
         }
     }
 
-    protected void onStart () {
+    protected void onStart() {
         super.onStart();
 
         Log.d(TAG, "On Start");
@@ -72,17 +69,15 @@ public class ManualVerificationActivity extends AppCompatActivity {
         return true;
 
     }
+
     @Override
-    public boolean onOptionsItemSelected (@NonNull MenuItem item){
-        switch (item.getItemId())
-        {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return  super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -94,113 +89,104 @@ public class ManualVerificationActivity extends AppCompatActivity {
         seatNumber = findViewById(R.id.seatNumberTextView);
         imageView = findViewById(R.id.successMessageImageView);
         backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v ->{
+        backButton.setOnClickListener(v -> {
             Toast.makeText(this, "Manual Verification Cancelled.", Toast.LENGTH_SHORT).show();
             ManualVerificationActivity.this.finish();
         });
         dbHelper = new DatabaseHelper(this);
     }
 
-    private void searchStudent () {
-        verifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isStudentConfirmed;
+    private void searchStudent() {
+        verifyButton.setOnClickListener(v -> {
+            boolean isStudentConfirmed;
 
-                try {
-                    long Id = Integer.parseInt(studId.getText().toString());
-                    Student student = dbHelper.getStudent(Id);
+            try {
+                long Id = Integer.parseInt(studId.getText().toString());
+                Student student = dbHelper.getStudent(Id);
 
-                    if (student != null) {
-                        isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
-                    }
-                    else {
-                        isStudentConfirmed = false;
-                    }
+                if (student != null) {
+                    isStudentConfirmed = dbHelper.isStudentRegisteredInCourse(student, course);
+                } else {
+                    isStudentConfirmed = false;
+                }
 
-                    boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
-                    if (isStudentConfirmed) {
-                        if (!isStudentSeated) {
-                            int seat = course.getSeats().getNextSeat(student);
-                            if (seat != -1) {
-                                int status = dbHelper.insertInExamTable(student, course, seat);
-                                if (status == 1) {
-                                    studentName.setText(student.getFirstName() + " " + student.getLastName());
-                                    studentID.setText(Integer.toString((int)student.getId()));
-                                    seatNumber.setText(Integer.toString(seat));
-                                    Drawable drawable = ContextCompat.getDrawable(
-                                            ManualVerificationActivity.this, R.drawable.success);
-                                    imageView.setImageDrawable(drawable);
-                                    Toast.makeText(ManualVerificationActivity.this,
-                                            "Student with ID: " + student.getId() + " has been successfully confirmed. " +
-                                                    "Returning to previous page.",
-                                            Toast.LENGTH_LONG).show();
-                                    Thread thread = new Thread(){
-                                        @Override
-                                        public void run() {
-                                        try {
-                                            Thread.sleep(3000);
+                boolean isStudentSeated;
+                if(student != null){
+                    isStudentSeated  = dbHelper.isStudentSeated(student, course);
+                }else{
+                    isStudentSeated = false;
+                }
 
-                                            sharedPreferenceHelper.saveProfile(course);
-
-                                            ManualVerificationActivity.this.finish();
-                                        }
-                                        catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        }
-                                    };
-                                    thread.start();
-                                }
-                            }
-                        }
-                        else {
-                            int seat = dbHelper.getStudentSeat(student, course);
-                            if (seat != -1) {
-                                studentName.setText(student.getFirstName() + " " + student.getLastName());
-                                studentID.setText(Integer.toString((int)student.getId()));
+                if (isStudentConfirmed) {
+                    if (!isStudentSeated) {
+                        int seat = course.getSeats().getNextSeat(student);
+                        if (seat != -1) {
+                            int status = dbHelper.insertInExamTable(student, course, seat);
+                            if (status == 1) {
+                                studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
+                                studentID.setText(Integer.toString((int) student.getId()));
                                 seatNumber.setText(Integer.toString(seat));
                                 Drawable drawable = ContextCompat.getDrawable(
                                         ManualVerificationActivity.this, R.drawable.success);
                                 imageView.setImageDrawable(drawable);
                                 Toast.makeText(ManualVerificationActivity.this,
-                                        "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                        "Student with ID: " + student.getId() + " has been successfully confirmed. " +
                                                 "Returning to previous page.",
                                         Toast.LENGTH_LONG).show();
-                                Thread thread = new Thread(){
-                                    @Override
-                                    public void run() {
+                                Thread thread = new Thread(() -> {
                                     try {
                                         Thread.sleep(3000);
 
                                         sharedPreferenceHelper.saveProfile(course);
 
                                         ManualVerificationActivity.this.finish();
-                                    }
-                                    catch (Exception e) {
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    }
-                                };
+                                });
                                 thread.start();
                             }
                         }
+                    } else {
+                        int seat = dbHelper.getStudentSeat(student, course);
+                        if (seat != -1) {
+                            studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
+                            studentID.setText(Integer.toString((int) student.getId()));
+                            seatNumber.setText(Integer.toString(seat));
+                            Drawable drawable = ContextCompat.getDrawable(
+                                    ManualVerificationActivity.this, R.drawable.success);
+                            imageView.setImageDrawable(drawable);
+                            Toast.makeText(ManualVerificationActivity.this,
+                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                            "Returning to previous page.",
+                                    Toast.LENGTH_LONG).show();
+                            Thread thread = new Thread(() -> {
+                                try {
+                                    Thread.sleep(3000);
+
+                                    sharedPreferenceHelper.saveProfile(course);
+
+                                    ManualVerificationActivity.this.finish();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            thread.start();
+                        }
                     }
-                    else {
-                        studentName.setText("N/A");
-                        studentID.setText("N/A");
-                        seatNumber.setText("N/A");
-                        Drawable drawable = ContextCompat.getDrawable(
-                                ManualVerificationActivity.this, R.drawable.failure);
-                        imageView.setImageDrawable(drawable);
-                        Toast.makeText(ManualVerificationActivity.this,
-                                "Cannot identify student. Please try again.",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                } else {
+                    studentName.setText("N/A");
+                    studentID.setText("N/A");
+                    seatNumber.setText("N/A");
+                    Drawable drawable = ContextCompat.getDrawable(
+                            ManualVerificationActivity.this, R.drawable.failure);
+                    imageView.setImageDrawable(drawable);
+                    Toast.makeText(ManualVerificationActivity.this,
+                            "Cannot identify student. Please try again.",
+                            Toast.LENGTH_SHORT).show();
                 }
-                catch(NumberFormatException e){
-                    Log.d(TAG, "Exception: " + e.getMessage());
-                }
+            } catch (NumberFormatException e) {
+                Log.d(TAG, "Exception: " + e.getMessage());
             }
         });
     }
