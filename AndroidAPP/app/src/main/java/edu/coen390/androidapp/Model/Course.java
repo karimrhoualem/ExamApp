@@ -30,6 +30,10 @@ public class Course implements Serializable {
         this.code = code;
     }
 
+    public Course(){
+
+    }
+
     //check this
     @NotNull
     @Override

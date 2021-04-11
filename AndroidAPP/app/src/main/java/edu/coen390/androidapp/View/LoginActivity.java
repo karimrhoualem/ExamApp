@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.i(TAG, "on Create");
         Log.d(TAG, "Creating DB helper object.");
         dbHelper = new DatabaseHelper(this);
         Log.d(TAG, "DB helper object created.");
@@ -90,6 +91,14 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+        Log.i(TAG, "on Start");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        signOut();
+        Log.i(TAG, "on Resume");
     }
 
     private void signIn() {

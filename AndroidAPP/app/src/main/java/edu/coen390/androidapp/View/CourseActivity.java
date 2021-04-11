@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 //import com.example.examapp.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import edu.coen390.androidapp.Controller.FireStoreDBHelper;
 import edu.coen390.androidapp.R;
 
 import java.util.List;
@@ -39,6 +42,8 @@ public class CourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        FireStoreDBHelper dbHelper = new FireStoreDBHelper(FirebaseFirestore.getInstance());
+        dbHelper.getData();
         setupUI();
         Log.i(TAG, "on create");
 
@@ -110,9 +115,9 @@ public class CourseActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
                 intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
                 startActivity(intent1);
-
-
             });
+
+
         }
 
         User user = (User) intent.getSerializableExtra(CourseIntentKey);
@@ -173,6 +178,7 @@ public class CourseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 startActivity(new Intent(this, LoginActivity.class));
+
                 finish();
                 return true;
             default:
