@@ -1,6 +1,6 @@
 package edu.coen390.androidapp.View;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -22,10 +22,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import edu.coen390.androidapp.R;
-
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Timer;
@@ -36,14 +32,15 @@ import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.R;
 
 
 public class LiveFeedActivity extends AppCompatActivity {
     public static final String KEY_URL_TO_LOAD = "KEY_URL_TO_LOAD";
     //TODO: change URLs
     @VisibleForTesting
-   public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
-   public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
+    public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
     //public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
@@ -106,7 +103,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
                         Log.d(TAG, "Student Info Obtained : " + studentInformation);
                         Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
-                        if(student != null)
+                        if (student != null)
                             Log.d(TAG, "Student Info Updated : " + student.toString());
 
                         boolean isStudentConfirmed;
@@ -116,7 +113,13 @@ public class LiveFeedActivity extends AppCompatActivity {
                             isStudentConfirmed = false;
                         }
 
-                        boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        boolean isStudentSeated;
+                        if(student != null){
+                            isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        }else{
+                            isStudentSeated = false;
+                        }
+
 
                         if (isStudentConfirmed) {
                             if (!isStudentSeated) {
@@ -125,65 +128,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                                     int status = dbHelper.insertInExamTable(student, course, seat);
                                     if (status == 1) {
                                         String name = student.getFirstName() + " " + student.getLastName();
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                studentName.setText(name);
-                                                studentID.setText(Integer.toString((int) student.getId()));
-                                                seatNumber.setText(Integer.toString(seat));
-                                                Drawable drawable = ContextCompat.getDrawable(
-                                                        LiveFeedActivity.this, R.drawable.success);
-                                                imageView.setImageDrawable(drawable);
-                                                Toast.makeText(LiveFeedActivity.this,
-                                                        "Student with ID: " + student.getId() + " has been successfully confirmed. " +
-                                                                "Returning to previous page.",
-                                                        Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                                        Thread thread = new Thread() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    Thread.sleep(5000);
-
-                                                    sharedPreferenceHelper.saveProfile(course);
-
-                                                    // Cancel the timer thread when a student is correctly identified,
-                                                    // otherwise it keeps running even when we leave the activity.
-                                                    cancel();
-                                                    LiveFeedActivity.this.finish();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        };
-                                        thread.start();
-                                        thread.join();
-                                    } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(LiveFeedActivity.this, "Error inserting student in exam table. Please try again.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(LiveFeedActivity.this, "Error assigning seat to student. Please try again.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            } else {
-                                int seat = dbHelper.getStudentSeat(student, course);
-                                if (seat != -1) {
-                                    String name = student.getFirstName() + " " + student.getLastName();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                        runOnUiThread(() -> {
                                             studentName.setText(name);
                                             studentID.setText(Integer.toString((int) student.getId()));
                                             seatNumber.setText(Integer.toString(seat));
@@ -191,14 +136,11 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                     LiveFeedActivity.this, R.drawable.success);
                                             imageView.setImageDrawable(drawable);
                                             Toast.makeText(LiveFeedActivity.this,
-                                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                    "Student with ID: " + student.getId() + " has been successfully confirmed. " +
                                                             "Returning to previous page.",
                                                     Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                    Thread thread = new Thread() {
-                                        @Override
-                                        public void run() {
+                                        });
+                                        Thread thread = new Thread(() -> {
                                             try {
                                                 Thread.sleep(5000);
 
@@ -211,26 +153,62 @@ public class LiveFeedActivity extends AppCompatActivity {
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
+                                        });
+                                        thread.start();
+                                        thread.join();
+                                    } else {
+                                        runOnUiThread(() -> Toast.makeText(LiveFeedActivity.this, "Error inserting student in exam table. Please try again.",
+                                                Toast.LENGTH_SHORT).show());
+                                    }
+                                } else {
+                                    runOnUiThread(() -> Toast.makeText(LiveFeedActivity.this, "Error assigning seat to student. Please try again.",
+                                            Toast.LENGTH_SHORT).show());
+                                }
+                            } else {
+                                int seat = dbHelper.getStudentSeat(student, course);
+                                if (seat != -1) {
+                                    String name = student.getFirstName() + " " + student.getLastName();
+                                    runOnUiThread(() -> {
+                                        studentName.setText(name);
+                                        studentID.setText(Integer.toString((int) student.getId()));
+                                        seatNumber.setText(Integer.toString(seat));
+                                        Drawable drawable = ContextCompat.getDrawable(
+                                                LiveFeedActivity.this, R.drawable.success);
+                                        imageView.setImageDrawable(drawable);
+                                        Toast.makeText(LiveFeedActivity.this,
+                                                "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                        "Returning to previous page.",
+                                                Toast.LENGTH_LONG).show();
+                                    });
+                                    Thread thread = new Thread(() -> {
+                                        try {
+                                            Thread.sleep(5000);
+
+                                            sharedPreferenceHelper.saveProfile(course);
+
+                                            // Cancel the timer thread when a student is correctly identified,
+                                            // otherwise it keeps running even when we leave the activity.
+                                            cancel();
+                                            LiveFeedActivity.this.finish();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    };
+                                    });
                                     thread.start();
                                     thread.join();
                                 }
                             }
                         } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    studentName.setText("N/A");
-                                    studentID.setText("N/A");
-                                    seatNumber.setText("N/A");
-                                    Drawable drawable = ContextCompat.getDrawable(
-                                            LiveFeedActivity.this, R.drawable.failure);
-                                    imageView.setImageDrawable(drawable);
-                                    Toast.makeText(LiveFeedActivity.this,
-                                            "Cannot identify student. Please try again.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                            runOnUiThread(() -> {
+                                studentName.setText("N/A");
+                                studentID.setText("N/A");
+                                seatNumber.setText("N/A");
+                                Drawable drawable = ContextCompat.getDrawable(
+                                        LiveFeedActivity.this, R.drawable.failure);
+                                imageView.setImageDrawable(drawable);
+                                Toast.makeText(LiveFeedActivity.this,
+                                        "Cannot identify student. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
                             });
                         }
                     } catch (Exception e) {
@@ -250,6 +228,7 @@ public class LiveFeedActivity extends AppCompatActivity {
         timer.cancel();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void launchWebView() {
         myWebView = findViewById(R.id.webView);
 
@@ -277,13 +256,11 @@ public class LiveFeedActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }
