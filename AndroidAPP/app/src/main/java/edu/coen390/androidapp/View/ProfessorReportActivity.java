@@ -1,21 +1,16 @@
 package edu.coen390.androidapp.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.examapp.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
@@ -23,6 +18,7 @@ import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.ReportRow;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.R;
 
 public class ProfessorReportActivity extends AppCompatActivity {
     private Course course;
@@ -105,7 +101,7 @@ public class ProfessorReportActivity extends AppCompatActivity {
                 tr_body.addView(studentId);
 
                 TextView studentName = new TextView(this);
-                studentName.setText(student.getFirstName() + " " + student.getLastName());
+                studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
                 studentName.setTextColor(Color.BLACK);
                 tr_body.addView(studentName);
 
@@ -118,8 +114,7 @@ public class ProfessorReportActivity extends AppCompatActivity {
                 int signOutStatus = row.isSignedOut();
                 if (signOutStatus == 1) {
                     signedOut.setText("Yes");
-                }
-                else {
+                } else {
                     signedOut.setText("No");
                 }
                 signedOut.setTextColor(Color.BLACK);
@@ -144,17 +139,15 @@ public class ProfessorReportActivity extends AppCompatActivity {
         return true;
 
     }
+
     @Override
-    public boolean onOptionsItemSelected (@NonNull MenuItem item){
-        switch (item.getItemId())
-        {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return  super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
 
     }
 }
