@@ -63,8 +63,7 @@ public class HttpRequest {
             }
 
             return new Student(studentID, null, studentFirstName, studentLastName, null, null);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
