@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class Seat implements Serializable {
     int totalSeatsNumber;
@@ -56,12 +55,12 @@ public class Seat implements Serializable {
         if (!isFull()) {
             for (int seat : seats) {
                 if (!isOccupied(seat)) {
-                    if(studentSeat.get((int)student.getId()) == null){
+                    if (studentSeat.get((int) student.getId()) == null) {
                         setSeatOccupied(seat);
-                        studentSeat.put((int)student.getId(), seat);
+                        studentSeat.put((int) student.getId(), seat);
                         return seat;
                     }
-                    return studentSeat.get((int)student.getId());
+                    return studentSeat.get((int) student.getId());
                 }
             }
         }
@@ -76,8 +75,7 @@ public class Seat implements Serializable {
         if (!seatState.isEmpty()) {
             if (seatState.get(seatNumber) == OCCUPANCY.EMPTY) {
                 return false;
-            }
-            else if (seatState.get(seatNumber) == OCCUPANCY.OCCUPIED) {
+            } else if (seatState.get(seatNumber) == OCCUPANCY.OCCUPIED) {
                 return true;
             }
         }
