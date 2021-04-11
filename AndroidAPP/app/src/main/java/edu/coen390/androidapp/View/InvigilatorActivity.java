@@ -35,7 +35,8 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra(COURSE_INTENT);
-        Log.d(TAG, "After getIntent " + course.toString());
+        if(course != null)
+            Log.d(TAG, "After getIntent " + course.toString());
         createExamTable();
 
         setupUI();
