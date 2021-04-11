@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.examapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
@@ -17,6 +16,7 @@ import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
+import edu.coen390.androidapp.R;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -66,8 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 username.clear();
                 password.clear();
                 Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 if (username != null) {
                     username.clear();
                 }
@@ -82,11 +81,10 @@ public class LoginActivity extends AppCompatActivity {
     private void openCourseActivity(UserType userType) {
         Intent intent = new Intent(this, CourseActivity.class);
         if (userType == UserType.INVIGILATOR) {
-            User user = (Invigilator) dbHelper.getInvigilator(userNameEditText.getText().toString());
+            User user = dbHelper.getInvigilator(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
-        }
-        else if (userType == UserType.PROFESSOR){
-            User user = (Professor) dbHelper.getProfessor(userNameEditText.getText().toString());
+        } else if (userType == UserType.PROFESSOR) {
+            User user = dbHelper.getProfessor(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
         }
         startActivity(intent);
