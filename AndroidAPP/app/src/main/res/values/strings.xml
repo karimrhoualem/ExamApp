@@ -13,4 +13,15 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="courses_file">CoursesFile</string>
+    <string name="logout">Logout</string>
+    <string name="username">Username</string>
+
+    <string name="student_id">Student ID</string>
+    <string name="enter_student_id">Enter student ID</string>
+    <string name="verify">Verify</string>
+    <string name="student_name">Student Name:</string>
+    <string name="app_logo">App Logo</string>
+    <string name="verification_image">Verification image</string>
+    <string name="back">BACK</string>
+
 </resources>
