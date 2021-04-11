@@ -22,8 +22,8 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.examapp.R;
-import com.google.gson.Gson;
+import edu.coen390.androidapp.R;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,8 +43,8 @@ public class LiveFeedActivity extends AppCompatActivity {
     //TODO: change URLs
     @VisibleForTesting
    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
-   //public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
+   public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
+    //public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
@@ -106,7 +106,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
                         Log.d(TAG, "Student Info Obtained : " + studentInformation);
                         Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
-                        Log.d(TAG, "Student Info Updated : " + student.toString());
+                        if(student != null)
+                            Log.d(TAG, "Student Info Updated : " + student.toString());
 
                         boolean isStudentConfirmed;
                         if (student != null) {
