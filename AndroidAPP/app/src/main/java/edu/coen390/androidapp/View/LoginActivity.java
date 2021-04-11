@@ -13,6 +13,7 @@ import com.example.examapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
+import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
@@ -81,14 +82,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void openCourseActivity(UserType userType) {
         Intent intent = new Intent(this, CourseActivity.class);
+        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
+        User user = null;
         if (userType == UserType.INVIGILATOR) {
-            User user = (Invigilator) dbHelper.getInvigilator(userNameEditText.getText().toString());
+            user = (Invigilator) dbHelper.getInvigilator(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
         }
         else if (userType == UserType.PROFESSOR){
-            User user = (Professor) dbHelper.getProfessor(userNameEditText.getText().toString());
+            user = (Professor) dbHelper.getProfessor(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
         }
+        sharedPreferenceHelper.saveUser(user, userType);
         startActivity(intent);
     }
 }

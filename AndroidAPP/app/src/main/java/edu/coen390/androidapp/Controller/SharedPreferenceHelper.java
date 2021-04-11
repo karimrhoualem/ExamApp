@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
 
@@ -66,41 +67,63 @@ public class SharedPreferenceHelper {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         User currentUser = null;
+
         if(userType == UserType.INVIGILATOR){
             currentUser = (Invigilator) user;
             editor.putString("UserType", "Invigilator");
-        }else if(userType == UserType.PROFESSOR){
+        }
+        else if(userType == UserType.PROFESSOR){
             currentUser = (Professor) user;
             editor.putString("UserType", "Professor");
         }
+
         String json = gson.toJson(currentUser);
 
         editor.putString("User", json);
         editor.apply();
     }
 
-
-
-
     //doesn't work when just returning a user
     public User getUser() {
-       String json = sharedPreferences.getString("User", "");
-       String userType = sharedPreferences.getString("UserType","" );
-
-          if(  !json.equals("") && !userType.equals("") ) {
-              Gson gson = new Gson();
-              if (userType.equals("Invigilator")) {
-                  return gson.fromJson(json, Invigilator.class);
-              } else if (userType.equals("Professor")) {
-                  return gson.fromJson(json, Professor.class);
-              }
-              return null;
-          }
-      else {
-      return null;
+        String json = sharedPreferences.getString("User", "");
+        String userType = sharedPreferences.getString("UserType","" );
+        if (!json.equals("") && !userType.equals("")) {
+            Gson gson = new Gson();
+            if (userType.equals("Invigilator")) {
+                return gson.fromJson(json, Invigilator.class);
+            } else if (userType.equals("Professor")) {
+                return gson.fromJson(json, Professor.class);
+            }
+            return null;
         }
-
+        else {
+            return null;
+        }
     }
 
+    public void saveSource(Source source) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Source", source.name());
+        editor.apply();
+    }
 
+    public String getSource() {
+        return sharedPreferences.getString("Source", "");
+    }
+
+    public void saveCourseCode(String code) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Course_Code", code);
+        editor.apply();
+    }
+
+    public String getCourseCode() {
+        return sharedPreferences.getString("Course_Code", "");
+    }
+
+    public void clearSource() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("Source");
+        editor.apply();
+    }
 }

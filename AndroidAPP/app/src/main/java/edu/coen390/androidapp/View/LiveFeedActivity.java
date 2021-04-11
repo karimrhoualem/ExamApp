@@ -35,6 +35,7 @@ import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
 
 
@@ -44,7 +45,7 @@ public class LiveFeedActivity extends AppCompatActivity {
     @VisibleForTesting
    public static final String WEB_FORM_URL = "http://192.168.2.135:5000/video_feed";
    //public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000/";
     private static final String TAG = "LiveFeedActivity";
     private JSONObject studentInformation;
     private WebView myWebView;
@@ -85,7 +86,7 @@ public class LiveFeedActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
             Toast.makeText(this, "Facial Recognition Cancelled.", Toast.LENGTH_SHORT).show();
-            LiveFeedActivity.this.finish();
+            endActivity(course);
         });
 
         dbHelper = new DatabaseHelper(this);
@@ -144,13 +145,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                                             public void run() {
                                                 try {
                                                     Thread.sleep(5000);
-
-                                                    sharedPreferenceHelper.saveProfile(course);
-
-                                                    // Cancel the timer thread when a student is correctly identified,
-                                                    // otherwise it keeps running even when we leave the activity.
                                                     cancel();
-                                                    LiveFeedActivity.this.finish();
+                                                    endActivity(course);
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
@@ -200,13 +196,8 @@ public class LiveFeedActivity extends AppCompatActivity {
                                         public void run() {
                                             try {
                                                 Thread.sleep(5000);
-
-                                                sharedPreferenceHelper.saveProfile(course);
-
-                                                // Cancel the timer thread when a student is correctly identified,
-                                                // otherwise it keeps running even when we leave the activity.
                                                 cancel();
-                                                LiveFeedActivity.this.finish();
+                                                endActivity(course);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
@@ -281,8 +272,18 @@ public class LiveFeedActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            case android.R.id.home:
+                endActivity(course);
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void endActivity(Course course) {
+        sharedPreferenceHelper.saveProfile(course);
+        sharedPreferenceHelper.saveSource(Source.LIVEFEED_ACTIVITY);
+        sharedPreferenceHelper.saveCourseCode(course.getCode());
+        LiveFeedActivity.this.finish();
     }
 }

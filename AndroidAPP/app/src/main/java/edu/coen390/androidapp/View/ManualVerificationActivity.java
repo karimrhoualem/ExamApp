@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
 
 public class ManualVerificationActivity extends AppCompatActivity {
@@ -70,8 +71,8 @@ public class ManualVerificationActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
-
     }
+
     @Override
     public boolean onOptionsItemSelected (@NonNull MenuItem item){
         switch (item.getItemId())
@@ -80,6 +81,9 @@ public class ManualVerificationActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            case android.R.id.home:
+                endActivity(course);
+                return false;
             default:
                 return  super.onOptionsItemSelected(item);
         }
@@ -96,7 +100,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v ->{
             Toast.makeText(this, "Manual Verification Cancelled.", Toast.LENGTH_SHORT).show();
-            ManualVerificationActivity.this.finish();
+            endActivity(course);
         });
         dbHelper = new DatabaseHelper(this);
     }
@@ -140,10 +144,8 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                         public void run() {
                                         try {
                                             Thread.sleep(3000);
+                                            endActivity(course);
 
-                                            sharedPreferenceHelper.saveProfile(course);
-
-                                            ManualVerificationActivity.this.finish();
                                         }
                                         catch (Exception e) {
                                             e.printStackTrace();
@@ -172,10 +174,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                     public void run() {
                                     try {
                                         Thread.sleep(3000);
-
-                                        sharedPreferenceHelper.saveProfile(course);
-
-                                        ManualVerificationActivity.this.finish();
+                                        endActivity(course);
                                     }
                                     catch (Exception e) {
                                         e.printStackTrace();
@@ -204,5 +203,11 @@ public class ManualVerificationActivity extends AppCompatActivity {
             }
         });
     }
-}
 
+    private void endActivity(Course course) {
+        sharedPreferenceHelper.saveProfile(course);
+        sharedPreferenceHelper.saveSource(Source.MANUALVERIFICATION_ACTIVITY);
+        sharedPreferenceHelper.saveCourseCode(course.getCode());
+        ManualVerificationActivity.this.finish();
+    }
+}

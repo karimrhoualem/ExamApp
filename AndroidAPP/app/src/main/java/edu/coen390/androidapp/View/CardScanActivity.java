@@ -31,6 +31,8 @@ import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
+import edu.coen390.androidapp.Model.Invigilator;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
 
 public class CardScanActivity extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class CardScanActivity extends AppCompatActivity {
     //TODO: change URLs
     @VisibleForTesting
     //public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String JSON_STUDENT_URL = "http://192.168.2.11:5000/";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000/";
     private static final String TAG = "CardScanActivity";
     private JSONObject studentInformation;
     private DatabaseHelper dbHelper;
@@ -50,7 +52,6 @@ public class CardScanActivity extends AppCompatActivity {
     private Button backButton;
     private Timer timer;
     private TimerTask timerTask;
-    private SharedPreferences sharedPreferences;
     private SharedPreferenceHelper sharedPreferenceHelper;
 
     @Override
@@ -80,7 +81,7 @@ public class CardScanActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
             Toast.makeText(this, "Card Scan Cancelled.", Toast.LENGTH_SHORT).show();
-            CardScanActivity.this.finish();
+            endActivity(course);
         });
 
         dbHelper = new DatabaseHelper(this);
@@ -137,14 +138,10 @@ public class CardScanActivity extends AppCompatActivity {
                                             public void run() {
                                                 try {
                                                     Thread.sleep(5000);
-
-                                                    sharedPreferenceHelper.saveProfile(course);
-
-                                                    // Cancel the timer thread when a student is correctly identified,
-                                                    // otherwise it keeps running even when we leave the activity.
                                                     cancel();
-                                                    CardScanActivity.this.finish();
-                                                } catch (Exception e) {
+                                                    endActivity(course);
+                                                }
+                                                catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -193,14 +190,10 @@ public class CardScanActivity extends AppCompatActivity {
                                         public void run() {
                                             try {
                                                 Thread.sleep(5000);
-
-                                                sharedPreferenceHelper.saveProfile(course);
-
-                                                // Cancel the timer thread when a student is correctly identified,
-                                                // otherwise it keeps running even when we leave the activity.
                                                 cancel();
-                                                CardScanActivity.this.finish();
-                                            } catch (Exception e) {
+                                                endActivity(course);
+                                            }
+                                            catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -256,10 +249,18 @@ public class CardScanActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            case android.R.id.home:
+                endActivity(course);
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
+    private void endActivity(Course course) {
+        sharedPreferenceHelper.saveProfile(course);
+        sharedPreferenceHelper.saveSource(Source.CARDSCAN_ACTIVITY);
+        sharedPreferenceHelper.saveCourseCode(course.getCode());
+        CardScanActivity.this.finish();
+    }
 }

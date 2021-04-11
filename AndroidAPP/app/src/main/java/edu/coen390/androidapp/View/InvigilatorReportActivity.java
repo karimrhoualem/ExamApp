@@ -20,8 +20,11 @@ import com.example.examapp.R;
 import java.util.List;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
+import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.ReportRow;
+import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
 
 /*
@@ -29,6 +32,7 @@ import edu.coen390.androidapp.Model.Student;
  */
 
 public class InvigilatorReportActivity extends AppCompatActivity {
+    public static final String REPORT_INTENT = "REPORT_INTENT";
     private Course course;
     private TableLayout tableLayout;
     private DatabaseHelper dbHelper;
@@ -51,7 +55,7 @@ public class InvigilatorReportActivity extends AppCompatActivity {
         tr_head.setBackgroundColor(Color.GRAY);
 
         TextView examId = new TextView(this);
-        examId.setText("Exam");
+        examId.setText("#");
         examId.setTextColor(Color.WHITE);
         tr_head.addView(examId);
 
@@ -172,9 +176,19 @@ public class InvigilatorReportActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            case android.R.id.home:
+                endActivity(course);
+                return false;
             default:
-                return  super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
+    }
 
+    private void endActivity(Course course) {
+        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(InvigilatorReportActivity.this);
+        sharedPreferenceHelper.saveProfile(course);
+        sharedPreferenceHelper.saveSource(Source.INVIGILATORREPORT_ACTIVITY);
+        sharedPreferenceHelper.saveCourseCode(course.getCode());
+        InvigilatorReportActivity.this.finish();
     }
 }

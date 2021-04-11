@@ -38,81 +38,29 @@ public class CourseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_course);
         setupUI();
         Log.i(TAG, "on create");
-
-
-
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "on resume");
-
-
-    }
-
 
     private void setupUI() {
         Log.i(TAG, "setupUI");
+
         dbHelper = new DatabaseHelper(this);
         courseListView = findViewById(R.id.courseListView);
         userNameTextView = findViewById(R.id.userNameTextView);
 
-        Intent intent = getIntent();
-
         sharedPreferenceHelper = new SharedPreferenceHelper(CourseActivity.this);
 
+        Intent intent = getIntent();
         user = (User) intent.getSerializableExtra(CourseIntentKey);
 
-
-        //this works
-        //User retrievedUser = sharedPreferenceHelper.getInvigilator();
-
-
-        //the issue is returning a USER. Need to return an INVIGILATOR or PROFESSOR
         User retrievedUser = sharedPreferenceHelper.getUser();
-
         if (retrievedUser != null) {
-            Log.d(TAG, "if statement" + retrievedUser.getUserName());
             user = retrievedUser;
         }
 
-        if (user instanceof Invigilator) {
-            userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
-            Log.d(TAG, "invigilator " + user.getUserName());
-            loadListView(user.getId(), UserType.INVIGILATOR);
+        loadUser(user);
+    }
 
-            //maybe this should be save Invigilator, but don't know how.
-            // Invigilator invigilator = (Invigilator) user;
-            //sharedPreferenceHelper.saveInvigilator(invigilator);
-
-            //this works as long as getting the user returns an invigilator
-            sharedPreferenceHelper.saveUser(user, UserType.INVIGILATOR);
-
-            courseListView.setOnItemClickListener((parent, view, position, id) -> {
-                Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
-                intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
-                startActivity(intent1);
-
-
-            });
-        } else if (user instanceof Professor) {
-            userNameTextView.setText("Professor:" + "  " + user.getUserName());
-            loadListView(user.getId(), UserType.PROFESSOR);
-
-            //maybe this should be save Professor
-            sharedPreferenceHelper.saveUser(user, UserType.PROFESSOR);
-
-            courseListView.setOnItemClickListener((parent, view, position, id) -> {
-                Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
-                intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
-                startActivity(intent1);
-
-
-            });
-        }
-
-        User user = (User) intent.getSerializableExtra(CourseIntentKey);
+    private void loadUser(User user) {
         if (user instanceof Invigilator) {
             userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
             loadListView(user.getId(), UserType.INVIGILATOR);
@@ -120,29 +68,22 @@ public class CourseActivity extends AppCompatActivity {
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
                 Intent intent1 = new Intent(view.getContext(), InvigilatorActivity.class);
                 intent1.putExtra(InvigilatorActivity.COURSE_INTENT, getCourse(position));
+                sharedPreferenceHelper.clearSource();
                 startActivity(intent1);
             });
-        } else if (user instanceof Professor) {
+        }
+        else if (user instanceof Professor) {
             userNameTextView.setText("Professor:" + "  " + user.getUserName());
             loadListView(user.getId(), UserType.PROFESSOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
                 Intent intent1 = new Intent(view.getContext(), ProfessorActivity.class);
                 intent1.putExtra(ProfessorActivity.COURSE_INTENT, getCourse(position));
+                sharedPreferenceHelper.clearSource();
                 startActivity(intent1);
             });
-
         }
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "on start");
-
-    }
-
-
 
     private Course getCourse(int position) {
         return new Course(courses.get(position).getId(),
@@ -175,6 +116,5 @@ public class CourseActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 }
