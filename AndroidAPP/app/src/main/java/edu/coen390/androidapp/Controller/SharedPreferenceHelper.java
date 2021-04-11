@@ -2,9 +2,8 @@ package edu.coen390.androidapp.Controller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 import com.google.gson.Gson;
 
 import edu.coen390.androidapp.Model.Course;
@@ -44,7 +43,7 @@ public class SharedPreferenceHelper {
         Gson gson = new Gson();
         String json = gson.toJson(course);
         editor.putString(course.getCode(), json);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -66,11 +65,11 @@ public class SharedPreferenceHelper {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         User currentUser = null;
-        if(userType == UserType.INVIGILATOR){
-            currentUser = (Invigilator) user;
+        if (userType == UserType.INVIGILATOR) {
+            currentUser = user;
             editor.putString("UserType", "Invigilator");
-        }else if(userType == UserType.PROFESSOR){
-            currentUser = (Professor) user;
+        } else if (userType == UserType.PROFESSOR) {
+            currentUser = user;
             editor.putString("UserType", "Professor");
         }
         String json = gson.toJson(currentUser);
@@ -80,25 +79,20 @@ public class SharedPreferenceHelper {
     }
 
 
-
-
     //doesn't work when just returning a user
     public User getUser() {
-       String json = sharedPreferences.getString("User", "");
-       String userType = sharedPreferences.getString("UserType","" );
+        String json = sharedPreferences.getString("User", "");
+        String userType = sharedPreferences.getString("UserType", "");
 
-          if(  !json.equals("") && !userType.equals("") ) {
-              Gson gson = new Gson();
-              if (userType.equals("Invigilator")) {
-                  return gson.fromJson(json, Invigilator.class);
-              } else if (userType.equals("Professor")) {
-                  return gson.fromJson(json, Professor.class);
-              }
-              return null;
-          }
-      else {
-      return null;
+        if (!json.equals("") && !userType.equals("")) {
+            Gson gson = new Gson();
+            if (userType.equals("Invigilator")) {
+                return gson.fromJson(json, Invigilator.class);
+            } else if (userType.equals("Professor")) {
+                return gson.fromJson(json, Professor.class);
+            }
         }
+        return null;
 
     }
 
