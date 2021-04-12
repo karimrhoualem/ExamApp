@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.examapp"
+        applicationId "edu.coen390.examapp"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
@@ -42,7 +42,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    //implementation 'androidx.wear:wear:1.1.0'
+    implementation 'androidx.wear:wear:1.1.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.3.0'
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
+
 }
