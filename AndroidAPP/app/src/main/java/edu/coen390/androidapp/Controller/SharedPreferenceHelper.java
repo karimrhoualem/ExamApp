@@ -2,9 +2,8 @@ package edu.coen390.androidapp.Controller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import com.example.examapp.R;
+import edu.coen390.androidapp.R;
 import com.google.gson.Gson;
 
 import edu.coen390.androidapp.Model.Course;
@@ -45,7 +44,7 @@ public class SharedPreferenceHelper {
         Gson gson = new Gson();
         String json = gson.toJson(course);
         editor.putString(course.getCode(), json);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -83,10 +82,10 @@ public class SharedPreferenceHelper {
         editor.apply();
     }
 
-    //doesn't work when just returning a user
     public User getUser() {
         String json = sharedPreferences.getString("User", "");
         String userType = sharedPreferences.getString("UserType","" );
+
         if (!json.equals("") && !userType.equals("")) {
             Gson gson = new Gson();
             if (userType.equals("Invigilator")) {

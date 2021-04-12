@@ -1,7 +1,6 @@
 package edu.coen390.androidapp.View;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,8 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.examapp.R;
+
 import java.util.List;
+
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.CourseAdapter;
@@ -21,6 +21,7 @@ import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
+import edu.coen390.androidapp.R;
 
 public class CourseActivity extends AppCompatActivity {
     public static final String CourseIntentKey = "COURSE_INTENT_KEY";
@@ -62,7 +63,7 @@ public class CourseActivity extends AppCompatActivity {
 
     private void loadUser(User user) {
         if (user instanceof Invigilator) {
-            userNameTextView.setText("Invigilator:" + "  " + user.getUserName());
+            userNameTextView.setText(String.format("Invigilator:  %s", user.getUserName()));
             loadListView(user.getId(), UserType.INVIGILATOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -108,13 +109,11 @@ public class CourseActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

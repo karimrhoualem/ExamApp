@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.examapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
@@ -18,6 +17,7 @@ import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
+import edu.coen390.androidapp.R;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -67,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 username.clear();
                 password.clear();
                 Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 if (username != null) {
                     username.clear();
                 }

@@ -18,7 +18,7 @@ public class HttpRequest {
     public static JSONObject getJSONObjectFromURL(String urlString) throws IOException, JSONException {
 
         try {
-            HttpURLConnection urlConnection = null;
+            HttpURLConnection urlConnection;
             URL url = new URL(urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -27,7 +27,7 @@ public class HttpRequest {
 
             String line;
             while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
             br.close();
 
@@ -44,7 +44,7 @@ public class HttpRequest {
 
     public static Student getStudentFromJSONObject(JSONObject studentInformation) {
         try {
-            int studentID = studentInformation.getInt("ID");
+            int studentID = Integer.parseInt(studentInformation.getString("ID"));
             String studentName = studentInformation.getString("name");
             String studentFirstName;
             String studentLastName;
@@ -63,8 +63,7 @@ public class HttpRequest {
             }
 
             return new Student(studentID, null, studentFirstName, studentLastName, null, null);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

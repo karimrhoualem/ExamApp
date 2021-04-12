@@ -236,6 +236,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Add Student to Database
+     *
      * @param student
      * @return
      */
@@ -266,14 +267,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Get a specific student from database
+     *
      * @param studentId The Student that we are retrieving from database
      * @return The student object
      */
-    public Student getStudent(long studentId){
+    public Student getStudent(long studentId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
         // Selecting desired criteria
-        String selectQuery = "SELECT * " + " FROM " + Config.STUDENTS_TABLE_NAME+ " WHERE " + Config.STUDENT_ID + " = " + studentId;
+        String selectQuery = "SELECT * " + " FROM " + Config.STUDENTS_TABLE_NAME + " WHERE " + Config.STUDENT_ID + " = " + studentId;
 
         try {
             cursor = db.rawQuery(selectQuery, null);
@@ -302,6 +304,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Verify if student is registered in a specific course
+     *
      * @param student
      * @param course
      * @return
@@ -349,6 +352,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Insert Course into database
+     *
      * @param course
      * @return
      */
@@ -386,6 +390,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Get all courses from a specific invigilator or professor
+     *
      * @param userID
      * @return
      */
@@ -398,8 +403,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (userType == UserType.INVIGILATOR) {
             selectQuery = "SELECT * FROM " + Config.INVIGILATOR_TABLE_NAME + " WHERE " + Config.INVIGILATOR_ID + " = " + userID;
             Log.d(TAG, selectQuery);
-        }
-        else if (userType == UserType.PROFESSOR) {
+        } else if (userType == UserType.PROFESSOR) {
             selectQuery = "SELECT * FROM " + Config.PROFESSOR_TABLE_NAME + " WHERE " + Config.PROFESSOR_ID + " = " + userID;
             Log.d(TAG, selectQuery);
         }
@@ -415,8 +419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     String[] courses = null;
                     if (userType == UserType.INVIGILATOR) {
                         courses = convertStringToArray(cursor.getString(cursor.getColumnIndex(Config.INVIGILATOR_COURSES)));
-                    }
-                    else if (userType == UserType.PROFESSOR) {
+                    } else if (userType == UserType.PROFESSOR) {
                         courses = convertStringToArray(cursor.getString(cursor.getColumnIndex(Config.PROFESSOR_COURSES)));
                     }
 
@@ -440,8 +443,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.d(TAG, "Exception: " + e.getMessage());
         } finally {
-            if (cursor != null && courseCursor != null)
+            if (cursor != null && courseCursor != null){
                 cursor.close();
+                courseCursor.close();
+            }
+
 
             db.close();
         }
@@ -450,6 +456,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Verify if a course exists
+     *
      * @param course
      * @return
      */
@@ -583,6 +590,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Get a particular invigilator from the data base.
+     *
      * @param user_name The id of the invigilator to be recovered
      * @return The invigilator that was recovered from the data base
      */
@@ -752,7 +760,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(Config.EXAM_SIGNED_OUT, status);
         return db.update(Config.EXAM_TABLE_NAME.get(course.getCode()), cv,
-                Config.EXAM_STUDENT_ID + "= ?", new String[] {row.getStudentId()});
+                Config.EXAM_STUDENT_ID + "= ?", new String[]{row.getStudentId()});
     }
 
 
@@ -838,11 +846,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursorCount = cursor.getCount();
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d(TAG, "Exception: " + e.getMessage());
-        }
-        finally {
+        } finally {
+            assert cursor != null;
             cursor.close();
             db.close();
         }

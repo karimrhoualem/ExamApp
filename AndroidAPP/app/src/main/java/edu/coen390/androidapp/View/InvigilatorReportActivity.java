@@ -1,8 +1,5 @@
 package edu.coen390.androidapp.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,7 +12,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.examapp.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
@@ -26,6 +24,7 @@ import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.ReportRow;
 import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.R;
 
 /*
  * Good example for UI: https://www.tutorialspoint.com/how-to-add-table-rows-dynamically-in-android-layout
@@ -58,11 +57,6 @@ public class InvigilatorReportActivity extends AppCompatActivity {
         examId.setText("#");
         examId.setTextColor(Color.WHITE);
         tr_head.addView(examId);
-
-        TextView courseId = new TextView(this);
-        courseId.setText("Course");
-        courseId.setTextColor(Color.WHITE);
-        tr_head.addView(courseId);
 
         TextView studentId = new TextView(this);
         studentId.setText("Student ID");
@@ -102,18 +96,13 @@ public class InvigilatorReportActivity extends AppCompatActivity {
                 examId.setTextColor(Color.BLACK);
                 tr_body.addView(examId);
 
-                TextView courseId = new TextView(this);
-                courseId.setText(String.valueOf(row.getCourseId()));
-                courseId.setTextColor(Color.BLACK);
-                tr_body.addView(courseId);
-
                 TextView studentId = new TextView(this);
                 studentId.setText(String.valueOf(row.getStudentId()));
                 studentId.setTextColor(Color.BLACK);
                 tr_body.addView(studentId);
 
                 TextView studentName = new TextView(this);
-                studentName.setText(student.getFirstName() + " " + student.getLastName());
+                studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
                 studentName.setTextColor(Color.BLACK);
                 tr_body.addView(studentName);
 
@@ -124,29 +113,20 @@ public class InvigilatorReportActivity extends AppCompatActivity {
 
                 CheckBox signedOut = new CheckBox(this);
                 tr_body.addView(signedOut);
-                if (row.isSignedOut() == 1) {
-                    signedOut.setChecked(true);
-                }
-                else {
-                    signedOut.setChecked(false);
-                }
+                signedOut.setChecked(row.isSignedOut() == 1);
 
-                signedOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                       @Override
-                       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                           if (signedOut.isChecked()) {
-                               int ret = dbHelper.updateSignOutStatus(course, row, 1);
-                               if (ret > 0) {
-                                   Toast.makeText(InvigilatorReportActivity.this,
-                                           "Student with ID: " + row.getStudentId() + " has been successfully signed out.",
-                                           Toast.LENGTH_LONG).show();
-                               }
-                           }
-                           else {
-                               dbHelper.updateSignOutStatus(course, row, 0);
-                           }
-                       }
-                   }
+                signedOut.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (signedOut.isChecked()) {
+                        int ret = dbHelper.updateSignOutStatus(course, row, 1);
+                        if (ret > 0) {
+                            Toast.makeText(InvigilatorReportActivity.this,
+                                    "Student with ID: " + row.getStudentId() + " has been successfully signed out.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        dbHelper.updateSignOutStatus(course, row, 0);
+                    }
+                }
                 );
 
                 tableLayout.addView(tr_body);
@@ -168,6 +148,7 @@ public class InvigilatorReportActivity extends AppCompatActivity {
         return true;
 
     }
+
     @Override
     public boolean onOptionsItemSelected (@NonNull MenuItem item){
         switch (item.getItemId())

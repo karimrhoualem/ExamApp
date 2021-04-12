@@ -1,6 +1,6 @@
 package edu.coen390.androidapp.View;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -22,10 +22,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.examapp.R;
-import com.google.gson.Gson;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Timer;
@@ -37,6 +33,7 @@ import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Source;
 import edu.coen390.androidapp.Model.Student;
+import edu.coen390.androidapp.R;
 
 
 public class LiveFeedActivity extends AppCompatActivity {
@@ -105,9 +102,7 @@ public class LiveFeedActivity extends AppCompatActivity {
                 public void run() {
                     try {
                         studentInformation = HttpRequest.getJSONObjectFromURL(JSON_STUDENT_URL);
-                        Log.d(TAG, "Student Info Obtained : " + studentInformation);
                         Student student = HttpRequest.getStudentFromJSONObject(studentInformation);
-                        Log.d(TAG, "Student Info Updated : " + student.toString());
 
                         boolean isStudentConfirmed;
                         if (student != null) {
@@ -116,7 +111,12 @@ public class LiveFeedActivity extends AppCompatActivity {
                             isStudentConfirmed = false;
                         }
 
-                        boolean isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        boolean isStudentSeated;
+                        if(student != null){
+                            isStudentSeated = dbHelper.isStudentSeated(student, course);
+                        }else{
+                            isStudentSeated = false;
+                        }
 
                         if (isStudentConfirmed) {
                             if (!isStudentSeated) {
@@ -186,23 +186,20 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                     LiveFeedActivity.this, R.drawable.success);
                                             imageView.setImageDrawable(drawable);
                                             Toast.makeText(LiveFeedActivity.this,
-                                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                    "Student with ID: " + student.getId() + " has been successfully confirmed. " +
                                                             "Returning to previous page.",
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Thread thread = new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                Thread.sleep(5000);
-                                                cancel();
-                                                endActivity(course);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+                                    Thread thread = new Thread(() -> {
+                                        try {
+                                            Thread.sleep(5000);
+                                            cancel();
+                                            endActivity(course);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    };
+                                    });
                                     thread.start();
                                     thread.join();
                                 }
@@ -231,7 +228,6 @@ public class LiveFeedActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
-
     }
 
     @Override
@@ -240,6 +236,7 @@ public class LiveFeedActivity extends AppCompatActivity {
         timer.cancel();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void launchWebView() {
         myWebView = findViewById(R.id.webView);
 

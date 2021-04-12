@@ -1,23 +1,20 @@
 package edu.coen390.androidapp.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
-
-import com.example.examapp.R;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.Source;
+import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.R;
 
 public class ProfessorActivity extends AppCompatActivity {
     public static final String COURSE_INTENT = "COURSE";
@@ -35,6 +32,7 @@ public class ProfessorActivity extends AppCompatActivity {
         sharedPreferenceHelper = new SharedPreferenceHelper(this);
 
         Intent intent = getIntent();
+
         String source = sharedPreferenceHelper.getSource();
         if (source != "") {
             if (source.equals(Source.PROFESSORREPORT_ACTIVITY.name()))
@@ -78,13 +76,12 @@ public class ProfessorActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 }
