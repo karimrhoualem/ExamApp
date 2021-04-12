@@ -66,7 +66,9 @@
             android:layout_width="362dp"
             android:layout_height="54dp"
             android:layout_gravity="center_horizontal"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:inputType="text"
+            android:maxLines="1"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,6 +96,7 @@
             android:layout_height="54dp"
             android:layout_gravity="center_horizontal"
             android:inputType="textPassword"
+            android:maxLines="1"
             app:layout_constraintStart_toStartOf="parent" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -44,7 +44,9 @@
             android:id="@+id/txt_studentId"
             android:layout_width="362dp"
             android:layout_height="54dp"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:inputType="text"
+            android:maxLines="1"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
