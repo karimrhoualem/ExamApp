@@ -19,6 +19,7 @@ import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
+import edu.coen390.androidapp.Model.SampleData;
 import edu.coen390.androidapp.Model.Student;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
@@ -94,11 +95,11 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
         User user = null;
         if (userType == UserType.INVIGILATOR) {
-            user = (Invigilator) dbHelper.getInvigilator(userNameEditText.getText().toString());
+            user = dbHelper.getInvigilator(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
         }
         else if (userType == UserType.PROFESSOR){
-            user = (Professor) dbHelper.getProfessor(userNameEditText.getText().toString());
+            user = dbHelper.getProfessor(userNameEditText.getText().toString());
             intent.putExtra(CourseActivity.CourseIntentKey, user);
         }
         sharedPreferenceHelper.saveUser(user, userType);
@@ -106,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createTestStudent() throws IOException {
-        ArrayList<Student> students = HttpRequest.getTestStudentFromJSON();
+        ArrayList<Student> students = SampleData.getSampleStudents(getAssets().open("sample-data.json"));
         for(Student student : students){
             System.out.println(student.toString());
             dbHelper.insertStudent(student);
