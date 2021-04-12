@@ -6,6 +6,7 @@ import math
 import os
 import pickle
 import threading
+import multiprocessing
 import time
 import timeit
 
@@ -17,8 +18,9 @@ from flask import Response, jsonify
 from flask import render_template
 from imutils.video import VideoStream
 
+
 # CONFIG
-IP_ADDRESS = "192.168.2.135"
+IP_ADDRESS = "192.168.0.91"
 PORT = 5000
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
@@ -55,7 +57,7 @@ app = Flask(__name__)
 print("Acquiring VideoStream")
 if (RUN_ON_PI):
     print("Pi environment detected")
-    vs = VideoStream(src=0, usePiCamera=True, resolution=(480, 640)).start()
+    vs = VideoStream(src=0, usePiCamera=True, resolution=(640, 480)).start()
     time.sleep(2.0)  # the camera needs time to start, if loading encodings directly it can be too fast
 else:
     print("Non-Pi environment")
@@ -299,6 +301,7 @@ def generate_stream():
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
                bytearray(encodedImage) + b'\r\n')
 
+    
 
 @app.route("/person_info")
 def info_stream():
@@ -332,6 +335,7 @@ if __name__ == '__main__':
         args["frame_count"],))
     t.daemon = True
     t.start()
+    
 
     # start the flask app
     app.run(host=IP_ADDRESS, port=PORT, debug=True,
@@ -340,3 +344,4 @@ if __name__ == '__main__':
 # Release handle to the webcam
 vs.stop()
 cv2.destroyAllWindows()
+
