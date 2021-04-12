@@ -12,10 +12,6 @@ FACE_INFO_CONFIG = "face_info.json"
 LABELLED_FACES_FOLDER = "faces/big-faces-dataset"
 
 PICKLE_OUTPUT_FILE = "encodings.dat"
-
-# known_face_encodings = []
-# known_face_names = []
-
 # dict to store all the parallel arrays together
 # parallel arrays are so that the encodings array can be directly passed to face_recognition
 face_info = {}
@@ -29,9 +25,6 @@ print("Creating face encodings")
 
 # load the face info
 def load_face_info():
-    # face_info = []
-    # get the relations between image file and people
-
     dirname = os.path.dirname(__file__)
     index_file_path = os.path.join(dirname, FACE_INFO_FOLDER, FACE_INFO_CONFIG)
     with open(index_file_path, 'r') as indexfile:

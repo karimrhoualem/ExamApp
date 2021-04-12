@@ -1,12 +1,14 @@
 # USAGE
-# python webstreaming.py --ip 0.0.0.0 --port 8000
+# python face_rec.py --ip 0.0.0.0 --port 8000
 # import the necessary packages
+# Referenced :
+# 1 - https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_from_webcam_faster.py
+# 2 - https://github.com/ageitgey/face_recognition
 import argparse
 import math
 import os
 import pickle
 import threading
-import multiprocessing
 import time
 import timeit
 
@@ -18,7 +20,6 @@ from flask import Response, jsonify
 from flask import render_template
 from imutils.video import VideoStream
 
-
 # CONFIG
 IP_ADDRESS = "192.168.0.91"
 PORT = 5000
@@ -26,24 +27,14 @@ FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
 PICKLE_INPUT_FILE = "encodings.dat"
 
+# Face Detection and recognition Constants
 FACE_DISTANCE_THRESHOLD = 25
 FACE_COMPARE_STRICTNESS = 0.5
 
+# detect if we are running on raspberry pi by CPU architecture
 RUN_ON_PI = (hasattr(os,
-                     'uname') and os.uname().machine == 'armv7l')  # detect if we are running on raspberry pi by CPU architecture
+                     'uname') and os.uname().machine == 'armv7l')
 
-# This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
-# other example, but it includes some basic performance tweaks to make things run a lot faster:
-#   1. Process each video frame at 1/4 resolution (though still display it at full resolution)
-#   2. Only detect faces in every other frame of video.
-
-# PLEASE NOTE: This example requires OpenCV (the `cv2` library) to be installed only to read from your webcam.
-# OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
-# specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
-
-# initialize the output frame and a lock used to ensure thread-safe
-# exchanges of the output frames (useful for multiple browsers/tabs
-# are viewing the stream)
 outputFrame = None
 info = None
 json_face_info = {}
@@ -55,10 +46,11 @@ app = Flask(__name__)
 
 # Get a reference to webcam #0 (the default one)
 print("Acquiring VideoStream")
-if (RUN_ON_PI):
+if RUN_ON_PI:
     print("Pi environment detected")
     vs = VideoStream(src=0, usePiCamera=True, resolution=(640, 480)).start()
-    time.sleep(2.0)  # the camera needs time to start, if loading encodings directly it can be too fast
+    # the camera needs time to start, if loading encodings directly it can be too fast
+    time.sleep(2.0)
 else:
     print("Non-Pi environment")
     # TODO doesn't work on windows? webcam turns on, but no video in video_feed
@@ -67,46 +59,17 @@ else:
     vs = WebcamVideoStream(src=0).start()
     time.sleep(2.0)
 
-# video_capture = cv2.VideoCapture(0)
-
+# Person Info Variables
 known_face_encodings = []
 known_face_names = []
 
 
-# load the face info
-# def load_face_info():
-#     start_time = timeit.default_timer()
-#     print("Creating face encodings")
-#     #face_info = []
-#     # get the relations between image file and people
-#     dirname = os.path.dirname(__file__)
-#     index_file_path = os.path.join(dirname, FACE_INFO_FOLDER, FACE_INFO_CONFIG)
-#     with open(index_file_path, 'r') as indexfile:
-#         json_info = json.load(indexfile)
-#
-#         for person in json_info['people']:
-#             print("Load face info for {name}".format(name=person['name']))
-#             # assume images for now to be in, eg, faces/obama/obama.jpg
-#             face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder']+'.jpg')
-#             person_image = face_recognition.load_image_file(face_file_path)
-#             person_face_encoding = face_recognition.face_encodings(person_image)[0]
-#
-#             known_face_encodings.append(person_face_encoding)
-#             known_face_names.append(person['name'])
-#
-#         for person in json_info['people']:
-#             json_face_info[person['name']] = person['ID']
-#
-#     stop_time = timeit.default_timer()
-#
-#     print("Time to load faces: {time}\n".format(time=(stop_time-start_time)))
-
+# Load Face Info Method
 def load_face_info():
     start_time = timeit.default_timer()
     print("Creating face encodings")
     global known_face_names, known_face_encodings
 
-    # TODO: check for pickle file existance and call generation script if it doesn't exist?
     dirname = os.path.dirname(__file__)
     pickle_file_path = os.path.join(dirname, FACE_INFO_FOLDER, PICKLE_INPUT_FILE)
     print("Pickle file: {fname}".format(fname=pickle_file_path))
@@ -123,37 +86,12 @@ def load_face_info():
     print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
 
 
-# def load_face_info_orig():
-#     start_time = timeit.default_timer()
-#     print("Creating face encodings")
-#     # face_info = []
-#     # get the relations between image file and people
-#     dirname = os.path.dirname(__file__)
-#     index_file_path = os.path.join(dirname, FACE_INFO_FOLDER, FACE_INFO_CONFIG)
-#     with open(index_file_path, 'r') as indexfile:
-#         json_info = json.load(indexfile)
-#
-#         for person in json_info['people']:
-#             print("Load face info for {name}".format(name=person['name']))
-#             # assume images for now to be in, eg, faces/obama/obama.jpg
-#             face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
-#             person_image = face_recognition.load_image_file(face_file_path)
-#             person_face_encoding = face_recognition.face_encodings(person_image)[0]
-#
-#             known_face_encodings.append(person_face_encoding)
-#             known_face_names.append(person['name'])
-#
-#     stop_time = timeit.default_timer()
-#
-#     print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
-
 load_face_info()
 print(known_face_names)
 
 
 def confidence_from_distance(dist):
     conf = (FACE_DISTANCE_THRESHOLD - dist) / FACE_DISTANCE_THRESHOLD * 100
-    # conf = (100-dist)
     return round(conf, 1)
 
 
@@ -217,13 +155,11 @@ def recognize_face(frameCount):
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
                     if best_match_index < FACE_DISTANCE_THRESHOLD:
-                        print("Matched {name} with distance {dist} confidence {conf}%".format(name=name,
-                                                                                              dist=best_match_index,
-                                                                                              conf=best_match_confidence))
+                        print("Matched {name} with distance {dist} confidence {conf}%"
+                              .format(name=name, dist=best_match_index, conf=best_match_confidence))
                     else:
-                        print("Ignoring Match {name} with distance {dist} below threshold {thresh}".format(name=name,
-                                                                                                           dist=best_match_index,
-                                                                                                           thresh=FACE_DISTANCE_THRESHOLD))
+                        print("Ignoring Match {name} with distance {dist} below threshold {thresh}"
+                              .format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
                         name = "Unknown"
 
                 face_names.append(name)
@@ -301,7 +237,6 @@ def generate_stream():
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
                bytearray(encodedImage) + b'\r\n')
 
-    
 
 @app.route("/person_info")
 def info_stream():
@@ -335,7 +270,6 @@ if __name__ == '__main__':
         args["frame_count"],))
     t.daemon = True
     t.start()
-    
 
     # start the flask app
     app.run(host=IP_ADDRESS, port=PORT, debug=True,
@@ -344,4 +278,3 @@ if __name__ == '__main__':
 # Release handle to the webcam
 vs.stop()
 cv2.destroyAllWindows()
-
