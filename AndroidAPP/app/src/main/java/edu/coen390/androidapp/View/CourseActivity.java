@@ -1,8 +1,12 @@
 package edu.coen390.androidapp.View;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -15,7 +19,7 @@ import java.util.List;
 
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
-import edu.coen390.androidapp.CourseAdapter;
+import edu.coen390.androidapp.Model.CourseAdapter;
 import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
@@ -63,7 +67,13 @@ public class CourseActivity extends AppCompatActivity {
 
     private void loadUser(User user) {
         if (user instanceof Invigilator) {
-            userNameTextView.setText(String.format("Invigilator:  %s", user.getUserName()));
+            userNameTextView.setText("User Mode: INVIGILATOR" + '\n' + "Name: " + user.getFirstName()
+                                    + " " + user.getLastName() + '\n'
+                                    + "Username: " + user.getUserName() + '\n');
+            userNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f);
+            userNameTextView.setTypeface(null, Typeface.BOLD);
+//            userNameTextView.setTextColor(Color.RED);
+//            userNameTextView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             loadListView(user.getId(), UserType.INVIGILATOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -74,7 +84,13 @@ public class CourseActivity extends AppCompatActivity {
             });
         }
         else if (user instanceof Professor) {
-            userNameTextView.setText("Professor:" + "  " + user.getUserName());
+            userNameTextView.setText("User Mode: PROFESSOR" + '\n' + "Name:" + "  " + user.getFirstName()
+                                    + " " + user.getLastName() + '\n'
+                                    + "Username: " + user.getUserName() + '\n');
+            userNameTextView.setTypeface(null, Typeface.BOLD);
+            userNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f);
+//            userNameTextView.setTextColor(Color.RED);
+//            userNameTextView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             loadListView(user.getId(), UserType.PROFESSOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {

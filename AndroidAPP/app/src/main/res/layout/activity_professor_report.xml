@@ -6,6 +6,7 @@
     tools:context="edu.coen390.androidapp.View.ProfessorReportActivity">
 
     <ScrollView
+        android:id="@+id/professorScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

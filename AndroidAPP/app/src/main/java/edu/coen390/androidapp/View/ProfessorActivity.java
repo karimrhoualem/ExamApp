@@ -1,25 +1,29 @@
 package edu.coen390.androidapp.View;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import edu.coen390.androidapp.Controller.DatabaseHelper;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
 import edu.coen390.androidapp.Model.Course;
-import edu.coen390.androidapp.Model.Professor;
 import edu.coen390.androidapp.Model.Source;
-import edu.coen390.androidapp.Model.Course;
 import edu.coen390.androidapp.R;
 
 public class ProfessorActivity extends AppCompatActivity {
     public static final String COURSE_INTENT = "COURSE";
     public static final String COURSE_INTENT_PLUS_SOURCE = "COURSE_PLUS_SOURCE";
     private static final String TAG = "ProfessorActivity";
+    private ConstraintLayout constraintLayout;
 
     private Course course;
     private Button generateReportButton;
@@ -60,11 +64,22 @@ public class ProfessorActivity extends AppCompatActivity {
 
     private void setupUI() {
         generateReportButton = findViewById(R.id.professorGenerateReportButton);
+        constraintLayout = findViewById(R.id.professorConstraintLayout);
+        displayCourseInfo();
         generateReportButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProfessorActivity.this, ProfessorReportActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });
+    }
+
+    private void displayCourseInfo() {
+        TextView courseTextView = new TextView(ProfessorActivity.this);
+        courseTextView.setText("Course: " + '\n' + course.getTitle() + " - " + course.getCode());
+        courseTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        courseTextView.setTypeface(null, Typeface.BOLD);
+        courseTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36f);
+        constraintLayout.addView(courseTextView);
     }
 
     @Override

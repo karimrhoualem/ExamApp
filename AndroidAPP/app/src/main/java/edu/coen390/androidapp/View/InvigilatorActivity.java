@@ -1,13 +1,20 @@
 package edu.coen390.androidapp.View;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.io.Serializable;
 import edu.coen390.androidapp.Controller.Config;
 import edu.coen390.androidapp.Controller.DatabaseHelper;
@@ -28,6 +35,7 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
     private Button generateReportButton;
     private DatabaseHelper dbHelper;
     private SharedPreferenceHelper sharedPreferenceHelper;
+    private ConstraintLayout invigilatorConstraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +83,8 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         cardScannerButton = findViewById(R.id.cardScannerButton);
         manualVerification = findViewById(R.id.manualVerificationButton);
         generateReportButton = findViewById(R.id.generateReportButton);
+        invigilatorConstraintLayout = findViewById(R.id.invigilatorConstraintLayout);
+        displayCourseInfo();
 
         facialRecognitionButton.setOnClickListener(v -> {
             Intent intent = new Intent(InvigilatorActivity.this, LiveFeedActivity.class);
@@ -125,5 +135,14 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void displayCourseInfo() {
+        TextView courseTextView = new TextView(InvigilatorActivity.this);
+        courseTextView.setText("Course: " + '\n' + course.getTitle() + " - " + course.getCode());
+        courseTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        courseTextView.setTypeface(null, Typeface.BOLD);
+        courseTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36f);
+        invigilatorConstraintLayout.addView(courseTextView);
     }
 }

@@ -1,4 +1,4 @@
-package edu.coen390.androidapp;
+package edu.coen390.androidapp.Model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.coen390.androidapp.Model.Course;
+import edu.coen390.androidapp.R;
 
 public class CourseAdapter extends BaseAdapter {
-
-
     private final List<Course> courses;
     Context mContext;
     private TextView courseTextView;
@@ -22,7 +21,6 @@ public class CourseAdapter extends BaseAdapter {
         this.mContext = context;
         this.courses = courses;
     }
-
 
     @Override
     public int getCount() {
@@ -47,12 +45,10 @@ public class CourseAdapter extends BaseAdapter {
             listItem = LayoutInflater.from(mContext).inflate(R.layout.course_item, parent, false);
         }
 
-
         courseTextView = listItem.findViewById(R.id.courseTextView);
 
         String coursesString = course.getTitle() + "\n" + course.getCode();
         courseTextView.setText(coursesString);
-
 
         return listItem;
     }
