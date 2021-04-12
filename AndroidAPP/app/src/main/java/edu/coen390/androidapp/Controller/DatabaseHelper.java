@@ -111,7 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTestInvigilators();
         createTestProfessors();
         createTestCourses();
-        createTestStudents();
+        //createTestStudents();
     }
 
     //TODO: to be replaced when cloud database is setup.
@@ -148,9 +148,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //TODO: to be replaced when cloud database is setup.
     private void createTestInvigilators() {
-        Invigilator invigilator1 = new Invigilator(-1, new String[]{"ENGR 391", "COMP 472"},
+        Invigilator invigilator1 = new Invigilator(-1, new String[]{"ENGR 391", "COMP 472", "ELEC 331", "COEN 313"},
                 "John", "Doe", "j_doe", "1234");
-        Invigilator invigilator2 = new Invigilator(-1, new String[]{"ENGR 391", "COMP 472"},
+        Invigilator invigilator2 = new Invigilator(-1, new String[]{"ENGR 391", "COMP 472", "ELEC 331", "COEN 313"},
                 "Karen", "Land", "k_lan", "5678");
         addInvigilator(invigilator1);
         addInvigilator(invigilator2);
@@ -425,6 +425,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     for (String course : courses) {
                         String courseQuery = "SELECT * FROM " + Config.COURSE_TABLE_NAME + " WHERE " + Config.COURSE_CODE + " = " + '"' + course + '"';
+                        Log.d(TAG, courseQuery);
                         courseCursor = db.rawQuery(courseQuery, null);
                         if (courseCursor != null) {
                             if (courseCursor.moveToFirst()) {

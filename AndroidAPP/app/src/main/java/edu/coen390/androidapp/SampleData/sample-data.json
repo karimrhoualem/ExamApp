@@ -1,0 +1,284 @@
+{
+  "people":[
+    {
+      "name":"Karim Rhoualem",
+      "ID":"26603157",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Ahmed Ali",
+      "ID":"40102454",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Megan Walbaum",
+      "ID":"40068567",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Alec Wolfe",
+      "ID":"40103773",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Tawfiq Jawhar",
+      "ID":"40000390",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Bipinkumar Patel",
+      "ID":"12345678",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"William Lynch",
+      "ID":"23456789",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Barack Obama",
+      "ID":"45454545",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Mark Hamill",
+      "ID":"40102453",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Joe Biden",
+      "ID":"40052335",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Esther Anil",
+      "ID":"41022335",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Beyonce Carter",
+      "ID":"42032735",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Nadine Caron",
+      "ID":"43042635",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Jeremy Dutcher",
+      "ID":"44052535",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Gong Li",
+      "ID":"45062365",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Aamir Khan",
+      "ID":"46072385",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Mackenzie Foy",
+      "ID":"47082321",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Emmanuel Macron",
+      "ID":"48092305",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Angela Merkel",
+      "ID":"41042323",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Anjali Nair",
+      "ID":"42052335",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Oprah Winfrey",
+      "ID":"43062302",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Serena Williams",
+      "ID":"44072305",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Shinzo Abe",
+      "ID":"45082367",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Saikumar",
+      "ID":"46092389",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Tsai Ing-wen",
+      "ID":"47032335",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Xi Jinping",
+      "ID":"48022354",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"YeoJeong Cho",
+      "ID":"49082323",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    },
+    {
+      "name":"Micheal Jordan",
+      "ID":"41012301",
+      "Courses":[
+        "ENGR 391",
+        "COMP 472",
+        "ELEC 331",
+        "COEN 313"
+      ]
+    }
+  ]
+}

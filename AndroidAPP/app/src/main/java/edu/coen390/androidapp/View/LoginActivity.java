@@ -11,10 +11,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import edu.coen390.androidapp.Controller.DatabaseHelper;
 import edu.coen390.androidapp.Controller.SharedPreferenceHelper;
+import edu.coen390.androidapp.Model.HttpRequest;
 import edu.coen390.androidapp.Model.Invigilator;
 import edu.coen390.androidapp.Model.Professor;
+import edu.coen390.androidapp.Model.Student;
 import edu.coen390.androidapp.Model.User;
 import edu.coen390.androidapp.Model.UserType;
 import edu.coen390.androidapp.R;
@@ -36,6 +41,11 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "DB helper object created.");
 
         dbHelper.createTestData();  //TODO: to be replaced when cloud database is setup.
+        try {
+            createTestStudent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setupUI();
         setupUserLogin();
     }
@@ -93,6 +103,15 @@ public class LoginActivity extends AppCompatActivity {
         }
         sharedPreferenceHelper.saveUser(user, userType);
         startActivity(intent);
+    }
+
+    private void createTestStudent() throws IOException {
+        ArrayList<Student> students = HttpRequest.getTestStudentFromJSON();
+        for(Student student : students){
+            System.out.println(student.toString());
+            dbHelper.insertStudent(student);
+        }
+
     }
 }
 
