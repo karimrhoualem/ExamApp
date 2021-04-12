@@ -36,7 +36,7 @@ public class CardScanActivity extends AppCompatActivity {
     //TODO: change URLs
     @VisibleForTesting
     //public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000/";
+    public static final String JSON_STUDENT_URL = "http://192.168.0.91:5001/rfid";
     private static final String TAG = "CardScanActivity";
     private JSONObject studentInformation;
     private DatabaseHelper dbHelper;
