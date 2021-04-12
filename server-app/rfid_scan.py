@@ -15,7 +15,7 @@ IP_ADDRESS = "192.168.0.91"
 PORT = 5001
 
 # init
-rfid_status = {'status': 'noscan', 'name': '', 'id': ''}  # used to track most recent RFID scan info
+rfid_status = {'status': 'noscan', 'name': '', 'ID': ''}  # used to track most recent RFID scan info
 app = Flask(__name__)
 
 
@@ -32,18 +32,18 @@ def rfid_detect_loop():
 
             if (len(fields) == 2):
                 rfid_status['name'] = fields[0]
-                rfid_status['id'] = fields[1].replace(' ', '')
+                rfid_status['ID'] = fields[1].replace(' ', '')
                 rfid_status['status'] = 'goodscan'
             else:
                 rfid_status['status'] = 'badscan'
                 rfid_status['name'] = ''
-                rfid_status['id'] = ''
+                rfid_status['ID'] = ''
 
         except Exception as e:
             rfid_status['status'] = 'error'
             rfid_status['error'] = str(e)
             rfid_status['name'] = ''
-            rfid_status['id'] = ''
+            rfid_status['ID'] = ''
 
         # finally:
         #  GPIO.cleanup()

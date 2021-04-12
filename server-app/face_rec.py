@@ -21,7 +21,7 @@ from flask import render_template
 from imutils.video import VideoStream
 
 # CONFIG
-IP_ADDRESS = "192.168.2.135"
+IP_ADDRESS = "192.168.0.91"
 PORT = 5000
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
