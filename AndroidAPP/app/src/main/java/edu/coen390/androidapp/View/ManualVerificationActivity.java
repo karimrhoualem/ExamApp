@@ -210,6 +210,19 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
+                        thread = new Thread(){
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(3000);
+                                    endActivity(course);
+                                }
+                                catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        thread.start();
                     }
                 }
                 catch(NumberFormatException e){

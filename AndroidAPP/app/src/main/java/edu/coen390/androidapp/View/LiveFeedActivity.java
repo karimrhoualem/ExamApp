@@ -228,6 +228,9 @@ public class LiveFeedActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });
+                            Thread.sleep(5000);
+                            endActivity(course);
+                            cancel();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
