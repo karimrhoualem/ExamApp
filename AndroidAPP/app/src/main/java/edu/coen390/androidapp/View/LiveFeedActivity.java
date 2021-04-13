@@ -140,20 +140,23 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                         Toast.LENGTH_LONG).show();
                                             }
                                         });
-                                        Thread thread = new Thread() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    Thread.sleep(5000);
-                                                    cancel();
-                                                    endActivity(course);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        };
-                                        thread.start();
-                                        thread.join();
+//                                        Thread thread = new Thread() {
+//                                            @Override
+//                                            public void run() {
+//                                                try {
+//                                                    Thread.sleep(5000);
+//                                                    endActivity(course);
+//                                                    cancel();
+//                                                } catch (Exception e) {
+//                                                    e.printStackTrace();
+//                                                }
+//                                            }
+//                                        };
+//                                        thread.start();
+//                                        thread.join();
+                                        Thread.sleep(5000);
+                                        endActivity(course);
+                                        cancel();
                                     } else {
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -191,20 +194,23 @@ public class LiveFeedActivity extends AppCompatActivity {
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    Thread thread = new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                Thread.sleep(5000);
-                                                cancel();
-                                                endActivity(course);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    };
-                                    thread.start();
-                                    thread.join();
+//                                    Thread thread = new Thread() {
+//                                        @Override
+//                                        public void run() {
+//                                            try {
+//                                                Thread.sleep(5000);
+//                                                endActivity(course);
+//                                                cancel();
+//                                            } catch (Exception e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    };
+//                                    thread.start();
+//                                    thread.join();
+                                    Thread.sleep(5000);
+                                    endActivity(course);
+                                    cancel();
                                 }
                             }
                         } else {

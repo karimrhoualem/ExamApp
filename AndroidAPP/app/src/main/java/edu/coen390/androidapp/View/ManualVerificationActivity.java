@@ -145,7 +145,6 @@ public class ManualVerificationActivity extends AppCompatActivity {
                                             try {
                                                 Thread.sleep(3000);
                                                 endActivity(course);
-
                                             }
                                             catch (Exception e) {
                                                 e.printStackTrace();

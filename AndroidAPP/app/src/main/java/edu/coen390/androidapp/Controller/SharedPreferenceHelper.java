@@ -44,7 +44,7 @@ public class SharedPreferenceHelper {
         Gson gson = new Gson();
         String json = gson.toJson(course);
         editor.putString(course.getCode(), json);
-        editor.apply();
+        editor.commit();
     }
 
     /**
@@ -79,7 +79,7 @@ public class SharedPreferenceHelper {
         String json = gson.toJson(currentUser);
 
         editor.putString("User", json);
-        editor.apply();
+        editor.commit();
     }
 
     public User getUser() {
@@ -113,7 +113,7 @@ public class SharedPreferenceHelper {
     public void saveCourseCode(String code) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Course_Code", code);
-        editor.apply();
+        editor.commit();
     }
 
     public String getCourseCode() {
@@ -123,6 +123,6 @@ public class SharedPreferenceHelper {
     public void clearSource() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("Source");
-        editor.apply();
+        editor.commit();
     }
 }

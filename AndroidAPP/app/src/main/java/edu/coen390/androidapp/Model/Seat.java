@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Seat implements Serializable {
     int totalSeatsNumber;
@@ -34,7 +35,7 @@ public class Seat implements Serializable {
     }
 
     public void shuffle() {
-        Collections.shuffle(seats);
+        Collections.shuffle(seats, new Random(System.currentTimeMillis()));
     }
 
     public void initializeSeats() {

@@ -112,7 +112,6 @@ public class LoginActivity extends AppCompatActivity {
             System.out.println(student.toString());
             dbHelper.insertStudent(student);
         }
-
     }
 }
 
