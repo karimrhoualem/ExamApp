@@ -103,7 +103,7 @@ public class SharedPreferenceHelper {
     public void saveSource(Source source) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Source", source.name());
-        editor.apply();
+        editor.commit();
     }
 
     public String getSource() {

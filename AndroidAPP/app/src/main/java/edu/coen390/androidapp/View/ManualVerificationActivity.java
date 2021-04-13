@@ -42,6 +42,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private SharedPreferences sharedPreferences;
     private SharedPreferenceHelper sharedPreferenceHelper;
+    private Thread thread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,17 +130,22 @@ public class ManualVerificationActivity extends AppCompatActivity {
                             if (seat != -1) {
                                 int status = dbHelper.insertInExamTable(student, course, seat);
                                 if (status == 1) {
-                                    studentName.setText(student.getFirstName() + " " + student.getLastName());
-                                    studentID.setText(Integer.toString((int)student.getId()));
-                                    seatNumber.setText(Integer.toString(seat));
-                                    Drawable drawable = ContextCompat.getDrawable(
-                                            ManualVerificationActivity.this, R.drawable.success);
-                                    imageView.setImageDrawable(drawable);
-                                    Toast.makeText(ManualVerificationActivity.this,
-                                            "Student with ID: " + student.getId() + " has been successfully confirmed. " +
-                                                    "Returning to previous page.",
-                                            Toast.LENGTH_LONG).show();
-                                    Thread thread = new Thread(){
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            studentName.setText(student.getFirstName() + " " + student.getLastName());
+                                            studentID.setText(Integer.toString((int)student.getId()));
+                                            seatNumber.setText(Integer.toString(seat));
+                                            Drawable drawable = ContextCompat.getDrawable(
+                                                    ManualVerificationActivity.this, R.drawable.success);
+                                            imageView.setImageDrawable(drawable);
+                                            Toast.makeText(ManualVerificationActivity.this,
+                                                    "Student with ID: " + student.getId() + " has been successfully confirmed. " +
+                                                            "Returning to previous page.",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                    thread = new Thread(){
                                         @Override
                                         public void run() {
                                             try {
@@ -158,17 +164,22 @@ public class ManualVerificationActivity extends AppCompatActivity {
                         else {
                             int seat = dbHelper.getStudentSeat(student, course);
                             if (seat != -1) {
-                                studentName.setText(student.getFirstName() + " " + student.getLastName());
-                                studentID.setText(Integer.toString((int)student.getId()));
-                                seatNumber.setText(Integer.toString(seat));
-                                Drawable drawable = ContextCompat.getDrawable(
-                                        ManualVerificationActivity.this, R.drawable.success);
-                                imageView.setImageDrawable(drawable);
-                                Toast.makeText(ManualVerificationActivity.this,
-                                        "Student with ID: " + student.getId() + " has has already been confirmed. " +
-                                                "Returning to previous page.",
-                                        Toast.LENGTH_LONG).show();
-                                Thread thread = new Thread(){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        studentName.setText(student.getFirstName() + " " + student.getLastName());
+                                        studentID.setText(Integer.toString((int)student.getId()));
+                                        seatNumber.setText(Integer.toString(seat));
+                                        Drawable drawable = ContextCompat.getDrawable(
+                                                ManualVerificationActivity.this, R.drawable.success);
+                                        imageView.setImageDrawable(drawable);
+                                        Toast.makeText(ManualVerificationActivity.this,
+                                                "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                        "Returning to previous page.",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                thread = new Thread(){
                                     @Override
                                     public void run() {
                                         try {
@@ -185,15 +196,20 @@ public class ManualVerificationActivity extends AppCompatActivity {
                         }
                     }
                     else {
-                        studentName.setText("N/A");
-                        studentID.setText("N/A");
-                        seatNumber.setText("N/A");
-                        Drawable drawable = ContextCompat.getDrawable(
-                                ManualVerificationActivity.this, R.drawable.failure);
-                        imageView.setImageDrawable(drawable);
-                        Toast.makeText(ManualVerificationActivity.this,
-                                "Cannot identify student. Please try again.",
-                                Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                studentName.setText("N/A");
+                                studentID.setText("N/A");
+                                seatNumber.setText("N/A");
+                                Drawable drawable = ContextCompat.getDrawable(
+                                        ManualVerificationActivity.this, R.drawable.failure);
+                                imageView.setImageDrawable(drawable);
+                                Toast.makeText(ManualVerificationActivity.this,
+                                        "Cannot identify student. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
                 catch(NumberFormatException e){
@@ -201,6 +217,18 @@ public class ManualVerificationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (thread != null) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void endActivity(Course course) {

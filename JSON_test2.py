@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def send():
-    return jsonify(name = 'Paulina Aviles', ID=40109825)
+    return jsonify(name = 'Megan Walbaum', ID=40102454)
 
 # Run from command line using flask run --host="<IP Address>" --port=<portNumber>
 if __name__ == "__main__":
