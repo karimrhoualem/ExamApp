@@ -1,43 +1,45 @@
+# USAGE
+# python face_rec.py --ip 0.0.0.0 --port 8000
 # import the necessary packages
-from imutils.video import VideoStream
-from flask import Response
-from flask import Flask
-from flask import render_template
-from flask import jsonify
-import threading
+# Referenced :
+# 1 - https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_from_webcam_faster.py
+# 2 - https://github.com/ageitgey/face_recognition
 import argparse
-import face_recognition
-import cv2
-import numpy as np
-import json
+import math
 import os
+import pickle
+import threading
+import time
 import timeit
 
+import cv2
+import face_recognition
+import numpy as np
+from flask import Flask
+from flask import Response, jsonify
+from flask import render_template
+from imutils.video import VideoStream
 
 # CONFIG
 IP_ADDRESS = "192.168.2.135"
 PORT = 5000
 FACE_INFO_FOLDER = "faces"  # relative to face_rec.py
 FACE_INFO_CONFIG = "face_info.json"
-RUN_ON_PI = (os.uname().machine == 'armv7l')  # detect if we are running on raspberry pi by CPU architecture
+PICKLE_INPUT_FILE = "encodings.dat"
 
-# This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
-# other example, but it includes some basic performance tweaks to make things run a lot faster:
-#   1. Process each video frame at 1/4 resolution (though still display it at full resolution)
-#   2. Only detect faces in every other frame of video.
+# Face Detection and recognition Constants
+FACE_DISTANCE_THRESHOLD = 25
+FACE_COMPARE_STRICTNESS = 0.5
 
-# PLEASE NOTE: This example requires OpenCV (the `cv2` library) to be installed only to read from your webcam.
-# OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
-# specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
+# detect if we are running on raspberry pi by CPU architecture
+RUN_ON_PI = (hasattr(os,
+                     'uname') and os.uname().machine == 'armv7l')
 
-# initialize the output frame and a lock used to ensure thread-safe
-# exchanges of the output frames (useful for multiple browsers/tabs
-# are viewing the stream)
 outputFrame = None
 info = None
 json_face_info = {}
 recognized_person = {}
-lock = threading.Lock()
+lock = threading.Lock()  # lock for outputFrame so that it is not read while being updated
 
 # initialize a flask object
 app = Flask(__name__)
@@ -45,66 +47,64 @@ app = Flask(__name__)
 # Get a reference to webcam #0 (the default one)
 print("Acquiring VideoStream")
 if RUN_ON_PI:
-    vs = VideoStream(src=0, usePiCamera=True, resolution=(480, 640)).start()
+    print("Pi environment detected")
+    vs = VideoStream(src=0, usePiCamera=True, resolution=(640, 480)).start()
+    # the camera needs time to start, if loading encodings directly it can be too fast
+    time.sleep(2.0)
 else:
-    vs = VideoStream(src=0).start()
-# video_capture = cv2.VideoCapture(0)
+    print("Non-Pi environment")
+    # TODO doesn't work on windows? webcam turns on, but no video in video_feed
+    from imutils.video import WebcamVideoStream
 
-# Load a sample picture and learn how to recognize it.
-# obama_image = face_recognition.load_image_file("Obama.jpg")
-# obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
+    vs = WebcamVideoStream(src=0).start()
+    time.sleep(2.0)
 
-# Load a second sample picture and learn how to recognize it.
-# ahmed_image = face_recognition.load_image_file("Ahmed2.jpeg")
-# ahmed_face_encoding = face_recognition.face_encodings(ahmed_image)[0]
-
-# Create arrays of known face encodings and their names
-
+# Person Info Variables
 known_face_encodings = []
 known_face_names = []
 
 
-# load the face info
+# Load Face Info Method
 def load_face_info():
-    # face_info = []
-    # get the relations between image file and people
     start_time = timeit.default_timer()
     print("Creating face encodings")
-    global json_face_info
-    index_file_path = os.path.join(FACE_INFO_FOLDER, FACE_INFO_CONFIG)
-    with open(index_file_path, 'r') as indexfile:
-        json_info = json.load(indexfile)
+    global known_face_names, known_face_encodings
 
-        for person in json_info['people']:
-            print("Load face info for {name}".format(name=person['name']))
-            # assume images for now to be in, eg, faces/obama/obama.jpg
-            face_file_path = os.path.join(FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
-            person_image = face_recognition.load_image_file(face_file_path)
-            person_face_encoding = face_recognition.face_encodings(person_image)[0]
+    dirname = os.path.dirname(__file__)
+    pickle_file_path = os.path.join(dirname, FACE_INFO_FOLDER, PICKLE_INPUT_FILE)
+    print("Pickle file: {fname}".format(fname=pickle_file_path))
+    with open(pickle_file_path, 'rb') as picklefile:
+        face_info = pickle.load(picklefile)
 
-            known_face_encodings.append(person_face_encoding)
-            known_face_names.append(person['name'])
+        known_face_encodings = face_info['encodings']
+        known_face_names = face_info['names']
 
-        for person in json_info['people']:
-            json_face_info[person['name']] = person['ID']
+        for i in range(0, len(face_info['names'])):
+            json_face_info[face_info['names'][i]] = face_info['ids'][i]
 
-        stop_time = timeit.default_timer()
-        print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
+    stop_time = timeit.default_timer()
+    print("Time to load faces: {time}\n".format(time=(stop_time - start_time)))
 
 
 load_face_info()
+print(known_face_names)
 
 
-@app.route("/")
-def index():
-    # return the rendered template
-    return render_template("index.html")
+def confidence_from_distance(dist):
+    conf = (FACE_DISTANCE_THRESHOLD - dist) / FACE_DISTANCE_THRESHOLD * 100
+    return round(conf, 1)
 
-    # Initialize some variables
-    face_locations = []
-    face_encodings = []
-    face_names = []
-    process_this_frame = True
+
+# From library https://github.com/ageitgey/face_recognition/wiki/Calculating-Accuracy-as-a-Percentage
+def face_distance_to_conf(face_distance, face_match_threshold=FACE_COMPARE_STRICTNESS):
+    if face_distance > face_match_threshold:
+        range = (1.0 - face_match_threshold)
+        linear_val = (1.0 - face_distance) / (range * 2.0)
+        return linear_val
+    else:
+        range = face_match_threshold
+        linear_val = 1.0 - (face_distance / (range * 2.0))
+        return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
 
 
 def recognize_face(frameCount):
@@ -114,17 +114,16 @@ def recognize_face(frameCount):
     face_names = []
     process_this_frame = True
 
-    global info, recognized_person
-
-    global vs, outputFrame, lock
+    global vs, outputFrame, lock, info, recognized_person
 
     total = 0
+    FRAME_SCALE_FACTOR = 3  # frame divided in size by this number
     while True:
         # Grab a single frame of video
         frame = vs.read()
 
         # Resize frame of video to 1/4 size for faster face recognition processing
-        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        small_frame = cv2.resize(frame, (0, 0), fx=1 / FRAME_SCALE_FACTOR, fy=1 / FRAME_SCALE_FACTOR)
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]
@@ -138,7 +137,8 @@ def recognize_face(frameCount):
             face_names = []
             for face_encoding in face_encodings:
                 # See if the face is a match for the known face(s)
-                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding,
+                                                         tolerance=FACE_COMPARE_STRICTNESS)
                 name = "Unknown"
 
                 # # If a match was found in known_face_encodings, just use the first one.
@@ -148,27 +148,38 @@ def recognize_face(frameCount):
 
                 # Or instead, use the known face with the smallest distance to the new face
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+                # NOTE: we get the distance to EVERY face in the encodings
                 best_match_index = np.argmin(face_distances)
+                best_match_confidence = confidence_from_distance(best_match_index)
+                # best_match_confidence = face_distance_to_conf(best_match_index)
                 if matches[best_match_index]:
                     name = known_face_names[best_match_index]
+                    if best_match_index < FACE_DISTANCE_THRESHOLD:
+                        print("Matched {name} with distance {dist} confidence {conf}%"
+                              .format(name=name, dist=best_match_index, conf=best_match_confidence))
+                    else:
+                        print("Ignoring Match {name} with distance {dist} below threshold {thresh}"
+                              .format(name=name, dist=best_match_index, thresh=FACE_DISTANCE_THRESHOLD))
+                        name = "Unknown"
 
                 face_names.append(name)
 
                 if name == "Unknown":
-                    recognized_person = {"name": "Unknown", "ID": ""}
+                    recognized_person = {"name": "Unknown", "ID": "", "conf": 0}
                 else:
-                    recognized_person = {"name": name, "ID": json_face_info[name]}
+                    recognized_person = {"name": name, "ID": json_face_info[name], "conf": best_match_confidence}
 
         process_this_frame = not process_this_frame
+        # process_this_frame = total % 4 # every 4th frame instead of every 2nd
 
         if total > frameCount:
             # Display the results
             for (top, right, bottom, left), name in zip(face_locations, face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-                top *= 4
-                right *= 4
-                bottom *= 4
-                left *= 4
+                top *= FRAME_SCALE_FACTOR
+                right *= FRAME_SCALE_FACTOR
+                bottom *= FRAME_SCALE_FACTOR
+                left *= FRAME_SCALE_FACTOR
 
                 # Draw a box around the face
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
@@ -178,16 +189,25 @@ def recognize_face(frameCount):
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
+                # Put the confidence level in the top left if the person was recognized
+                # and their ID in the bottom left
+                if (recognized_person["name"] != "Unknown"):
+                    cv2.putText(frame, "Conf:" + str(recognized_person['conf']) + "%", (0, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (52, 235, 232), 2)
+                    # TODO: dynamically get frame height to place ID
+                    cv2.putText(frame, "ID: " + recognized_person["ID"], (0, 600), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                                (52, 235, 232), 2)
+
         total += 1
 
         # Display the resulting image
-
         # acquire the lock, set the output frame, and release the
         # lock
         with lock:
             outputFrame = frame.copy()
 
 
+# Generator that allows the video stream to be returned frame by frame
 def generate_stream():
     # grab global references to the output frame and lock variables
     global outputFrame, lock, encodedImage
@@ -204,6 +224,11 @@ def generate_stream():
             # encode the frame in JPEG format
             (flag, encodedImage) = cv2.imencode(".jpeg", outputFrame)
 
+            # set the outputFrame to None so that we do not loop on the same frame
+            # It *seems* to reduce Pi 4 CPU usage by about 10% on the main core
+            # TODO: does this make any real difference in practice?
+            outputFrame = None
+
             # ensure the frame was successfully encoded
             if not flag:
                 continue
@@ -218,9 +243,10 @@ def info_stream():
     return jsonify(recognized_person)
 
 
-# @app.route("/get_image")
-# def get_image():
-# return send_file("<link to jpeg>", mimetype="image/jpeg")
+@app.route("/")
+def index():
+    # return the rendered template
+    return render_template("index.html")
 
 
 @app.route("/video_feed")
