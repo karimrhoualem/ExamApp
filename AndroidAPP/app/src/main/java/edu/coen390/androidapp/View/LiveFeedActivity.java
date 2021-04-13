@@ -244,6 +244,7 @@ public class LiveFeedActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         timer.cancel();
+        saveInfo(course);
     }
 
     private void launchWebView() {
@@ -286,10 +287,14 @@ public class LiveFeedActivity extends AppCompatActivity {
         }
     }
 
-    private void endActivity(Course course) {
+    private void saveInfo(Course course) {
         sharedPreferenceHelper.saveProfile(course);
         sharedPreferenceHelper.saveSource(Source.LIVEFEED_ACTIVITY);
         sharedPreferenceHelper.saveCourseCode(course.getCode());
+    }
+
+    private void endActivity(Course course) {
+        saveInfo(course);
         LiveFeedActivity.this.finish();
     }
 }
