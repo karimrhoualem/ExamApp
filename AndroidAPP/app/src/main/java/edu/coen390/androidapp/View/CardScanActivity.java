@@ -238,6 +238,7 @@ public class CardScanActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         timer.cancel();
+        saveInfo(course);
     }
 
     @Override
@@ -264,9 +265,13 @@ public class CardScanActivity extends AppCompatActivity {
     }
 
     private void endActivity(Course course) {
+        saveInfo(course);
+        CardScanActivity.this.finish();
+    }
+
+    private void saveInfo(Course course) {
         sharedPreferenceHelper.saveProfile(course);
         sharedPreferenceHelper.saveSource(Source.CARDSCAN_ACTIVITY);
         sharedPreferenceHelper.saveCourseCode(course.getCode());
-        CardScanActivity.this.finish();
     }
 }

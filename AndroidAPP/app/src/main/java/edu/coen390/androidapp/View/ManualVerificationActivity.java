@@ -229,12 +229,17 @@ public class ManualVerificationActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        saveInfo(course);
     }
 
     private void endActivity(Course course) {
+        saveInfo(course);
+        ManualVerificationActivity.this.finish();
+    }
+
+    private void saveInfo(Course course) {
         sharedPreferenceHelper.saveProfile(course);
         sharedPreferenceHelper.saveSource(Source.MANUALVERIFICATION_ACTIVITY);
         sharedPreferenceHelper.saveCourseCode(course.getCode());
-        ManualVerificationActivity.this.finish();
     }
 }
