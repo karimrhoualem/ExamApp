@@ -142,7 +142,7 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         courseTextView.setText("Course: " + '\n' + course.getTitle() + " - " + course.getCode());
         courseTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
         courseTextView.setTypeface(null, Typeface.BOLD);
-        courseTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36f);
+        courseTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f);
         invigilatorConstraintLayout.addView(courseTextView);
     }
 }
