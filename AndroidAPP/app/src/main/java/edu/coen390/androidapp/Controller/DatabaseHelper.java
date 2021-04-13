@@ -138,6 +138,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Mark", "Hamill", "m_hamill", "1234");
         Student alec = new Student(40103773, new String[]{"ENGR 391", "COEN 313"},
                 "Alec", "Wolfe", "a_wolfe", "1234");
+        Student ahmed = new Student(40102454, new String[]{"COMP 472", "COEN 313"},
+                "Ahmed", "Ali", "a_ali", "1234");
         insertStudent(student1);
         insertStudent(student2);
         insertStudent(obama);
