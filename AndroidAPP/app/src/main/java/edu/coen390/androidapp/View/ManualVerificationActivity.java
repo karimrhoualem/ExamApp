@@ -60,6 +60,7 @@ public class ManualVerificationActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     protected void onStart () {
         super.onStart();
 
