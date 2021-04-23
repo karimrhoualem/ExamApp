@@ -72,8 +72,6 @@ public class CourseActivity extends AppCompatActivity {
                                     + "Username: " + user.getUserName() + '\n');
             userNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f);
             userNameTextView.setTypeface(null, Typeface.BOLD);
-//            userNameTextView.setTextColor(Color.RED);
-//            userNameTextView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             loadListView(user.getId(), UserType.INVIGILATOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -89,8 +87,6 @@ public class CourseActivity extends AppCompatActivity {
                                     + "Username: " + user.getUserName() + '\n');
             userNameTextView.setTypeface(null, Typeface.BOLD);
             userNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f);
-//            userNameTextView.setTextColor(Color.RED);
-//            userNameTextView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             loadListView(user.getId(), UserType.PROFESSOR);
 
             courseListView.setOnItemClickListener((parent, view, position, id) -> {

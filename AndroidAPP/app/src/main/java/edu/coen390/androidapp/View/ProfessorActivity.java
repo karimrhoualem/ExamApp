@@ -67,7 +67,8 @@ public class ProfessorActivity extends AppCompatActivity {
         constraintLayout = findViewById(R.id.professorConstraintLayout);
         displayCourseInfo();
         generateReportButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfessorActivity.this, ProfessorReportActivity.class);
+            Intent intent = new Intent(
+                    ProfessorActivity.this, ProfessorReportActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });

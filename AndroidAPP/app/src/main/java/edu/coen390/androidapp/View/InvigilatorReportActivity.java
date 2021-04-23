@@ -102,7 +102,8 @@ public class InvigilatorReportActivity extends AppCompatActivity {
                 tr_body.addView(studentId);
 
                 TextView studentName = new TextView(this);
-                studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
+                studentName.setText(String.format("%s %s", student.getFirstName(),
+                        student.getLastName()));
                 studentName.setTextColor(Color.BLACK);
                 tr_body.addView(studentName);
 
@@ -120,7 +121,8 @@ public class InvigilatorReportActivity extends AppCompatActivity {
                         int ret = dbHelper.updateSignOutStatus(course, row, 1);
                         if (ret > 0) {
                             Toast.makeText(InvigilatorReportActivity.this,
-                                    "Student with ID: " + row.getStudentId() + " has been successfully signed out.",
+                                    "Student with ID: " + row.getStudentId() +
+                                            " has been successfully signed out.",
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {

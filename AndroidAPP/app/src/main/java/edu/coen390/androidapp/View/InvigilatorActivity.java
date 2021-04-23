@@ -87,25 +87,29 @@ public class InvigilatorActivity extends AppCompatActivity implements Serializab
         displayCourseInfo();
 
         facialRecognitionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(InvigilatorActivity.this, LiveFeedActivity.class);
+            Intent intent = new Intent(InvigilatorActivity.this,
+                    LiveFeedActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });
 
         cardScannerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(InvigilatorActivity.this, CardScanActivity.class);
+            Intent intent = new Intent(InvigilatorActivity.this,
+                    CardScanActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });
 
         manualVerification.setOnClickListener(v -> {
-            Intent intent = new Intent(InvigilatorActivity.this, ManualVerificationActivity.class);
+            Intent intent = new Intent(InvigilatorActivity.this,
+                    ManualVerificationActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });
 
         generateReportButton.setOnClickListener(v -> {
-            Intent intent = new Intent(InvigilatorActivity.this, InvigilatorReportActivity.class);
+            Intent intent = new Intent(InvigilatorActivity.this,
+                    InvigilatorReportActivity.class);
             intent.putExtra(COURSE_INTENT, course);
             startActivity(intent);
         });

@@ -98,7 +98,8 @@ public class ProfessorReportActivity extends AppCompatActivity {
                 tr_body.addView(studentId);
 
                 TextView studentName = new TextView(this);
-                studentName.setText(String.format("%s %s", student.getFirstName(), student.getLastName()));
+                studentName.setText(String.format("%s %s",
+                        student.getFirstName(), student.getLastName()));
                 studentName.setTextColor(Color.BLACK);
                 tr_body.addView(studentName);
 
@@ -154,7 +155,8 @@ public class ProfessorReportActivity extends AppCompatActivity {
     }
 
     private void endActivity(Course course) {
-        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(ProfessorReportActivity.this);
+        SharedPreferenceHelper sharedPreferenceHelper =
+                new SharedPreferenceHelper(ProfessorReportActivity.this);
         sharedPreferenceHelper.saveProfile(course);
         sharedPreferenceHelper.saveSource(Source.PROFESSORREPORT_ACTIVITY);
         sharedPreferenceHelper.saveCourseCode(course.getCode());

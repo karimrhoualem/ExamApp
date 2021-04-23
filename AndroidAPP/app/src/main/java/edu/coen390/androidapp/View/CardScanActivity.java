@@ -40,7 +40,6 @@ public class CardScanActivity extends AppCompatActivity {
     //TODO: change URLs
     @VisibleForTesting
     public static final String JSON_STUDENT_URL = "http://192.168.2.135:5000/person_info";
-    //public static final String JSON_STUDENT_URL = "http://192.168.0.166:5000/";
     private static final String TAG = "CardScanActivity";
     private JSONObject studentInformation;
     private DatabaseHelper dbHelper;
@@ -133,95 +132,49 @@ public class CardScanActivity extends AppCompatActivity {
                                                         Toast.LENGTH_LONG).show();
                                             }
                                         });
-//                                        Thread thread = new Thread() {
-//                                            @Override
-//                                            public void run() {
-//                                                try {
-//                                                    Thread.sleep(5000);
-//                                                    endActivity(course);
-//                                                    cancel();
-//                                                }
-//                                                catch (Exception e) {
-//                                                    e.printStackTrace();
-//                                                }
-//                                            }
-//                                        };
-//                                        thread.start();
-//                                        thread.join();
                                         Thread.sleep(5000);
                                         endActivity(course);
                                         cancel();
                                     } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(CardScanActivity.this, "Error inserting student in exam table. Please try again.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                        runOnUiThread(() -> Toast.makeText(CardScanActivity.this, "Error inserting student in exam table. Please try again.",
+                                                Toast.LENGTH_SHORT).show());
                                     }
                                 } else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(CardScanActivity.this, "Error assigning seat to student. Please try again.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                    runOnUiThread(() -> Toast.makeText(CardScanActivity.this, "Error assigning seat to student. Please try again.",
+                                            Toast.LENGTH_SHORT).show());
                                 }
                             } else {
                                 int seat = dbHelper.getStudentSeat(student, course);
                                 if (seat != -1) {
                                     String name = student.getFirstName() + " " + student.getLastName();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            studentName.setText(name);
-                                            studentID.setText(Integer.toString((int) student.getId()));
-                                            seatNumber.setText(Integer.toString(seat));
-                                            Drawable drawable = ContextCompat.getDrawable(
-                                                    CardScanActivity.this, R.drawable.success);
-                                            imageView.setImageDrawable(drawable);
-                                            Toast.makeText(CardScanActivity.this,
-                                                    "Student with ID: " + student.getId() + " has has already been confirmed. " +
-                                                            "Returning to previous page.",
-                                                    Toast.LENGTH_LONG).show();
-                                        }
+                                    runOnUiThread(() -> {
+                                        studentName.setText(name);
+                                        studentID.setText(Integer.toString((int) student.getId()));
+                                        seatNumber.setText(Integer.toString(seat));
+                                        Drawable drawable = ContextCompat.getDrawable(
+                                                CardScanActivity.this, R.drawable.success);
+                                        imageView.setImageDrawable(drawable);
+                                        Toast.makeText(CardScanActivity.this,
+                                                "Student with ID: " + student.getId() + " has has already been confirmed. " +
+                                                        "Returning to previous page.",
+                                                Toast.LENGTH_LONG).show();
                                     });
-//                                    Thread thread = new Thread() {
-//                                        @Override
-//                                        public void run() {
-//                                            try {
-//                                                Thread.sleep(5000);
-//                                                endActivity(course);
-//                                                cancel();
-//                                            }
-//                                            catch (Exception e) {
-//                                                e.printStackTrace();
-//                                            }
-//                                        }
-//                                    };
-//                                    thread.start();
-//                                    thread.join();
                                     Thread.sleep(5000);
                                     endActivity(course);
                                     cancel();
                                 }
                             }
                         } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    studentName.setText("N/A");
-                                    studentID.setText("N/A");
-                                    seatNumber.setText("N/A");
-                                    Drawable drawable = ContextCompat.getDrawable(
-                                            CardScanActivity.this, R.drawable.failure);
-                                    imageView.setImageDrawable(drawable);
-                                    Toast.makeText(CardScanActivity.this,
-                                            "Cannot identify student. Please try again.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                            runOnUiThread(() -> {
+                                studentName.setText("N/A");
+                                studentID.setText("N/A");
+                                seatNumber.setText("N/A");
+                                Drawable drawable = ContextCompat.getDrawable(
+                                        CardScanActivity.this, R.drawable.failure);
+                                imageView.setImageDrawable(drawable);
+                                Toast.makeText(CardScanActivity.this,
+                                        "Cannot identify student. Please try again.",
+                                        Toast.LENGTH_SHORT).show();
                             });
                             Thread.sleep(5000);
                             endActivity(course);

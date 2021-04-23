@@ -63,13 +63,15 @@ public class LoginActivity extends AppCompatActivity {
             Editable password = passwordEditText.getText();
 
             if (username != null && password != null) {
-                boolean isInvigilator = dbHelper.verifyInvigilator(username.toString(), password.toString());
+                boolean isInvigilator = dbHelper.verifyInvigilator(
+                        username.toString(), password.toString());
                 if (isInvigilator) {
                     openCourseActivity(UserType.INVIGILATOR);
                     return;
                 }
 
-                boolean isProfessor = dbHelper.verifyProfessor(username.toString(), password.toString());
+                boolean isProfessor = dbHelper.verifyProfessor(
+                        username.toString(), password.toString());
                 if (isProfessor) {
                     openCourseActivity(UserType.PROFESSOR);
                     return;
@@ -77,7 +79,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 username.clear();
                 password.clear();
-                Toast.makeText(LoginActivity.this, "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,
+                        "Username or Password is incorrect", Toast.LENGTH_SHORT).show();
             } else {
                 if (username != null) {
                     username.clear();
@@ -85,14 +88,17 @@ public class LoginActivity extends AppCompatActivity {
                 if (password != null) {
                     password.clear();
                 }
-                Toast.makeText(LoginActivity.this, "Please enter a valid Username and Password.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,
+                        "Please enter a valid Username and Password.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void openCourseActivity(UserType userType) {
         Intent intent = new Intent(this, CourseActivity.class);
-        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(LoginActivity.this);
+        SharedPreferenceHelper sharedPreferenceHelper =
+                new SharedPreferenceHelper(LoginActivity.this);
         User user = null;
         if (userType == UserType.INVIGILATOR) {
             user = dbHelper.getInvigilator(userNameEditText.getText().toString());
@@ -107,7 +113,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createTestStudent() throws IOException {
-        ArrayList<Student> students = SampleData.getSampleStudents(getAssets().open("sample-data.json"));
+        ArrayList<Student> students =
+                SampleData.getSampleStudents(getAssets().open("sample-data.json"));
         for(Student student : students){
             System.out.println(student.toString());
             dbHelper.insertStudent(student);
