@@ -1,5 +1,4 @@
 import threading
-import threading
 import time
 
 # TODO: try https://github.com/ondryaso/pi-rc522 instead for lower CPU usage?

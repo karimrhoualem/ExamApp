@@ -4,13 +4,10 @@ import pickle
 import random
 import timeit
 
-import face_recognition
-import image_to_numpy
-
 import PIL.Image
 import PIL.ImageOps
-import numpy as np
-from PIL import Image, ExifTags
+import face_recognition
+from PIL import Image
 
 # {"name": "Paulina Aviles",  "ID": "40109825", "folder": "paulina"},
 
@@ -42,7 +39,7 @@ def load_face_info():
             print("Load face info for {name}".format(name=person['name']))
             # assume images for now to be in, eg, faces/obama/obama.jpg
             face_file_path = os.path.join(dirname, FACE_INFO_FOLDER, person['folder'], person['folder'] + '.jpg')
-            #img = image_to_numpy.load_image_file(face_file_path)
+            # img = image_to_numpy.load_image_file(face_file_path)
             rotate_images(face_file_path)
             person_image = face_recognition.load_image_file(face_file_path)
             person_face_encoding = face_recognition.face_encodings(person_image, num_jitters=100)[0]
@@ -75,7 +72,7 @@ def load_face_extra_dataset():
         # print(face_file_path)
 
         try:
-            #img = image_to_numpy.load_image_file(face_file_path)
+            # img = image_to_numpy.load_image_file(face_file_path)
             rotate_images(face_file_path)
             person_image = face_recognition.load_image_file(face_file_path)
             person_face_encoding = face_recognition.face_encodings(person_image)[0]
@@ -88,8 +85,9 @@ def load_face_extra_dataset():
             print("ERROR: Could not encode face for {name}".format(name=person))
             print(e)
 
-#Rotate images to correct orientation
-#References :
+
+# Rotate images to correct orientation
+# References :
 # 1 - https://stackoverflow.com/questions/13872331/rotating-an-image-with-orientation-specified-in-exif-using-python-without-pil-in
 # 2 - https://medium.com/@ageitgey/the-dumb-reason-your-fancy-computer-vision-app-isnt-working-exif-orientation-73166c7d39da
 def exif_transpose(img):
